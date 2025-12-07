@@ -1,0 +1,87 @@
+LTspice 24.1.10 for Windows
+Circuit: C:\Users\13285\Documents\LTspice\finalproject\pushpullphi2.txt
+Start Time: Sun Dec  7 11:53:25 2025
+Options: itl1=100000  itl2=100000  itl4=100000  method=Trap abstol=1n vntol=1e-3 reltol=0.001 maxord=1 solver=alt  measdgt=99  numdgt=99  gmin=1e-15
+C:\Users\13285\Documents\LTspice\finalproject\SN74LVC1G34.cir(141): Note: The caret character means exponentiation in this context. If you wish to silence this warning, use the "**" operator instead or add ".OPTIONS NO_CARET_WARNING" to your netlist.
++ 2*MAXICC*((V(IN,VEE)-VT)/V(VCC,VEE))^2)*(1 + SGN(V(VCC,VEE) - VCC_MIN))*V(VSWITCH,VEE)}
+                                      ^
+C:\Users\13285\Documents\LTspice\finalproject\SN74LVC1G34.cir(143): Note: The caret character means exponentiation in this context. If you wish to silence this warning, use the "**" operator instead or add ".OPTIONS NO_CARET_WARNING" to your netlist.
++ 2*MAXICC*((V(IN,VEE)-VT)/V(VCC,VEE))^2)*(1 + SGN(V(VCC,VEE) - VCC_MIN))*V(VSWITCH,VEE)}
+                                      ^
+C:\Users\13285\Documents\LTspice\finalproject\SN74LVC1G34.cir(145): Note: The caret character means exponentiation in this context. If you wish to silence this warning, use the "**" operator instead or add ".OPTIONS NO_CARET_WARNING" to your netlist.
++ 2*MAXICC*((V(IN,VEE)-(V(VCC,VEE)-VT))/V(VCC,VEE))^2)*(1 + SGN(V(VCC,VEE) - VCC_MIN))*V(VSWITCH1,VEE)}
+                                                   ^
+C:\Users\13285\Documents\LTspice\finalproject\SN74LVC1G34.cir(147): Note: The caret character means exponentiation in this context. If you wish to silence this warning, use the "**" operator instead or add ".OPTIONS NO_CARET_WARNING" to your netlist.
++ 2*MAXICC*((V(IN,VEE)-(V(VCC,VEE)-VT))/V(VCC,VEE))^2)*(1 + SGN(V(VCC,VEE) - VCC_MIN))*V(VSWITCH1,VEE)}
+                                                   ^
+C:\Users\13285\Documents\LTspice\finalproject\SN74LVC1G34.cir(141): Note: The caret character means exponentiation in this context. If you wish to silence this warning, use the "**" operator instead or add ".OPTIONS NO_CARET_WARNING" to your netlist.
++ 2*MAXICC*((V(IN,VEE)-VT)/V(VCC,VEE))^2)*(1 + SGN(V(VCC,VEE) - VCC_MIN))*V(VSWITCH,VEE)}
+                                      ^
+C:\Users\13285\Documents\LTspice\finalproject\SN74LVC1G34.cir(143): Note: The caret character means exponentiation in this context. If you wish to silence this warning, use the "**" operator instead or add ".OPTIONS NO_CARET_WARNING" to your netlist.
++ 2*MAXICC*((V(IN,VEE)-VT)/V(VCC,VEE))^2)*(1 + SGN(V(VCC,VEE) - VCC_MIN))*V(VSWITCH,VEE)}
+                                      ^
+C:\Users\13285\Documents\LTspice\finalproject\SN74LVC1G34.cir(145): Note: The caret character means exponentiation in this context. If you wish to silence this warning, use the "**" operator instead or add ".OPTIONS NO_CARET_WARNING" to your netlist.
++ 2*MAXICC*((V(IN,VEE)-(V(VCC,VEE)-VT))/V(VCC,VEE))^2)*(1 + SGN(V(VCC,VEE) - VCC_MIN))*V(VSWITCH1,VEE)}
+                                                   ^
+C:\Users\13285\Documents\LTspice\finalproject\SN74LVC1G34.cir(147): Note: The caret character means exponentiation in this context. If you wish to silence this warning, use the "**" operator instead or add ".OPTIONS NO_CARET_WARNING" to your netlist.
++ 2*MAXICC*((V(IN,VEE)-(V(VCC,VEE)-VT))/V(VCC,VEE))^2)*(1 + SGN(V(VCC,VEE) - VCC_MIN))*V(VSWITCH1,VEE)}
+                                                   ^
+C:\Users\13285\Documents\LTspice\finalproject\SN74LVC1G34.cir(141): Note: The caret character means exponentiation in this context. If you wish to silence this warning, use the "**" operator instead or add ".OPTIONS NO_CARET_WARNING" to your netlist.
++ 2*MAXICC*((V(IN,VEE)-VT)/V(VCC,VEE))^2)*(1 + SGN(V(VCC,VEE) - VCC_MIN))*V(VSWITCH,VEE)}
+                                      ^
+C:\Users\13285\Documents\LTspice\finalproject\SN74LVC1G34.cir(143): Note: The caret character means exponentiation in this context. If you wish to silence this warning, use the "**" operator instead or add ".OPTIONS NO_CARET_WARNING" to your netlist.
++ 2*MAXICC*((V(IN,VEE)-VT)/V(VCC,VEE))^2)*(1 + SGN(V(VCC,VEE) - VCC_MIN))*V(VSWITCH,VEE)}
+                                      ^
+C:\Users\13285\Documents\LTspice\finalproject\SN74LVC1G34.cir(145): Note: The caret character means exponentiation in this context. If you wish to silence this warning, use the "**" operator instead or add ".OPTIONS NO_CARET_WARNING" to your netlist.
++ 2*MAXICC*((V(IN,VEE)-(V(VCC,VEE)-VT))/V(VCC,VEE))^2)*(1 + SGN(V(VCC,VEE) - VCC_MIN))*V(VSWITCH1,VEE)}
+                                                   ^
+C:\Users\13285\Documents\LTspice\finalproject\SN74LVC1G34.cir(147): Note: The caret character means exponentiation in this context. If you wish to silence this warning, use the "**" operator instead or add ".OPTIONS NO_CARET_WARNING" to your netlist.
++ 2*MAXICC*((V(IN,VEE)-(V(VCC,VEE)-VT))/V(VCC,VEE))^2)*(1 + SGN(V(VCC,VEE) - VCC_MIN))*V(VSWITCH1,VEE)}
+                                                   ^
+C:\Users\13285\Documents\LTspice\finalproject\SN74LVC1G34.cir(141): Note: The caret character means exponentiation in this context. If you wish to silence this warning, use the "**" operator instead or add ".OPTIONS NO_CARET_WARNING" to your netlist.
++ 2*MAXICC*((V(IN,VEE)-VT)/V(VCC,VEE))^2)*(1 + SGN(V(VCC,VEE) - VCC_MIN))*V(VSWITCH,VEE)}
+                                      ^
+C:\Users\13285\Documents\LTspice\finalproject\SN74LVC1G34.cir(143): Note: The caret character means exponentiation in this context. If you wish to silence this warning, use the "**" operator instead or add ".OPTIONS NO_CARET_WARNING" to your netlist.
++ 2*MAXICC*((V(IN,VEE)-VT)/V(VCC,VEE))^2)*(1 + SGN(V(VCC,VEE) - VCC_MIN))*V(VSWITCH,VEE)}
+                                      ^
+C:\Users\13285\Documents\LTspice\finalproject\SN74LVC1G34.cir(145): Note: The caret character means exponentiation in this context. If you wish to silence this warning, use the "**" operator instead or add ".OPTIONS NO_CARET_WARNING" to your netlist.
++ 2*MAXICC*((V(IN,VEE)-(V(VCC,VEE)-VT))/V(VCC,VEE))^2)*(1 + SGN(V(VCC,VEE) - VCC_MIN))*V(VSWITCH1,VEE)}
+                                                   ^
+C:\Users\13285\Documents\LTspice\finalproject\SN74LVC1G34.cir(147): Note: The caret character means exponentiation in this context. If you wish to silence this warning, use the "**" operator instead or add ".OPTIONS NO_CARET_WARNING" to your netlist.
++ 2*MAXICC*((V(IN,VEE)-(V(VCC,VEE)-VT))/V(VCC,VEE))^2)*(1 + SGN(V(VCC,VEE) - VCC_MIN))*V(VSWITCH1,VEE)}
+                                                   ^
+solver = Alternate
+Maximum thread count: 20
+tnom = 27
+temp = 27
+method = trap
+gmin = 1e-15
+abstol = 1e-09
+volttol = 0.001
+Per .tran options, skipping operating point for transient analysis.
+Total elapsed time: 363.810 seconds.
+
+Files loaded:
+C:\Users\13285\Documents\LTspice\finalproject\pushpullphi2.txt
+C:\Users\13285\Documents\LTspice\finalproject\CoolGaN Transistors 100 V G3 - Spice.lib
+C:\Users\13285\Documents\LTspice\finalproject\LM5114A_TRANS.lib
+C:\Users\13285\Documents\LTspice\finalproject\SN74LVC1G34.cir
+C:\Users\13285\Documents\LTspice\finalproject\ST_POWER_SCHOTTKY_V10.LIB
+
+show_l1: L1=2.17715198455698e-06
+show_l2: L2=4.354303969113959e-07
+show_c1ext: C1ext=5.056376710569851e-10
+show_rl: RL_phase=19.73333333333333
+show_ls2: Ls2=3.088158843343233e-06
+show_cs2: Cs2=1.784354928828652e-10
+pin: AVG(I(V1)*V(in))=-32.0213923786482 FROM 4.129793510324484e-05 TO 4.424778761061947e-05
+vds1max_static: MAX(V(N_Bot_Mid))=42.69048861518502 FROM 4.129793510324484e-05 TO 4.424778761061947e-05
+vds2max_static: MAX(V(N_Top_Mid))=42.74819389673195 FROM 4.129793510324484e-05 TO 4.424778761061947e-05
+vds1max_trans: MAX(V(N_Bot_Mid))=76.55257510003413 FROM 0 TO 4.424778761061947e-05
+vds2max_trans: MAX(V(N_Top_Mid))=78.97941525601479 FROM 0 TO 4.424778761061947e-05
+vcmrmax_static: MAX(V(Mid_Node))=62.78790980040408 FROM 4.129793510324484e-05 TO 4.424778761061947e-05
+vcmrmax_trans: MAX(V(Mid_Node))=115.8254336768721 FROM 0 TO 4.424778761061947e-05
+vcs1max_static: MAX(V(N_Top_Mid)-V(N_Cs1))=166.8652168197485 FROM 4.129793510324484e-05 TO 4.424778761061947e-05
+vcs1max_trans: MAX(V(N_Top_Mid)-V(N_Cs1))=166.8883957050642 FROM 0 TO 4.424778761061947e-05
+vcs2max_static: MAX(V(Sec_mid )-V(Sec_r))=161.8456939970337 FROM 4.129793510324484e-05 TO 4.424778761061947e-05
+vcs2max_trans: MAX(V(Sec_mid )-V(Sec_r))=304.9415138648417 FROM 0 TO 4.424778761061947e-05

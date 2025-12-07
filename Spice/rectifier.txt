@@ -1,0 +1,31 @@
+
+.lib ST_POWER_SCHOTTKY_V10.LIB
+*Vdrv ACs ACn PULSE(-12 12 0 1n 1n 73.8n 147.6n)
+Idrv ACn ACp SIN(0 1.20 6.78Meg)
+*Lcomp ACs ACp 0.25u
+*full bridge
+D1 ACp Vout STPS360AF
+D2 0   ACp  STPS360AF
+D3 ACn Vout STPS360AF
+D4 0   ACn  STPS360AF
+
+
+C_O Vout 0 0.1u
+R_L Vout 0 48.7
+.param fs=6.78Meg
+.param NCYCLES = 1500
+.param PPS     = 1600
+.param TPER    = 1/fs
+.param TSTOP   = NCYCLES*TPER
+.param TSTEP   = TPER/PPS
+
+.tran 0 {TSTOP} 0 {TSTEP} uic
+*.options method=gear abstol=1n vntol=1m reltol=0.01
+.OPTIONS itl1=100000
+.OPTIONS itl2=100000
+.OPTIONS itl4=100000
+.options method=Trap abstol=1n vntol=1e-3 reltol=0.001 maxord=1 solver=alt
+.OPTIONS measdgt=99
+.OPTIONS numdgt=99
+.OPTIONS gmin=1e-15
+.end

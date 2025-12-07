@@ -1,0 +1,19 @@
+LTspice 24.1.10 for Windows
+Circuit: C:\Users\13285\Documents\LTspice\finalproject\rectifier.txt
+Start Time: Sat Dec  6 19:03:24 2025
+Options: itl1=100000  itl2=100000  itl4=100000  method=Trap abstol=1n vntol=1e-3 reltol=0.001 maxord=1 solver=alt  measdgt=99  numdgt=99  gmin=1e-15
+solver = Alternate
+Maximum thread count: 20
+tnom = 27
+temp = 27
+method = trap
+gmin = 1e-15
+abstol = 1e-09
+volttol = 0.001
+Per .tran options, skipping operating point for transient analysis.
+Total elapsed time: 18.996 seconds.
+
+Files loaded:
+C:\Users\13285\Documents\LTspice\finalproject\rectifier.txt
+C:\Users\13285\Documents\LTspice\finalproject\ST_POWER_SCHOTTKY_V10.LIB
+

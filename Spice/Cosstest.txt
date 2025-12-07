@@ -1,0 +1,156 @@
+
+.lib CoolGaN Transistors 100 V G3 - Spice.lib
+.lib LM5114A_TRANS.lib
+.lib SN74LVC1G34.cir
+.lib ST_POWER_SCHOTTKY_V10.LIB
+*----------------Values------------------
+*Design Choice
+.param Vdc   = 20
+.param Pout  = 30
+.param fs    = 6.78Meg
+;.param Qs    = 2
+.param Coss  = 220p ;need to be measured
+.param m     = 5    ; L1=m*L2
+.param k     = 0.3  ;coil coupling coefficient
+.param CD    = 50p  ;diode junction capacitor
+.param Qcoil = 300  ;coil quality factor
+
+*Component Value Calculation
+
+;Due to the paper Design Considerations for Multimegahertz Resonant  Inductive Power Transfer
+;formula(27);the equivalent resistant of the rectifier equals the 2RL calculated at the primary side
+
+.param w   = 2*pi*fs
+.param Pdc_phase = Pout/2                   ;single phi-2 power
+.param RL_phase = 0.74 * Vdc**2 / Pdc_phase ;single phi-2 load
+.param Rload_tot = 2*RL_phase
+.param L2 = 0.94 * RL_phase / w
+.param C2 = 1 / (4 * w**2 * L2)
+.param C1_total = 0.61 / (w * RL_phase)
+.param C1ext = C1_total -Coss
+.param L1 = m * L2
+*.param Ls = Qs * Rload_tot / w
+.param Ls2 =  Rload_tot/(k*w)
+*.param Ls2 = Ls/(1-kk**2)
+*.param Cs = 1 / (w * Qs * Rload_tot)
+.param Cs2 = 1/((w**2)*Ls2)
+*.param Ro = ((Rload_tot/(kk**2))*pi**2)/8  ;Ro=Rload_tot
+.param coilesr={w*Ls2/Qcoil}
+*-------------transient---------------------
+.param Duty     = 0.3  ;0.3-0.35
+.param NCYCLES = 200
+.param PPS     = 800
+.param TPER    = 1/fs
+.param TSTOP   = NCYCLES*TPER
+.param TSTEP   = TPER/PPS
+
+.step param Coss 100p 300p 10p
+
+.tran 0 {TSTOP} 0 {TSTEP} uic
+*.options method=gear abstol=1n vntol=1m reltol=0.01
+.OPTIONS itl1=100000
+.OPTIONS itl2=100000
+.OPTIONS itl4=100000
+.options method=Trap abstol=1n vntol=1e-3 reltol=0.001 maxord=1 solver=alt
+.OPTIONS measdgt=99
+.OPTIONS numdgt=99
+.OPTIONS gmin=1e-15
+
+*----------------topology-------------------
+* DC input
+V1 IN 0 {Vdc}
+* Top Branch (Fa, MRa)
+LFa IN N_Top_Mid {L1}
+LMRa N_Top_Mid Mid_Node {L2}
+* Bottom Branch (Fb, MRb)
+LFb IN N_Bot_Mid {L1}
+LMRb N_Bot_Mid Mid_Node {L2}
+CMR Mid_Node 0 {2*C2}
+
+* switches
+Xtop N_Top_Mid Gtop 0 IGB110S101_L1
+Xbottom N_Bot_Mid Gbottom 0 IGB110S101_L1
+Cpa N_Top_Mid 0 {C1ext}
+Cpb N_Bot_Mid 0 {C1ext}
+
+*Load Network
+Cspri N_Top_Mid N_Cs1 {Cs2}
+;Lspri N_Cs1 N_Res {Ls2*(1-k**2)} Rser={coilesr}
+Lspri N_Cs1 N_Res {Ls2} Rser={coilesr}
+*Lspri N_Load N_Bot_Mid  {Ls2} Rser={coilesr}
+Rload N_Res N_Bot_Mid {Rload_tot}
+
+*ideal transformer
+;Vsen  Sec_topa   Sec_top   0
+;E1   Sec_topa  Sec_bot N_Res   N_Bot_Mid  {1/k}
+;F1    N_Res   N_Bot_Mid    Vsen      {1/k}
+;Rpg N_Res   0     1e15
+;Rsg   Sec_topa  0     1e15
+
+*secondary side
+;Lssec Sec_top   Sec_bot   {Ls2}
+;Rssec Sec_top   Sec_mid   {coilesr}
+;Cssec Sec_mid    Sec_r {Cs2}
+*Rtestload Sec_r   Sec_bot {Rload_tot}
+
+
+*full bridge
+;Lcomp Sec_r Sec_bot 2.2u
+;D1 Sec_r Vout STPS360AF
+;D2 0   Sec_r  STPS360AF
+;D3 Sec_bot Vout STPS360AF
+;D4 0   Sec_bot  STPS360AF
+;C_O Vout 0 0.1u
+;R_L Vout 0 {(Rload_tot*(pi**2))/8}
+
+*Buffer
+Vg1 IN_TOP 0 PULSE(0 5 0 10n 10n {Duty*TPER} {TPER})
+Vg2 IN_BOT 0 PULSE(0 5 {TPER/2} 10n 10n {Duty*TPER} {TPER})
+VCC_BUF   VCC   0   5
+XBUF_TOP   IN_TOP2   IN_TOP   VCC   0   SN74LVC1G34
+XBUF_BOT   IN_BOT2   IN_BOT   VCC   0   SN74LVC1G34
+
+*Gate Driver
+VDD_TOP  VDDT  0  5
+VDD_BOT  VDDB  0  5
+XDRV_TOP  IN_TOP   0   VDDT   Gtop   GtopN   0   LM5114A
+XDRV_BOT  IN_BOT   0   VDDB   Gbottom   GbottomN   0   LM5114A
+RNTOP GtopN Gtop 1.5
+RNBOT GbottomN Gbottom 1.5
+
+*----------------measurement-------------------
+.op
+;.meas show_L1     PARAM L1
+;.meas show_L2     PARAM L2
+;.meas show_C1ext  PARAM C1ext
+;.meas show_RL     PARAM RL_phase
+*.meas show_Ro     PARAM Ro
+;.meas show_Ls2     PARAM Ls2
+;.meas show_Cs2     PARAM Cs2
+.meas Pavg AVG I(Rload)*(V(N_Res)-V(N_Bot_Mid)) FROM {TSTOP-20*TPER} TO {TSTOP}
+*.meas Pavg AVG I(Rtestload)*(V(Sec_r)-V(Sec_bot)) FROM {TSTOP-50*TPER} TO {TSTOP}
+*.meas Pavg AVG I(R_L)*V(Vout) FROM {TSTOP-50*TPER} TO {TSTOP}
+.meas Pin  AVG I(V1)*V(in) FROM {TSTOP-20*TPER} TO {TSTOP}
+.meas eff  PARAM Pavg/Pin
+*Vds
+;.meas Vds1max_static MAX V(N_Bot_Mid) FROM {TSTOP-20*TPER} TO {TSTOP}
+;.meas Vds2max_static MAX V(N_Top_Mid) FROM {TSTOP-20*TPER} TO {TSTOP}
+;.meas Vds1max_trans MAX V(N_Bot_Mid)
+;.meas Vds2max_trans MAX V(N_Top_Mid)
+
+*CMR
+;.meas VCMRmax_static MAX V(Mid_Node) FROM {TSTOP-20*TPER} TO {TSTOP}
+;.meas VCMRmax_trans MAX V(Mid_Node)
+
+*Cs1
+;.meas VCs1max_static MAX V(N_Top_Mid)-V(N_Cs1) FROM {TSTOP-20*TPER} TO {TSTOP}
+;.meas VCs1max_trans MAX V(N_Top_Mid)-V(N_Cs1)
+
+*Cs2
+*.meas VCs2max_static MAX V(Sec_mid )-V(Sec_r) FROM {TSTOP-20*TPER} TO {TSTOP}
+*.meas VCs2max_trans MAX V(Sec_mid )-V(Sec_r)
+
+*.meas V_min MIN V(out) FROM {TSTOP-50*TPER} TO {TSTOP}
+*.meas V_max MAX V(out) FROM {TSTOP-50*TPER} TO {TSTOP}
+*.meas V_min MIN V(out)
+.end
