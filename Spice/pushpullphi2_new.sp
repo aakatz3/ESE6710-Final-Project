@@ -4,6 +4,15 @@
 .lib SN74LVC1G34.cir
 .lib ST_POWER_SCHOTTKY_V10.LIB
 .lib rb168lam100tf_ltspice.lib
+.lib c3216c0g2a104j160ac_p.mod
+.lib C3216X7R2A105K160AA_b_LTspice.mod
+.lib C3216X6S2A106K160AC_b_LTspice.mod
+.lib PCR1J101MCL1GS_v100.lib
+.lib 50SVPF68M.lib
+.lib 1SMB59XXBT3G (SPICE MODEL).LIB
+
+.OPTIONS NO_CARET_WARNING
+
 *----------------Values------------------
 *Design Choice
 .param Vdc   = 25
@@ -25,9 +34,8 @@
 .param w   = 2*pi*fs
 .param Pdc_phase = Pout/2                   ;single phi-2 power
 ;.param RL_phase = 0.74 * Vdc**2 / Pdc_phase ;single phi-2 load
-;.param Rload_tot = 2*RL_phase
-.param Rload_tot = 50
 .param RL_phase = 25
+.param Rload_tot = 50 ;2*RL_phase
 .param L2 = 0.94 * RL_phase / w
 .param C2 = 1 / (4 * w**2 * L2)
 .param C1_total = 0.61 / (w * RL_phase)
@@ -42,8 +50,8 @@
 
 *-------------transient---------------------
 .param Duty     = 0.3  ;0.3-0.35
-.param NCYCLES = 300
-.param PPS     = 10000
+.param NCYCLES = 10000
+.param PPS     = 1000
 .param TPER    = 1/fs
 .param TSTOP   = NCYCLES*TPER
 .param TSTEP   = TPER/PPS
@@ -62,7 +70,8 @@
 
 *----------------topology-------------------
 * DC input
-V1 IN 0 {Vdc}
+V1 IN 0 {Vdc} RSER=0.005 ; Calculated output resistance of Keysight U8002A
+XC IN 0 50SVPF68M
 * Top Branch (Fa, MRa)
 LFa IN N_Top_Mid {L1}
 LMRa N_Top_Mid Mid_Node {L2}
@@ -106,7 +115,11 @@ D1 Sec_r  Vout  STPS360AF
 D2 0   Sec_r    STPS360AF
 D3 Sec_bot Vout STPS360AF
 D4 0   Sec_bot  STPS360AF
-C_O Vout 0 0.1u
+XC_O_1 Vout 0 C3216C0G2A104J160AC_p
+XC_O_2 Vout 0 C3216X7R2A105K160AA_b
+XC_O_3 Vout 0 C3216X6S2A106K160AC_b
+XC_O_4 Vout 0 PCR1J101MCL1GS IC=0
+XZD 0 Vout 1SMB5946BT3
 R_L Vout 0 {(Rload_tot*(pi**2))/8}
 
 *Buffer
@@ -132,6 +145,7 @@ RNBOT GbottomN Gbottom 1.5
 .meas show_RL     PARAM RL_phase
 .meas show_L1andL2     PARAM Ls2
 .meas show_C1andC2     PARAM Cs2
+.meas show_RLoad  PARAM {(Rload_tot*(pi**2))/8}
 
 *power
 ;.meas Pavg INTEG I(Rload)*(V(N_Res)-V(N_Bot_Mid)) FROM {TSTOP-20*TPER} TO {TSTOP-10*TPER}
