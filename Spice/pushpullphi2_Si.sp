@@ -1,10 +1,15 @@
 
-.lib CoolGaN Transistors 100 V G3 - Spice.lib
+
 .lib LM5114A_TRANS.lib
 .lib SN74LVC1G34.cir
 .lib ST_POWER_SCHOTTKY_V10.LIB
 .lib rb168lam100tf_ltspice.lib
+.lib OptiMOS6_40V_LTSpice.lib
 .lib OptiMOS_OptiMOS5_60V_LTSpice.lib
+.lib OptiMOS5_100V_LTSpice.lib
+.lib OptiMOS5_150V_LTSpice.lib
+
+
 *----------------Values------------------
 *Design Choice
 .param Vdc   = 25
@@ -73,12 +78,13 @@ LMRb N_Bot_Mid Mid_Node {L2}
 CMR Mid_Node 0 {2*C2}
 
 * switches
-Xtop N_Top_Mid Gtop 0 BSC065N06LS5_L1
-Xbottom N_Bot_Mid Gbottom 0 BSC065N06LS5_L1
+;FET Options: BSC059N04LS6_L1, BSC065N06LS5_L1, BSC096N10LS5_L1, BSC160N15NS5SC_L1
+
+Xtop N_Top_Mid Gtop 0 BSC160N15NS5SC_L1
+Xbottom N_Bot_Mid Gbottom 0 BSC160N15NS5SC_L1
 Cpa N_Top_Mid 0 {C1ext}
 Cpb N_Bot_Mid 0 {C1ext}
-DZ1 0  N_Top_Mid  DRB168LAM100TF
-DZ2 0  N_Bot_Mid  DRB168LAM100TF
+
 
 *Load Network
 Cspri N_Top_Mid N_Cs1 {Cs2}
