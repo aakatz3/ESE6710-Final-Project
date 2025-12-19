@@ -4,13 +4,14 @@
 .lib SN74LVC1G34.cir
 .lib ST_POWER_SCHOTTKY_V10.LIB
 .lib rb168lam100tf_ltspice.lib
+.lib rb058lam100_ltspice.lib
 *----------------Values------------------
 *Design Choice
 .param Vdc   = 25
 .param Pout  = 30
 .param fs    = 6.78Meg
 ;.param Qs    = 2
-.param Coss  = 280p ;need to be measured
+.param Coss  = 300p ;need to be measured
 .param m     = 5    ; L1=m*L2
 .param k     = 0.3  ;coil coupling coefficient
 .param CD    = 50p  ;diode junction capacitor
@@ -42,8 +43,8 @@
 
 *-------------transient---------------------
 .param Duty     = 0.3  ;0.3-0.35
-.param NCYCLES = 300
-.param PPS     = 10000
+.param NCYCLES = 1000
+.param PPS     = 1000
 .param TPER    = 1/fs
 .param TSTOP   = NCYCLES*TPER
 .param TSTEP   = TPER/PPS
@@ -69,15 +70,15 @@ LMRa N_Top_Mid Mid_Node {L2}
 * Bottom Branch (Fb, MRb)
 LFb IN N_Bot_Mid {L1}
 LMRb N_Bot_Mid Mid_Node {L2}
-CMR Mid_Node 0 {2*C2}
+CMR Mid_Node 0 {2*C2+50p}
 
 * switches
 Xtop N_Top_Mid Gtop 0 IGB110S101_L1
 Xbottom N_Bot_Mid Gbottom 0 IGB110S101_L1
 Cpa N_Top_Mid 0 {C1ext}
 Cpb N_Bot_Mid 0 {C1ext}
-DZ1 0  N_Top_Mid  DRB168LAM100TF
-DZ2 0  N_Bot_Mid  DRB168LAM100TF
+DZ1 0  N_Top_Mid  DRB058LAM100
+DZ2 0  N_Bot_Mid  DRB058LAM100
 
 *Load Network
 Cspri N_Top_Mid N_Cs1 {Cs2}
