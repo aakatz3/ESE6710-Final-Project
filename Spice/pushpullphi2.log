@@ -1,6 +1,6 @@
 LTspice 24.1.10 for Windows
 Circuit: C:\Users\13285\Desktop\ese6710\final\ESE6710-Final-Project\Spice\pushpullphi2.txt
-Start Time: Thu Dec 18 05:26:57 2025
+Start Time: Tue Dec 23 04:25:10 2025
 Options: itl1=100000  itl2=100000  itl4=100000  method=Trap abstol=1n vntol=1e-3 reltol=0.001 solver=alt  measdgt=99  numdgt=99  gmin=1e-15
 C:\Users\13285\Desktop\ese6710\final\ESE6710-Final-Project\Spice\SN74LVC1G34.cir(141): Note: The caret character means exponentiation in this context. If you wish to silence this warning, use the "**" operator instead or add ".OPTIONS NO_CARET_WARNING" to your netlist.
 + 2*MAXICC*((V(IN,VEE)-VT)/V(VCC,VEE))^2)*(1 + SGN(V(VCC,VEE) - VCC_MIN))*V(VSWITCH,VEE)}
@@ -59,7 +59,7 @@ gmin = 1e-15
 abstol = 1e-09
 volttol = 0.001
 Per .tran options, skipping operating point for transient analysis.
-Total elapsed time: 237.324 seconds.
+Total elapsed time: 93.669 seconds.
 
 Files loaded:
 C:\Users\13285\Desktop\ese6710\final\ESE6710-Final-Project\Spice\pushpullphi2.txt
@@ -75,21 +75,21 @@ show_lmr: L2=5.516432393303157e-07
 show_cmr: C2=2.497253233727097e-10
 show_cpext: C1ext=2.72770001687647e-10
 show_rl: RL_phase=25
-show_l1andl2: Ls2=3.912363399505785e-06
-show_c1andc2: Cs2=1.408450823822083e-10
-pavg: INTEG(I(R_L)*V(Vout))=0.0002339769084004928 FROM 0.000140117994100295 TO 0.0001474926253687316
-pin: INTEG(I(V1)*V(in))=-0.0002441950304002015 FROM 0.000140117994100295 TO 0.0001474926253687316
-eff: (-Pavg/Pin)=0.9581558970182044
-siwtchloss1: INTEG(Ix(xbottom:drain) *V(n_bot_mid))=2.38598160576053e-07 FROM 0.000140117994100295 TO 0.0001474926253687316
-siwtchloss2: INTEG(Ix(xtop:drain) *V(n_top_mid))=2.405145728915993e-07 FROM 0.000140117994100295 TO 0.0001474926253687316
-d1loss: INTEG(I(D1) *(V(Sec_r)-V(vout)))=1.046199450502124e-06 FROM 0.000140117994100295 TO 0.0001474926253687316
-d2loss: INTEG(I(D2) *(-V(Sec_r)))=1.046076403602436e-06 FROM 0.000140117994100295 TO 0.0001474926253687316
-d3loss: INTEG(I(D3) *(V(Sec_bot)-V(vout)))=1.04607640360233e-06 FROM 0.000140117994100295 TO 0.0001474926253687316
-d4loss: INTEG(I(D4) *(-V(Sec_bot)))=1.046199450502117e-06 FROM 0.000140117994100295 TO 0.0001474926253687316
-coil2power: INTEG(I(Rssec) *(-V(Sec_mid)+V(Sec_top)))=2.628240975740097e-06 FROM 0.000140117994100295 TO 0.0001474926253687316
-loss1: (-siwtchloss1/Pin)=0.0009770803287234141
-loss2: (-siwtchloss2/Pin)=0.0009849282047117401
-loss3: (-D1loss /Pin)=0.004284278221336238
-loss4: (-D2loss /Pin)=0.004283774333523752
-loss5: (-D3loss /Pin)=0.004283774333523319
-loss6: (-D4loss /Pin)=0.004284278221336211
+show_l1andl2: Ls2=4.118277262637669e-06
+show_c1andc2: Cs2=1.338028282630978e-10
+pavg: INTEG(I(R_L)*V(Vout))=1.616972809023832e-05 FROM 0 TO 4.424778761061927e-07
+pin: INTEG(I(V1)*V(in))=-1.685346695894857e-05 FROM 0 TO 4.424778761061927e-07
+eff: (-Pavg/Pin)=0.959430372968619
+Measurement "siwtchloss1" FAIL'ed
+Measurement "siwtchloss2" FAIL'ed
+Measurement "d1loss" FAIL'ed
+Measurement "d2loss" FAIL'ed
+Measurement "d3loss" FAIL'ed
+Measurement "d4loss" FAIL'ed
+Measurement "coil2power" FAIL'ed
+Measurement "loss1" FAIL'ed
+Measurement "loss2" FAIL'ed
+Measurement "loss3" FAIL'ed
+Measurement "loss4" FAIL'ed
+Measurement "loss5" FAIL'ed
+Measurement "loss6" FAIL'ed

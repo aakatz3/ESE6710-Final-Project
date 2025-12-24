@@ -1,19 +1,25 @@
 
+.lib rb058lam100_ltspice.lib
 .lib ST_POWER_SCHOTTKY_V10.LIB
 *Vdrv ACs ACn PULSE(-12 12 0 1n 1n 73.8n 147.6n)
-Idrv ACn ACp SIN(0 1.20 6.78Meg)
+Idrv ACn ACp SIN(0 1.22 6.78Meg)
 *Lcomp ACs ACp 0.25u
 *full bridge
+Lcomp Acp Acn 0.1u
 D1 ACp Vout STPS360AF
 D2 0   ACp  STPS360AF
 D3 ACn Vout STPS360AF
 D4 0   ACn  STPS360AF
-
+;Lcomp Acp Acn 1.6u
+;D1 ACp Vout DRB058LAM100
+;D2 0   ACp  DRB058LAM100
+;D3 ACn Vout DRB058LAM100
+;D4 0   ACn  DRB058LAM100
 
 C_O Vout 0 0.1u
-R_L Vout 0 48.7
+R_L Vout 0 61.685
 .param fs=6.78Meg
-.param NCYCLES = 1500
+.param NCYCLES = 300
 .param PPS     = 1600
 .param TPER    = 1/fs
 .param TSTOP   = NCYCLES*TPER

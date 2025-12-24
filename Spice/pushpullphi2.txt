@@ -13,7 +13,7 @@
 ;.param Qs    = 2
 .param Coss  = 300p ;need to be measured
 .param m     = 5    ; L1=m*L2
-.param k     = 0.3  ;coil coupling coefficient
+.param k     = 0.285  ;coil coupling coefficient
 .param CD    = 50p  ;diode junction capacitor
 .param Qcoil = 300  ;coil quality factor
 
@@ -22,7 +22,7 @@
 ;Due to the paper Design Considerations for Multimegahertz Resonant  Inductive Power Transfer
 ;formula(27);the equivalent resistant of the rectifier equals the 2RL calculated at the primary side
 
-.param comL = 2.2u
+.param comL =2.72u;2.43u ;2.15u;2.43u
 .param w   = 2*pi*fs
 .param Pdc_phase = Pout/2                   ;single phi-2 power
 ;.param RL_phase = 0.74 * Vdc**2 / Pdc_phase ;single phi-2 load
@@ -42,16 +42,17 @@
 .param coilesr= (w*Ls2)/Qcoil
 
 *-------------transient---------------------
-.param Duty     = 0.3  ;0.3-0.35
-.param NCYCLES = 1000
-.param PPS     = 1000
-.param TPER    = 1/fs
+.param fstest  = 6.78Meg
+.param Duty    = 0.3  ;0.3-0.35
+.param NCYCLES = 300
+.param PPS     = 3000
+.param TPER    = 1/fstest
 .param TSTOP   = NCYCLES*TPER
 .param TSTEP   = TPER/PPS
-
+.param TMEAS   = (NCYCLES-3)*TPER
 ;.step param Coss 100p 300p 10p
 ;.step param comL 2u 3u 0.1u
-.tran 0 {TSTOP} 0 {TSTEP} uic
+.tran 0 {TSTOP} {TMEAS} {TSTEP} uic
 *.options method=gear abstol=1n vntol=1m reltol=0.01
 .OPTIONS itl1=100000
 .OPTIONS itl2=100000
@@ -70,19 +71,20 @@ LMRa N_Top_Mid Mid_Node {L2}
 * Bottom Branch (Fb, MRb)
 LFb IN N_Bot_Mid {L1}
 LMRb N_Bot_Mid Mid_Node {L2}
-CMR Mid_Node 0 {2*C2+50p}
+CMR Mid_Node 0 {2*C2}
 
 * switches
 Xtop N_Top_Mid Gtop 0 IGB110S101_L1
 Xbottom N_Bot_Mid Gbottom 0 IGB110S101_L1
-Cpa N_Top_Mid 0 {C1ext}
-Cpb N_Bot_Mid 0 {C1ext}
+Cpa N_Top_Mid 0 {C1ext+200p}
+Cpb N_Bot_Mid 0 {C1ext+200p}
 DZ1 0  N_Top_Mid  DRB058LAM100
 DZ2 0  N_Bot_Mid  DRB058LAM100
 
 *Load Network
 Cspri N_Top_Mid N_Cs1 {Cs2}
-Lspri N_Cs1 N_Res {Ls2*(1-k**2)} Rser={coilesr}
+Lspri N_Cs1 N_Res {Ls2*(1-k**2)} Rser=0.02
+
 ;Lspri N_Cs1 N_Res {Ls2}
 ;Lspri N_Load N_Bot_Mid  {Ls2} Rser={coilesr}
 ;Rload N_Res N_Bot_Mid {Rload_tot}
@@ -91,24 +93,29 @@ Lspri N_Cs1 N_Res {Ls2*(1-k**2)} Rser={coilesr}
 Vsen  Sec_topa   Sec_top   0
 E1   Sec_topa  Sec_bot N_Res   N_Bot_Mid  {1/k}
 F1    N_Res   N_Bot_Mid    Vsen      {1/k}
-Rpg N_Res   0     1e15
-Rsg   Sec_topa  0     1e15
+Rpg N_Res   0     1e12
+Rsg   Sec_topa  0     1e12
 
 *secondary side
 Lssec Sec_top   Sec_bot   {Ls2}
-Rssec Sec_top   Sec_mid   {coilesr}
+Rssec Sec_top   Sec_mid   0.02
 Cssec Sec_mid   Sec_r {Cs2}
 ;Rtestload Sec_r   Sec_bot {Rload_tot}
 
 
 *full bridge
 Lcomp Sec_r Sec_bot {comL}
-D1 Sec_r  Vout  STPS360AF
-D2 0   Sec_r    STPS360AF
-D3 Sec_bot Vout STPS360AF
-D4 0   Sec_bot  STPS360AF
+;D1 Sec_r  Vout  STPS360AF
+;D2 0   Sec_r    STPS360AF
+;D3 Sec_bot Vout STPS360AF
+;D4 0   Sec_bot  STPS360AF
+D1 Sec_r  Vout  DRB058LAM100
+D2 0   Sec_r    DRB058LAM100
+D3 Sec_bot Vout DRB058LAM100
+D4 0   Sec_bot  DRB058LAM100
 C_O Vout 0 0.1u
 R_L Vout 0 {(Rload_tot*(pi**2))/8}
+
 
 *Buffer
 Vg1 IN_TOP 0 PULSE(0 5 0 10n 10n {Duty*TPER} {TPER})
@@ -138,22 +145,22 @@ RNBOT GbottomN Gbottom 1.5
 *power
 ;.meas Pavg INTEG I(Rload)*(V(N_Res)-V(N_Bot_Mid)) FROM {TSTOP-20*TPER} TO {TSTOP-10*TPER}
 ;.meas Pavg INTEG I(Rtestload)*(V(Sec_r)-V(Sec_bot)) FROM {TSTOP-20*TPER} TO {TSTOP}
-.meas Pavg INTEG I(R_L)*V(Vout) FROM {TSTOP-50*TPER} TO {TSTOP}
-.meas Pin  INTEG I(V1)*V(in) FROM {TSTOP-50*TPER} TO {TSTOP}
+.meas Pavg INTEG I(R_L)*V(Vout)
+.meas Pin  INTEG I(V1)*V(in)
 .meas eff PARAM (-Pavg/Pin)
-.meas siwtchloss1 INTEG Ix(xbottom:drain) *V(n_bot_mid) FROM {TSTOP-50*TPER} TO {TSTOP}
-.meas siwtchloss2 INTEG Ix(xtop:drain) *V(n_top_mid) FROM {TSTOP-50*TPER} TO {TSTOP}
-.meas D1loss INTEG I(D1) *(V(Sec_r)-V(vout)) FROM {TSTOP-50*TPER} TO {TSTOP}
-.meas D2loss INTEG I(D2) *(-V(Sec_r)) FROM {TSTOP-50*TPER} TO {TSTOP}
-.meas D3loss INTEG I(D3) *(V(Sec_bot)-V(vout)) FROM {TSTOP-50*TPER} TO {TSTOP}
-.meas D4loss INTEG I(D4) *(-V(Sec_bot)) FROM {TSTOP-50*TPER} TO {TSTOP}
-;.meas LFApower INTEG I(LFa) *(V(IN)-V(N_Top_Mid)) FROM {TSTOP-50*TPER} TO {TSTOP}
-;.meas LFBpower INTEG I(LFb) *(V(IN)-V(N_Bot_Mid)) FROM {TSTOP-50*TPER} TO {TSTOP}
-;.meas LMRapower INTEG I(LMRa) *(-V(Mid_Node)+V(N_Top_Mid)) FROM {TSTOP-50*TPER} TO {TSTOP}
-;.meas LMRbpower INTEG I(LMRb) *(-V(Mid_Node)+V(N_Bot_Mid)) FROM {TSTOP-50*TPER} TO {TSTOP}
-;.meas CMRpower INTEG I(CMR) *V(Mid_Node) FROM {TSTOP-50*TPER} TO {TSTOP}
-.meas Coil2power INTEG I(Rssec) *(-V(Sec_mid)+V(Sec_top)) FROM {TSTOP-50*TPER} TO {TSTOP}
-;.meas loadnetworkpower INTEG I(Lspri) *(-V(N_Res)+V(N_Top_Mid)) FROM {TSTOP-50*TPER} TO {TSTOP}
+.meas siwtchloss1 INTEG Ix(xbottom:drain) *V(n_bot_mid) FROM {TSTOP-3*TPER} TO {TSTOP}
+.meas siwtchloss2 INTEG Ix(xtop:drain) *V(n_top_mid) FROM {TSTOP-3*TPER} TO {TSTOP}
+.meas D1loss INTEG I(D1) *(V(Sec_r)-V(vout)) FROM {TSTOP-3*TPER} TO {TSTOP}
+.meas D2loss INTEG I(D2) *(-V(Sec_r)) FROM {TSTOP-3*TPER} TO {TSTOP}
+.meas D3loss INTEG I(D3) *(V(Sec_bot)-V(vout)) FROM {TSTOP-3*TPER} TO {TSTOP}
+.meas D4loss INTEG I(D4) *(-V(Sec_bot)) FROM {TSTOP-3*TPER} TO {TSTOP}
+;.meas LFApower INTEG I(LFa) *(V(IN)-V(N_Top_Mid)) FROM {TSTOP-3*TPER} TO {TSTOP}
+;.meas LFBpower INTEG I(LFb) *(V(IN)-V(N_Bot_Mid)) FROM {TSTOP-3*TPER} TO {TSTOP}
+;.meas LMRapower INTEG I(LMRa) *(-V(Mid_Node)+V(N_Top_Mid)) FROM {TSTOP-3*TPER} TO {TSTOP}
+;.meas LMRbpower INTEG I(LMRb) *(-V(Mid_Node)+V(N_Bot_Mid)) FROM {TSTOP-3*TPER} TO {TSTOP}
+;.meas CMRpower INTEG I(CMR) *V(Mid_Node) FROM {TSTOP-3*TPER} TO {TSTOP}
+.meas Coil2power INTEG I(Rssec) *(-V(Sec_mid)+V(Sec_top)) FROM {TSTOP-3*TPER} TO {TSTOP}
+;.meas loadnetworkpower INTEG I(Lspri) *(-V(N_Res)+V(N_Top_Mid)) FROM {TSTOP-3*TPER} TO {TSTOP}
 
 .meas loss1 PARAM (-siwtchloss1/Pin)
 .meas loss2 PARAM (-siwtchloss2/Pin)
@@ -168,21 +175,21 @@ RNBOT GbottomN Gbottom 1.5
 ;.meas loss11 PARAM (-CMRpower/Pin)
 ;.meas loss12 PARAM (-Coil2power/Pin)
 *Vds
-;.meas Vds1max_static MAX V(N_Bot_Mid) FROM {TSTOP-20*TPER} TO {TSTOP}
-;.meas Vds2max_static MAX V(N_Top_Mid) FROM {TSTOP-20*TPER} TO {TSTOP}
+;.meas Vds1max_static MAX V(N_Bot_Mid) FROM {TSTOP-3*TPER} TO {TSTOP}
+;.meas Vds2max_static MAX V(N_Top_Mid) FROM {TSTOP-3*TPER} TO {TSTOP}
 ;.meas Vds1max_trans MAX V(N_Bot_Mid)
 ;.meas Vds2max_trans MAX V(N_Top_Mid)
 
 *CMR
-;.meas VCMRmax_static MAX V(Mid_Node) FROM {TSTOP-20*TPER} TO {TSTOP}
+;.meas VCMRmax_static MAX V(Mid_Node) FROM {TSTOP-3*TPER} TO {TSTOP}
 ;.meas VCMRmax_trans MAX V(Mid_Node)
 
 *Cs1
-;.meas VCs1max_static MAX V(N_Top_Mid)-V(N_Cs1) FROM {TSTOP-20*TPER} TO {TSTOP}
+;.meas VCs1max_static MAX V(N_Top_Mid)-V(N_Cs1) FROM {TSTOP-3*TPER} TO {TSTOP}
 ;.meas VCs1max_trans MAX V(N_Top_Mid)-V(N_Cs1)
 
 *Cs2
-*.meas VCs2max_static MAX V(Sec_mid )-V(Sec_r) FROM {TSTOP-20*TPER} TO {TSTOP}
+*.meas VCs2max_static MAX V(Sec_mid )-V(Sec_r) FROM {TSTOP-3*TPER} TO {TSTOP}
 *.meas VCs2max_trans MAX V(Sec_mid )-V(Sec_r)
 
 .end
