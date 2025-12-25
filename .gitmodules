@@ -4,3 +4,6 @@
 [submodule "Altium/GaN PPT Inverter"]
 	path = Altium/GaN PPT Inverter
 	url = https://afs-vcs-ue1.365.altium.com/git/EA8D0C0B-FC56-4A30-8360-4E3B944927C5.git
+[submodule "Paper2"]
+	path = Paper2
+	url = https://git@git.overleaf.com/6943cea240478681bb775896
