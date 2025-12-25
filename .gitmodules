@@ -1,3 +1,6 @@
 [submodule "Paper"]
 	path = Paper
 	url = https://github.com/aakatz3/ESE-6710-Final-Project-Paper.git
+[submodule "Altium/GaN PPT Inverter"]
+	path = Altium/GaN PPT Inverter
+	url = https://afs-vcs-ue1.365.altium.com/git/EA8D0C0B-FC56-4A30-8360-4E3B944927C5.git
