@@ -9,7 +9,8 @@ import pandas as pd
 import shutil
 import sys
 import tkinter.messagebox as mb
-
+import tkinter as tk
+from tkinter import ttk
 from sweep import Sweep
 
 # Flags
@@ -25,7 +26,7 @@ DIGITAL_LABELS = ['CRTL_A', 'IN_A', 'CRTL_B', 'IN_B', 'nEN']
 
 # Standard parameters
 ROUT_STD = [50 * np.pi **2 / 8]
-DUTY_STD = [0.35]
+DUTY_STD = [0.32]
 VIN_STD = [25]
 FREQ_STD = [6.78e6]
 
@@ -34,12 +35,24 @@ ROUTS = np.unique(np.append(ROUT_STD, np.arange(50,75,0.5)))
 FREQS = np.unique(np.append(FREQ_STD, np.arange(6.0e6,7.501e6,0.1e6)))
 DUTYS = np.unique(np.append(DUTY_STD, np.arange(0.3,0.4,0.01)))
 
+# VINS = VIN_STD
+# DUTYS = DUTY_STD
+# ROUTS = ROUT_STD
+# FREQS = FREQ_STD
+
 SWEEPS = [
         Sweep('VIN', VINS, 'V'),
         Sweep('ROUT', ROUTS, 'R'),
         Sweep('FREQ', FREQS, 'Hz'),
         Sweep('DUTY', DUTYS)
     ]
+
+
+# Make sure to include these globals
+LOADS = ['50Ω Load', 'RB058LAM100TF', 'STPS360AF']
+FETS = ['IGB070S10S1', 'IGB110S101', 'BSC065N06LS5', 'BSC096N10LS5', 'BSC160N15NS5']
+# slice list to include only ones actually soldered
+FETS = [FETS[1], FETS[3]]
 
 rm = visa.ResourceManager()
 
@@ -56,8 +69,51 @@ MSO7034B = rm.open_resource('USB0::2391::5949::MY50340240::0::INSTR')
 def eprint(*args, **kwargs):
     print(*args, file=sys.stderr, **kwargs)
 
+# Provided by ChatGPT. Not proud of that, but it was the simplest option.
+# Modified by me
+def get_configuration():
+    root = tk.Tk()
+    root.withdraw()
 
-dir = p.Path(f'data/{DATASET}')
+    result = None
+
+    dialog = tk.Toplevel(root)
+    dialog.title("Select an option")
+    dialog.resizable(False, False)
+
+    tk.Label(dialog, text='FET Selection').pack(padx=10, pady=5)
+
+    combo = ttk.Combobox(dialog, values=FETS, state="readonly")
+    combo.pack(padx=10, pady=5)
+
+    tk.Label(dialog, text='Load Selection').pack(padx=10, pady=5)
+
+    combo2 = ttk.Combobox(dialog, values=LOADS, state="readonly")
+    combo2.pack(padx=10, pady=5)
+
+    def submit():
+        if (combo.get() != '') & (combo2.get() != ''):
+            nonlocal result
+            result = (combo.get(), combo2.get())
+            dialog.destroy()
+        else:
+            mb.showerror(
+                message='Please select a value for the FET and the load',
+                parent=dialog)
+
+    ttk.Button(dialog, text="OK", command=submit).pack(pady=10)
+
+    dialog.grab_set()
+    dialog.wait_window()
+
+    root.destroy()
+    if result == None:
+        raise ValueError('No selection made in configuration dialog')
+    return result
+
+
+fet, load = get_configuration()
+dir = p.Path('data', DATASET, fet, load)
 wavepath = p.Path(dir, 'waveform')
 sspath = p.Path(dir, 'scope')
 
@@ -70,8 +126,6 @@ os.makedirs(dir, exist_ok=True)
 
 try:
     
-    
-
     E3631A.read_termination = '\r\n'
     E3634A.read_termination = '\r\n'
     v34401A.read_termination = '\r\n'
@@ -170,7 +224,7 @@ try:
     Idc = EDU34450A.query_ascii_values(':MEASure:PRIMary:CURRent:DC?')
 
     # Scope Setup
-    MSO7034B.write(':SYSTem:PRECision %d' % (1))
+    MSO7034B.write(':SYSTem:PRECision %d' % (0))
     MSO7034B.write(':HARDcopy:INKSaver %d' % (0))
     MSO7034B.write(':ACQuire:RSIGnal %s' % ('IN'))
     MSO7034B.write(':DISPlay:LABel %d' % (1))
@@ -190,7 +244,7 @@ try:
     MSO7034B.write(':DIGital2:LABel "%s"' % DIGITAL_LABELS[2])
     MSO7034B.write(':DIGital3:LABel "%s"' % DIGITAL_LABELS[3])
     MSO7034B.write(':DIGital4:LABel "%s"' % DIGITAL_LABELS[4])
-    MSO7034B.write(':ACQuire:TYPE %s' % ('HRESolution'))
+    MSO7034B.write(':ACQuire:TYPE %s' % ('Normal'))
     MSO7034B.write(':CHANnel1:LABel "%s"' % ANALOG_LABELS[0])
     MSO7034B.write(':CHANnel2:LABel "%s"' % ANALOG_LABELS[1])
     MSO7034B.write(':CHANnel3:LABel "%s"' % ANALOG_LABELS[2])
@@ -318,14 +372,32 @@ try:
 
             vgsa_pp = MSO7034B.query_ascii_values(':MEASure:VPP? %s' % ('CHANNEL1')) [0]
             vgsa_amp = MSO7034B.query_ascii_values(':MEASure:VAMPlitude? %s' % ('CHANNEL1')) [0]
+            vgsa_max = MSO7034B.query_ascii_values(':MEASure:VMAX? %s' % ('CHANNEL1')) [0]
+            vgsa_top = MSO7034B.query_ascii_values(':MEASure:VTOP? %s' % ('CHANNEL1')) [0]
+            vgsa_min = MSO7034B.query_ascii_values(':MEASure:VMIN? %s' % ('CHANNEL1')) [0]
+            vgsa_bot = MSO7034B.query_ascii_values(':MEASure:VBASe? %s' % ('CHANNEL1')) [0]
+            
             vgsb_pp = MSO7034B.query_ascii_values(':MEASure:VPP? %s' % ('CHANNEL2')) [0]
             vgsb_amp = MSO7034B.query_ascii_values(':MEASure:VAMPlitude? %s' % ('CHANNEL2')) [0]
-            vdsa_pp = MSO7034B.query_ascii_values(':MEASure:Vpp? %s' % ('CHANNEL3')) [0]
-            vdsb_pp =  MSO7034B.query_ascii_values(':MEASure:VPP? %s' % ('CHANNEL4')) [0]
-
-
+            vgsb_max = MSO7034B.query_ascii_values(':MEASure:VMAX? %s' % ('CHANNEL2')) [0]
+            vgsb_top = MSO7034B.query_ascii_values(':MEASure:VTOP? %s' % ('CHANNEL2')) [0]
+            vgsb_min = MSO7034B.query_ascii_values(':MEASure:VMIN? %s' % ('CHANNEL2')) [0]
+            vgsb_bot = MSO7034B.query_ascii_values(':MEASure:VBASe? %s' % ('CHANNEL2')) [0]
             
-
+            vdsa_pp = MSO7034B.query_ascii_values(':MEASure:VPP? %s' % ('CHANNEL3')) [0]
+            vdsa_amp = MSO7034B.query_ascii_values(':MEASure:VAMPlitude? %s' % ('CHANNEL3')) [0]
+            vdsa_max = MSO7034B.query_ascii_values(':MEASure:VMAX? %s' % ('CHANNEL3')) [0]
+            vdsa_top = MSO7034B.query_ascii_values(':MEASure:VTOP? %s' % ('CHANNEL3')) [0]
+            vdsa_min = MSO7034B.query_ascii_values(':MEASure:VMIN? %s' % ('CHANNEL3')) [0]
+            vdsa_bot = MSO7034B.query_ascii_values(':MEASure:VBASe? %s' % ('CHANNEL3')) [0]
+            
+            vdsb_pp =  MSO7034B.query_ascii_values(':MEASure:VPP? %s' % ('CHANNEL4')) [0]
+            vdsb_amp =  MSO7034B.query_ascii_values(':MEASure:VAMPlitude? %s' % ('CHANNEL4')) [0]
+            vdsb_max =  MSO7034B.query_ascii_values(':MEASure:VMAX? %s' % ('CHANNEL4')) [0]
+            vdsb_top =  MSO7034B.query_ascii_values(':MEASure:VTOP? %s' % ('CHANNEL4')) [0]
+            vdsb_min =  MSO7034B.query_ascii_values(':MEASure:VMIN? %s' % ('CHANNEL4')) [0]
+            vdsb_bot =  MSO7034B.query_ascii_values(':MEASure:VBASe? %s' % ('CHANNEL4')) [0]
+            
             new_row = {
                 swp.Name: var,
                 'V_IN': vin,
@@ -336,10 +408,28 @@ try:
                 'P_OUT': pout,
                 'V_GS_A_pp': vgsa_pp,
                 'V_GS_A_amp': vgsa_amp,
+                'V_GS_A_max':vgsa_max,
+                'V_GS_A_top':vgsa_top,
+                'V_GS_A_min':vgsa_min,
+                'V_GS_A_bot':vgsa_bot,
                 'V_GS_B_pp': vgsb_pp,
                 'V_GS_B_amp': vgsb_amp,
+                'V_GS_B_max':vgsb_max,
+                'V_GS_B_top':vgsb_top,
+                'V_GS_B_min':vgsb_min,
+                'V_GS_B_bot':vgsb_bot,
                 'V_DS_A_pp': vdsa_pp,
+                'V_DS_A_amp': vdsa_amp,
+                'V_DS_A_max':vdsa_max,
+                'V_DS_A_top':vdsa_top,
+                'V_DS_A_min':vdsa_min,
+                'V_DS_A_bot':vdsa_bot,
                 'V_DS_B_pp': vdsb_pp,
+                'V_DS_B_pp': vdsb_amp,
+                'V_DS_A_max':vdsa_max,
+                'V_DS_A_top':vdsa_top,
+                'V_DS_A_min':vdsa_min,
+                'V_DS_A_bot':vdsa_bot,
             }
             df_measurements = df_measurements._append(new_row, ignore_index=True)
 

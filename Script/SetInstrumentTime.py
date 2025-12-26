@@ -16,8 +16,10 @@ for resource in rm.list_resources():
         print(f'{errors[0]}: {errors[1].strip('\r').strip('\n')}')
         print( inst.query_ascii_values(':SYSTem:DATE?'))
         print( inst.query_ascii_values(':SYSTem:TIME?'))
+        print(f'{errors[0]}: {errors[1].strip('\r').strip('\n')}')
     except Exception as e:
         print(e)
     finally:
-        inst.close()
+        if ('inst' in locals()) or ('inst' in globals()):
+            inst.close()
 rm.close()

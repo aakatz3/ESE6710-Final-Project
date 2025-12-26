@@ -1,3 +1,6 @@
+# Probe notes:
+# CH1, CH3: N2791A
+# CH2, CH4: 1147B
 import pyvisa as visa
 import time
 import datetime as dtime
@@ -9,24 +12,31 @@ import pandas as pd
 import shutil
 import sys
 import tkinter.messagebox as mb
+import tkinter as tk
+from tkinter import ttk
 from sweep import Sweep
 
 # Flags
-PLOT = True
+PLOT = False
 SHOW_PLOT = False
 CLEAR_PREVIOUS = False
-SHORT = True
-LONG = False
 DATASET = 'VinVout'
+SCREENSHOT = True
 
 ANALOG_LABELS = ['VIN', 'IIN', 'VOUT', 'IOUT']
 DIGITAL_LABELS = ['CRTL_A', 'IN_A', 'CRTL_B', 'IN_B', 'nEN']
 
 # Standard parameters
 ROUT_STD = [50 * np.pi **2 / 8]
-DUTY_STD = [0.35]
+DUTY_STD = [0.32]
 VIN_STD = [25]
 FREQ_STD = [6.78e6]
+
+# Make sure to include these globals
+LOADS = ['50Ω Load', 'RB058LAM100TF', 'STPS360AF']
+FETS = ['IGB070S10S1', 'IGB110S101', 'BSC065N06LS5', 'BSC096N10LS5', 'BSC160N15NS5']
+# slice list to include only ones actually soldered
+FETS = [FETS[1], FETS[3]]
 
 VINS = np.unique(np.append(VIN_STD, np.arange(18,28.01, 0.5)))
 ROUTS = np.unique(np.append(ROUT_STD, np.arange(50,75,0.5)))
@@ -56,7 +66,52 @@ def eprint(*args, **kwargs):
     print(*args, file=sys.stderr, **kwargs)
 
 
-dir = p.Path(f'data/{DATASET}')
+
+# Provided by ChatGPT. Not proud of that, but it was the simplest option.
+# Modified by me
+def get_configuration():
+    root = tk.Tk()
+    root.withdraw()
+
+    result = None
+
+    dialog = tk.Toplevel(root)
+    dialog.title("Select an option")
+    dialog.resizable(False, False)
+
+    tk.Label(dialog, text='FET Selection').pack(padx=10, pady=5)
+
+    combo = ttk.Combobox(dialog, values=FETS, state="readonly")
+    combo.pack(padx=10, pady=5)
+
+    tk.Label(dialog, text='Load Selection').pack(padx=10, pady=5)
+
+    combo2 = ttk.Combobox(dialog, values=LOADS, state="readonly")
+    combo2.pack(padx=10, pady=5)
+
+    def submit():
+        if (combo.get() != '') & (combo2.get() != ''):
+            nonlocal result
+            result = (combo.get(), combo2.get())
+            dialog.destroy()
+        else:
+            mb.showerror(
+                message='Please select a value for the FET and the load',
+                parent=dialog)
+
+    ttk.Button(dialog, text="OK", command=submit).pack(pady=10)
+
+    dialog.grab_set()
+    dialog.wait_window()
+
+    root.destroy()
+    if result == None:
+        raise ValueError('No selection made in configuration dialog')
+    return result
+
+
+fet, load = get_configuration()
+dir = p.Path('data', DATASET, fet, load)
 wavepath = p.Path(dir, 'waveform')
 sspath = p.Path(dir, 'scope')
 
@@ -68,8 +123,6 @@ os.makedirs(dir, exist_ok=True)
 
 
 try:
-    
-    
 
     E3631A.read_termination = '\r\n'
     E3634A.read_termination = '\r\n'
@@ -77,7 +130,6 @@ try:
     v34401A.timeout = 30000
     MSO7034B.timeout = 30000
     EDU34450A.timeout = 20000
-
 
     v34401A.write(':SYSTem:REMote')
     E3634A.write(':SYSTem:REMote')
@@ -88,25 +140,26 @@ try:
     E3631A.write(':SYSTem:REMote')
 
     with p.Path(dir, 'instruments.log').open('w', encoding='cp1252') as log:
-            log.write('Timestamp: ' +
-                    dtime.datetime.now().astimezone().isoformat() + os.linesep)
-            print('Instruments Utilized:')
-            for inst in [E3634A, E3631A, v33510B, v34401A, EDU34450A, MSO7034B, EL34143A]:
-                try:
+        log.write('Timestamp: ' +
+                  dtime.datetime.now().astimezone().isoformat() + os.linesep)
+        print('Instruments Utilized:')
+        for inst in [
+                E3634A, E3631A, v33510B, v34401A, EDU34450A, MSO7034B, EL34143A
+        ]:
+            try:
+                inst.write('*CLS')
+                time.sleep(1)
+                idn = inst.query('*IDN?').strip('\r').strip('\n')
+                log.write(idn + os.linesep)
+                print(' - ' + idn)
+                inst.write('*RST')
+                time.sleep(1)
+                inst.query('SYST:ERR?')
+            except BaseException as e:
+                print(e)
+            finally:
+                if inst == MSO7034B:
                     inst.write('*CLS')
-                    time.sleep(1)
-                    idn = inst.query('*IDN?').strip('\r').strip('\n')
-                    log.write(idn + os.linesep)
-                    print(' - ' + idn)
-                    inst.write('*RST')
-                    time.sleep(1)
-                    inst.query('SYST:ERR?')
-                except BaseException as e:
-                    print(e)
-                finally:
-                    if inst == MSO7034B:
-                        inst.write('*CLS')
-
 
     # Wavegen Setup
     v33510B.write(':OUTPut1:LOAD %s' % ('INFinity'))
@@ -133,7 +186,6 @@ try:
     v33510B.write(':SOURce:FREQuency:COUPle:MODE %s' % ('RATio'))
     v33510B.write(':SOURce:FREQuency:COUPle:STATe %d' % (1))
     v33510B.write(':DISPlay:FOCus %s' % ('CH1'))
-    
 
     # Logic Power Setup:
     E3631A.write(':SYSTem:REMote')
@@ -141,25 +193,25 @@ try:
     E3631A.write(':SOURce:CURRent:LEVel:IMMediate:AMPLitude %G' % (0.5))
     E3631A.write(':SOURce:VOLTage:LEVel:IMMediate:AMPLitude %G' % (5.0))
     E3631A.write(':OUTPut:STATe %d' % (1))
-    E3631A.query_ascii_values(':MEASure:VOLTage:DC? %s' % ('P6V')) # To return to live measure
+    E3631A.query_ascii_values(':MEASure:VOLTage:DC? %s' %
+                              ('P6V'))  # To return to live measure
     # E-Load Setup
     EL34143A.write(':SOURce:VOLTage:SENSe:SOURce %s' % ('EXTernal'))
     EL34143A.write(':SOURce:MODE %s' % ('RESistance'))
-    EL34143A.write(':SOURce:RESistance:LEVel:IMMediate:AMPLitude %G' % ROUT_STD[0])
+    EL34143A.write(':SOURce:RESistance:LEVel:IMMediate:AMPLitude %G' %
+                   ROUT_STD[0])
     EL34143A.write(':OUTPut:STATe %d' % (1))
 
-
     # Main Power Setup
-    E3634A.write(':SOURce:VOLTage:RANGe %s' % ('HIGH')) # or LOW
+    E3634A.write(':SOURce:VOLTage:RANGe %s' % ('HIGH'))  # or LOW
     E3634A.write(':SOURce:VOLTage:LEVel:IMMediate:AMPLitude %G' % VIN_STD[0])
     E3634A.write(':SOURce:CURRent:LEVel:IMMediate:AMPLitude %G' % (2.2))
     E3634A.query_ascii_values(':MEASure:VOLTage:DC?')
     E3634A.write(':OUTPut:STATe %d' % (0))
 
- 
-
     # Voltage DMM Setup
-    vin_v = v34401A.query_ascii_values(':MEASure:VOLTage:DC? %s,%s' % ('DEF', 'MIN')) [0]
+    vin_v = v34401A.query_ascii_values(':MEASure:VOLTage:DC? %s,%s' %
+                                       ('DEF', 'MIN'))[0]
 
     # Current DMM Setup
     EDU34450A.write(':SENSe:PRIMary:CURRent:DC:RANGe %s' % ('MAX'))
@@ -203,25 +255,23 @@ try:
     MSO7034B.write(':TRIGger:EDGE:SLOPe %s' % ('POSitive'))
     MSO7034B.write(':TRIGger:SWEep %s' % ('NORMal'))
     MSO7034B.write(':TIMebase:MAIN:SCALe %G NS' % (50.0))
-
-
+    MSO7034B.write(':CHANnel1:PROBe %s' % ('X10'))
+    MSO7034B.write(':CHANnel3:PROBe %s' % ('X10'))
     MSO7034B.write(':CHANnel1:SCALe %G MV' % (500.0))
     MSO7034B.write(':CHANnel2:SCALe %G MV' % (50.0))
     MSO7034B.write(':CHANnel3:SCALe %G MV' % (100.0))
     MSO7034B.write(':CHANnel4:SCALe %G MV' % (50.0))
 
-    offset1 = -0.35
-    offset2 = 0.1
+    offset1 = -0.5
+    offset2 = -0.1
     offset3 = 0.2
     offset4 = 0.1
 
-    
     # General measurements Dataframe:
 
     v33510B.write(':OUTPut1 %d' % (1))
     v33510B.write(':OUTPut2 %d' % (1))
     # E3634A.write(':OUTPut:STATe %d' % (0))
-    
 
     for swp in SWEEPS:
         sweeppath = p.Path(dir, swp.Name)
@@ -232,34 +282,39 @@ try:
         if (PLOT):
             pltpath = p.Path(sweeppath, 'plt')
             os.makedirs(pltpath, exist_ok=True)
-        
+
         # Reset to std
         E3634A.write(':OUTPut:STATe %d' % (0))
         time.sleep(0.2)
-        E3634A.write(':SOURce:VOLTage:LEVel:IMMediate:AMPLitude %G' % VIN_STD[0])
-        EL34143A.write(':SOURce:RESistance:LEVel:IMMediate:AMPLitude %G' % ROUT_STD[0])
-        v33510B.write(':SOURce1:FUNCtion:SQUare:DCYCle %G' % (DUTY_STD[0] * 100))
-        v33510B.write(':SOURce2:FUNCtion:SQUare:DCYCle %G' % (DUTY_STD[0] * 100))
+        E3634A.write(':SOURce:VOLTage:LEVel:IMMediate:AMPLitude %G' %
+                     VIN_STD[0])
+        EL34143A.write(':SOURce:RESistance:LEVel:IMMediate:AMPLitude %G' %
+                       ROUT_STD[0])
+        v33510B.write(':SOURce1:FUNCtion:SQUare:DCYCle %G' %
+                      (DUTY_STD[0] * 100))
+        v33510B.write(':SOURce2:FUNCtion:SQUare:DCYCle %G' %
+                      (DUTY_STD[0] * 100))
         v33510B.write(':SOURce1:FREQuency %G HZ' % (FREQ_STD[0]))
         E3634A.query_ascii_values(':MEASure:VOLTage:DC?')
         E3634A.write(':OUTPut:STATe %d' % (1))
         df_measurements = pd.DataFrame(columns=[
-                swp.Name, 'V_IN', 'I_IN', 'P_IN', 'V_OUT', 'I_OUT', 'P_OUT'
-            ])
-        
+            swp.Name, 'V_IN', 'I_IN', 'P_IN', 'V_OUT', 'I_OUT', 'P_OUT'
+        ])
 
         for var in swp.Points:
             print(f'{swp.Name}:{var}')
-            
 
             filename = f'{var}{swp.Unit}'
 
             match swp.Name:
                 case 'VIN':
-                    E3634A.write(':SOURce:VOLTage:LEVel:IMMediate:AMPLitude %G' % var)
+                    E3634A.write(
+                        ':SOURce:VOLTage:LEVel:IMMediate:AMPLitude %G' % var)
                     E3634A.query_ascii_values(':MEASure:VOLTage:DC?')
                 case 'ROUT':
-                    EL34143A.write(':SOURce:RESistance:LEVel:IMMediate:AMPLitude %G' % var)
+                    EL34143A.write(
+                        ':SOURce:RESistance:LEVel:IMMediate:AMPLitude %G' %
+                        var)
                 case 'FREQ':
                     v33510B.write(':SOURce1:FREQuency %G HZ' % (var))
                 case 'DUTY':
@@ -277,18 +332,16 @@ try:
                 case _:
                     print(swp.Name)
                     raise AssertionError
-                
-            time.sleep(0.5)
+
+            time.sleep(1)
             # General Measurements
             MSO7034B.write(':RUN')
-            
 
-
-            vin = v34401A.query_ascii_values(':MEASure:VOLTage:DC? %s,%s' % ('DEF', 'MIN'))[0]
-            iin = EDU34450A.query_ascii_values(':MEASure:PRIMary:CURRent:DC? %G,%s' % (3.0, 'MIN'))[0]
             vout = EL34143A.query_ascii_values(':MEASure:SCALar:VOLTage:ACDC?')[0]
             iout = EL34143A.query_ascii_values(':MEASure:SCALar:CURRent:ACDC?')[0]
             pout = EL34143A.query_ascii_values(':MEASure:SCALar:POWer:DC?')[0]
+            vin = v34401A.query_ascii_values(':MEASure:VOLTage:DC? %s,%s' % ('DEF', 'MIN'))[0]
+            iin = EDU34450A.query_ascii_values(':MEASure:PRIMary:CURRent:DC? %G,%s' % (3.0, 'MIN'))[0]
 
             # Scope measurements
 
@@ -298,34 +351,46 @@ try:
             MSO7034B.write(':CHANnel4:OFFSet %G' % (offset4 + iout))
             # newoffset1 = vin - 1
             # newoffset2 = iin - 2
-            # newoffset3 = 
-            # while True:
-            #     MSO7034B.write(':MEASure:VPP %s' % ('CHANNEL1'))
-            #     vinpp = MSO7034B.query_ascii_values(':MEASure:VPP? %s' % ('CHANNEL1')) [0]
-            #     if (vinpp < 1e10):
-            #         break
-            #     else:
-            #         newoffset = offset3 + 0.125
-            #         MSO7034B.write(':CHANnel3:OFFSet %G' % (offset3))
+            newoffset3 = offset3
+            while True:
+                MSO7034B.write(':MEASure:VPP %s' % ('CHANNEL3'))
+                voutpp = MSO7034B.query_ascii_values(':MEASure:VPP? %s' %
+                                                     ('CHANNEL3'))[0]
+                voutmax = MSO7034B.query_ascii_values(':MEASure:VMAX? %s' %
+                                                      ('CHANNEL3'))[0]
+                voutmin = MSO7034B.query_ascii_values(':MEASure:VMIN? %s' %
+                                                      ('CHANNEL3'))[0]
+                if (voutmax < 1e10) and (voutmin > -1e10) and (voutmin < 1e10):
+                    break
+                else:
+                    # if (voutmax < 1e10) or (voutmin ):
+                    if newoffset3 < 150:
+                        newoffset3 = newoffset3 + 0.125
+                    else:
+                        vout = EL34143A.query_ascii_values(':MEASure:SCALar:VOLTage:ACDC?')[0]
+                        newoffset3 = -10
+                    print(newoffset3)
+                    MSO7034B.write(':CHANnel3:OFFSet %G' % (newoffset3 + vout))
             MSO7034B.write(':MEASure:CLEar')
             MSO7034B.write(':MEASure:VPP %s' % ('CHANNEL1'))
             MSO7034B.write(':MEASure:VPP %s' % ('CHANNEL2'))
             MSO7034B.write(':MEASure:VPP %s' % ('CHANNEL3'))
             MSO7034B.write(':MEASure:VPP %s' % ('CHANNEL4'))
 
-            vinpp = MSO7034B.query_ascii_values(':MEASure:VPP? %s' % ('CHANNEL1')) [0]
-            iinpp = MSO7034B.query_ascii_values(':MEASure:VPP? %s' % ('CHANNEL2')) [0]
-            voutpp = MSO7034B.query_ascii_values(':MEASure:VPP? %s' % ('CHANNEL3')) [0]
-            ioutpp = MSO7034B.query_ascii_values(':MEASure:VPP? %s' % ('CHANNEL4')) [0]
-
-
-            
+            vinpp = MSO7034B.query_ascii_values(':MEASure:VPP? %s' %
+                                                ('CHANNEL1'))[0]
+            iinpp = MSO7034B.query_ascii_values(':MEASure:VPP? %s' %
+                                                ('CHANNEL2'))[0]
+            # voutpp = MSO7034B.query_ascii_values(':MEASure:VPP? %s' %
+            #                                      ('CHANNEL3'))[0]
+            ioutpp = MSO7034B.query_ascii_values(':MEASure:VPP? %s' %
+                                                 ('CHANNEL4'))[0]
 
             new_row = {
                 swp.Name: var,
                 'V_IN': vin,
                 'I_IN': iin,
-                'P_IN': vin*iin,
+                'P_IN': vin * iin,
                 'V_OUT': vout,
                 'I_OUT': iout,
                 'P_OUT': pout,
@@ -334,7 +399,8 @@ try:
                 'V_OUT_PP': voutpp,
                 'I_OUT_PP': ioutpp
             }
-            df_measurements = df_measurements._append(new_row, ignore_index=True)
+            df_measurements = df_measurements._append(new_row,
+                                                      ignore_index=True)
 
             # Scope captures
             MSO7034B.write(':STOP')
@@ -350,54 +416,59 @@ try:
                 xinc, xorg, xref, yinc, yorg, yref = [
                     float(i) for i in r.split(',')[4:]
                 ]
-                binary_block_data = MSO7034B.query_binary_values(':WAVeform:DATA?',
-                                                                datatype='H')
+                binary_block_data = MSO7034B.query_binary_values(
+                    ':WAVeform:DATA?', datatype='H')
                 acq_data = np.array(binary_block_data)
                 scaled_data = (acq_data - yref) * yinc + yorg
                 if c == 0:
                     times = np.arange(0, xinc * len(acq_data), xinc)
                     dat_tmp = {
-                        "Time (s)": times[0:min(len(times), len(scaled_data))],
-                        ANALOG_LABELS[c]: scaled_data[0:min(len(times), len(scaled_data))]
+                        "Time (s)":
+                        times[0:min(len(times), len(scaled_data))],
+                        ANALOG_LABELS[c]:
+                        scaled_data[0:min(len(times), len(scaled_data))]
                     }
                     dframe = pd.DataFrame(dat_tmp)
                 else:
-                    dframe.insert(c + 1, ANALOG_LABELS[c],
-                                scaled_data[0:min(len(times), len(scaled_data))])
+                    dframe.insert(
+                        c + 1, ANALOG_LABELS[c],
+                        scaled_data[0:min(len(times), len(scaled_data))])
                 if PLOT:
                     plt.plot(times[0:min(len(times), len(scaled_data))],
-                            scaled_data[0:min(len(times), len(scaled_data))])
+                             scaled_data[0:min(len(times), len(scaled_data))])
             if PLOT:
-                    if SHOW_PLOT:
-                        plt.show()
-                    plt.savefig(p.Path(pltpath, f'{filename}.svg'), format='svg')
-                    plt.close()
+                if SHOW_PLOT:
+                    plt.show()
+                plt.savefig(p.Path(pltpath, f'{filename}.svg'), format='svg')
+                plt.close()
             dframe.to_csv(p.Path(wavepath, f'{filename}_MSO7034B.csv'),
-                        index=False)
-            
+                          index=False)
 
+            if SCREENSHOT:
+                # Screenshot
+                MSO7034B.write(':SINGLE')
+                time.sleep(3)
 
-            # Screenshot
-            MSO7034B.write(':SINGLE')
-            time.sleep(3)
+                succeed = False
+                while not succeed:
+                    try:
+                        time.sleep(0.25)
+                        img = MSO7034B.query_binary_values(
+                            ':DISPlay:DATA? %s,%s,%s' %
+                            ('PNG', 'SCReen', 'COLor'),
+                            datatype='c')
+                        MSO7034B.write(':STOP')
 
-            succeed = False
-            while not succeed:
-                try:
-                    time.sleep(0.25)
-                    img = MSO7034B.query_binary_values(':DISPlay:DATA? %s,%s,%s' %
-                                                        ('PNG', 'SCReen', 'COLor'),
-                                                        datatype='c')
-                    MSO7034B.write(':STOP')
-                    
-                    with open(p.Path(sspath, f'{filename}_MSO7034B.png'), 'wb') as f:
-                        for b in img:
-                            f.write(b)
-                    succeed = True
-                except BaseException as e:
-                    print(e)
-                    time.sleep(10)
-        df_measurements.to_csv(p.Path(sweeppath, 'measurements.csv'), index=False)
+                        with open(p.Path(sspath, f'{filename}_MSO7034B.png'),
+                                  'wb') as f:
+                            for b in img:
+                                f.write(b)
+                        succeed = True
+                    except BaseException as e:
+                        print(e)
+                        time.sleep(10)
+        df_measurements.to_csv(p.Path(sweeppath, 'measurements.csv'),
+                               index=False)
 
 except BaseException as e:
     print(e)
@@ -415,5 +486,3 @@ finally:
     EL34143A.close()
     MSO7034B.close()
     rm.close()
-
-
