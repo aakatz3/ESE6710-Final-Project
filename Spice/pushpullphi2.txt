@@ -50,10 +50,14 @@
 .param TSTOP   = NCYCLES*TPER
 .param TSTEP   = TPER/PPS
 .param TMEAS   = (NCYCLES-10)*TPER
+.param Ro      = 61.685
 ;.step param Coss 100p 300p 10p
 ;.step param comL 2u 3u 0.1u
+;.step param Vdc 18 28 0.5
 ;.step param Duty 0.3 0.4 0.01
-.step param fstest list 6000000 6100000 6200000 6300000 6400000 6500000 6600000 6700000 6780000 6800000 6900000 7000000 7100000 7200000 7300000 7400000 7500000
+;.step param Ro list 50 50.5 51 51.5 52 52.5 53 53.5 54 54.5 55 55.5 56 56.5 57 57.5 58 58.5 59 59.5 60 60.5 61 61.5 61.68502750680849 62 62.5 63 63.5 64 64.5 65 65.5 66 66.5 67 67.5 68 68.5 69 69.5 70 70.5 71 71.5 72 72.5 73 73.5 74 74.5
+.step param Ro list 40 60 100
+;.step param fstest list 6000000 6100000 6200000 6300000 6400000 6500000 6600000 6700000 6780000 6800000 6900000 7000000 7100000 7200000 7300000 7400000 7500000
 .tran 0 {TSTOP} {TMEAS} {TSTEP} uic
 *.options method=gear abstol=1n vntol=1m reltol=0.01
 .OPTIONS itl1=100000
@@ -89,7 +93,7 @@ C11 N_Top_Mid N_Cs1 275.7p
 ;Lspri N_Cs1 N_Res 4.1624u Rser=0.02
 
 Lspri N_Cs1 N_trans 3.8243u Rser=0.02
-;Lspri N_Cs1 N_Cs2 4.1624u Rser=0.02
+;Lspri N_Cs1 N_Res 4.1624u Rser=0.02
 C12 N_Cs2 N_Bot_Mid 275p
 ;Lspri N_Cs1 N_Res {Ls2}
 ;Lspri N_Load N_Bot_Mid  {Ls2} Rser={coilesr}
@@ -105,7 +109,6 @@ Rsg   Sec_topa  0     1e12
 *secondary side
 Lssec Sec_top   Sec_bot   4.1148u;{Ls2}
 Rssec Sec_top   Sec_C21   0.02
-;Lssec Sec_C21 Sec_bot 4.1148u
 C21 Sec_C21 Sec_Res 275p
 C22 Sec_C22 Sec_bot 275.3p
 
@@ -124,7 +127,7 @@ D4 0   Sec_C22  STPS360AF
 ;D3 Sec_bot Vout DRB058LAM100
 ;D4 0   Sec_bot  DRB058LAM100
 C_O Vout 0 0.1u
-R_L Vout 0 61.685;{(Rload_tot*(pi**2))/8}
+R_L Vout 0 {Ro};{(Rload_tot*(pi**2))/8}
 
 *Buffer
 Vg1 IN_TOP 0 PULSE(0 5 0 10n 10n {Duty*TPER} {TPER})
@@ -158,8 +161,8 @@ RNBOT GbottomN Gbottom 1.5
 .meas Vin AVG  V(in)
 .meas Iout AVG  I(R_L)
 .meas Vout AVG  V(Vout)
-.meas Vds1PP PP V(n_top_mid)
-.meas Vds2PP PP V(n_bot_mid)
+.meas Vds1max MAX V(n_top_mid)
+.meas Vds2max MAX V(n_bot_mid)
 
 .meas tran t1 WHEN V(Mid_Node)=0 RISE=2
 .meas tran t2 WHEN V(Mid_Node)=0 RISE=3
