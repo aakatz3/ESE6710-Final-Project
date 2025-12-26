@@ -7,3 +7,6 @@
 [submodule "Paper2"]
 	path = Paper2
 	url = https://git@git.overleaf.com/6943cea240478681bb775896
+[submodule "Altium/Coil Interface Board"]
+	path = Altium/Coil Interface Board
+	url = https://afs-vcs-ue1.365.altium.com/git/7BF7D7C3-856B-4F23-BFD8-6C8A5E9D09CF.git
