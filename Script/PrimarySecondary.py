@@ -493,6 +493,10 @@ try:
                     print(newoffset8)
                     MSO6014A.write(':CHANnel4:OFFSet %G' % (newoffset8 + vout))
             time.sleep(1)
+
+            if load == '50Ω Load':
+                MSO6014A.write(':CHANnel4:DISPlay %d' % (0))
+
             MSO7034B.write(':STOP')
             MSO6014A.write(':STOP')
             if PLOT:
@@ -593,7 +597,11 @@ try:
             
             # Screenshot
             MSO6014A.write(':RUN')
+            if load == '50Ω Load':
+                MSO7034B.write(':CHANnel4:DISPlay %d' % (0))
             time.sleep(1)
+
+
 
             succeed = False
             while not succeed:
