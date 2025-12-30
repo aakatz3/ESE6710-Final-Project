@@ -15,6 +15,7 @@ import tkinter.messagebox as mb
 import tkinter as tk
 from tkinter import ttk
 from sweep import Sweep
+from playsound import playsound as play
 
 # Flags
 PLOT = False
@@ -54,6 +55,7 @@ rm = visa.ResourceManager()
 
 
 # Instruments
+v33521A = rm.open_resource('USB0::2391::5639::MY50000944::0::INSTR')
 v33510B = rm.open_resource('USB0::0x0957::0x2607::MY62003856::0::INSTR')
 v34401A = rm.open_resource('ASRL13::INSTR', write_termination = '\r\n')
 E3631A = rm.open_resource('ASRL12::INSTR', write_termination = '\r\n')
@@ -140,11 +142,10 @@ try:
     E3631A.write(':SYSTem:REMote')
 
     with p.Path(dir, 'instruments.log').open('w', encoding='cp1252') as log:
-        log.write('Timestamp: ' +
-                  dtime.datetime.now().astimezone().isoformat() + os.linesep)
+        log.write('Timestamp: ' + dtime.datetime.now().astimezone().isoformat() + os.linesep)
         print('Instruments Utilized:')
         for inst in [
-                E3634A, E3631A, v33510B, v34401A, EDU34450A, MSO7034B, EL34143A
+                E3634A, E3631A, v33521A, v33510B, v34401A, EDU34450A, MSO7034B, EL34143A
         ]:
             try:
                 inst.write('*CLS')
@@ -161,7 +162,21 @@ try:
                 if inst == MSO7034B:
                     inst.write('*CLS')
 
+    # Setup reference
+    v33521A.write(':OUTPut:LOAD %s' % ('INFinity'))
+    v33521A.write(':SOURce:APPLy:SINusoid %G MHZ,%G VPP,%G' % (10.0, 3.0, 0.0))
+
+    # Wait for PLLs to lock
+    time.sleep(5)
+
+     # E-Load Setup
+    EL34143A.write(':SOURce:VOLTage:SENSe:SOURce %s' % ('EXTernal'))
+    EL34143A.write(':SOURce:MODE %s' % ('RESistance'))
+    EL34143A.write(':SOURce:RESistance:LEVel:IMMediate:AMPLitude %G' % ROUT_STD[0])
+    EL34143A.write(':OUTPut:STATe %d' % (1))
+
     # Wavegen Setup
+    v33510B.write(':SOURce:ROSCillator:SOURce %s' % ('EXTernal')) # Ext reference
     v33510B.write(':OUTPut1:LOAD %s' % ('INFinity'))
     v33510B.write(':OUTPut2:LOAD %s' % ('INFinity'))
     v33510B.write(':DISPlay:VIEW %s' % ('DUAL'))
@@ -193,14 +208,7 @@ try:
     E3631A.write(':SOURce:CURRent:LEVel:IMMediate:AMPLitude %G' % (0.5))
     E3631A.write(':SOURce:VOLTage:LEVel:IMMediate:AMPLitude %G' % (5.0))
     E3631A.write(':OUTPut:STATe %d' % (1))
-    E3631A.query_ascii_values(':MEASure:VOLTage:DC? %s' %
-                              ('P6V'))  # To return to live measure
-    # E-Load Setup
-    EL34143A.write(':SOURce:VOLTage:SENSe:SOURce %s' % ('EXTernal'))
-    EL34143A.write(':SOURce:MODE %s' % ('RESistance'))
-    EL34143A.write(':SOURce:RESistance:LEVel:IMMediate:AMPLitude %G' %
-                   ROUT_STD[0])
-    EL34143A.write(':OUTPut:STATe %d' % (1))
+    E3631A.query_ascii_values(':MEASure:VOLTage:DC? %s' % ('P6V'))  # To return to live measure
 
     # Main Power Setup
     E3634A.write(':SOURce:VOLTage:RANGe %s' % ('HIGH'))  # or LOW
@@ -259,12 +267,12 @@ try:
     MSO7034B.write(':CHANnel3:PROBe %s' % ('X10'))
     MSO7034B.write(':CHANnel1:SCALe %G MV' % (500.0))
     MSO7034B.write(':CHANnel2:SCALe %G MV' % (50.0))
-    MSO7034B.write(':CHANnel3:SCALe %G MV' % (100.0))
+    MSO7034B.write(':CHANnel3:SCALe %G MV' % (500.0))
     MSO7034B.write(':CHANnel4:SCALe %G MV' % (50.0))
 
     offset1 = -0.5
     offset2 = -0.1
-    offset3 = 0.2
+    offset3 = 0.1
     offset4 = 0.1
 
     # General measurements Dataframe:
@@ -336,6 +344,7 @@ try:
             time.sleep(1)
             # General Measurements
             MSO7034B.write(':RUN')
+            time.sleep(0.5)
 
             vout = EL34143A.query_ascii_values(':MEASure:SCALar:VOLTage:ACDC?')[0]
             iout = EL34143A.query_ascii_values(':MEASure:SCALar:CURRent:ACDC?')[0]
@@ -469,9 +478,10 @@ try:
                         time.sleep(10)
         df_measurements.to_csv(p.Path(sweeppath, 'measurements.csv'),
                                index=False)
-
+    play(p.Path('sound','Success.wav'))
 except BaseException as e:
     print(e)
+    play(p.Path('sound','Error.wav'))
 finally:
     E3634A.write(':OUTPut:STATe %d' % (0))
     E3631A.write(':OUTPut:STATe %d' % (0))

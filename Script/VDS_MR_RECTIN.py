@@ -15,6 +15,7 @@ import tkinter.messagebox as mb
 import tkinter as tk
 from tkinter import ttk
 from sweep import Sweep
+from playsound import playsound as play
 
 # Flags
 PLOT = True
@@ -319,9 +320,17 @@ try:
                     E3634A.write(':SOURce:VOLTage:LEVel:IMMediate:AMPLitude %G' % var)
                     E3634A.query_ascii_values(':MEASure:VOLTage:DC?')
                 case 'ROUT':
+                    E3634A.write(':OUTPut:STATe %d' % (0))
+                    time.sleep(0.2)
                     EL34143A.write(':SOURce:RESistance:LEVel:IMMediate:AMPLitude %G' % var)
+                    time.sleep(0.2)
+                    E3634A.write(':OUTPut:STATe %d' % (1))
                 case 'FREQ':
+                    E3634A.write(':OUTPut:STATe %d' % (0))
+                    time.sleep(0.2)
                     v33510B.write(':SOURce1:FREQuency %G HZ' % (var))
+                    time.sleep(0.2)
+                    E3634A.write(':OUTPut:STATe %d' % (1))
                 case 'DUTY':
                     v33510B.write(':OUTPut1 %d' % (0))
                     v33510B.write(':OUTPut2 %d' % (0))
@@ -338,6 +347,9 @@ try:
                     print(swp.Name)
                     raise AssertionError
                 
+            time.sleep(0.5)
+            E3634A.write(':SOURce:VOLTage:PROTection:CLEar')
+            # E3634A.write(':SOURce:VOLTage:PROTection:STATe %d' % (0))
             time.sleep(0.5)
             # General Measurements
             MSO7034B.write(':RUN')
@@ -463,9 +475,10 @@ try:
                     print(e)
                     time.sleep(10)
         df_measurements.to_csv(p.Path(sweeppath, 'measurements.csv'), index=False)
-
+    play(p.Path('sound','Success.wav'))
 except BaseException as e:
     print(e)
+    play(p.Path('sound','Error.wav'))
 finally:
     E3634A.write(':OUTPut:STATe %d' % (0))
     E3631A.write(':OUTPut:STATe %d' % (0))

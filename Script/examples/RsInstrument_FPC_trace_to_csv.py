@@ -35,7 +35,7 @@ recdur = 10  # Time in seconds to find max hold peaks
 filename = 'trace.csv'#r'C:\test\TraceFile.CSV'
 
 # Define the device handle
-instrument = RsInstrument(resource, reset=True, id_query=True, options="SelectVisa='rs'")
+FPC1000 = RsInstrument(resource, reset=True, id_query=True, options="SelectVisa='rs'")
 '''
 - option SelectVisa:
     - 'SelectVisa = 'socket' - uses no VISA implementation for socket connections 
@@ -53,21 +53,21 @@ instrument = RsInstrument(resource, reset=True, id_query=True, options="SelectVi
 def com_prep():
     """Preparation of the communication (termination, timeout, etc...)"""
 
-    print(f'VISA Manufacturer: {instrument.visa_manufacturer}')  # Confirm VISA package to be chosen
-    instrument.visa_timeout = 5000  # Timeout in ms for VISA Read Operations
-    instrument.opc_timeout = 3000  # Timeout in ms for opc-synchronised operations
-    instrument.instrument_status_checking = True  # Error check after each command
-    instrument.clear_status()  # Clear status register
+    print(f'VISA Manufacturer: {FPC1000.visa_manufacturer}')  # Confirm VISA package to be chosen
+    FPC1000.visa_timeout = 5000  # Timeout in ms for VISA Read Operations
+    FPC1000.opc_timeout = 3000  # Timeout in ms for opc-synchronised operations
+    FPC1000.instrument_status_checking = True  # Error check after each command
+    FPC1000.clear_status()  # Clear status register
 
 
 def close():
     """Close the VISA session"""
-    instrument.close()
+    FPC1000.close()
 
 
 def com_check():
     """Check communication with the device by requesting it's ID"""
-    idn_response = instrument.query_str('*IDN?')
+    idn_response = FPC1000.query_str('*IDN?')
     print('Hello, I am ' + idn_response)
 
 
@@ -79,29 +79,29 @@ def meas_prep():
     - Set Trace to Max Hold (and Positive Peak automatically)
     """
 
-    instrument.write_str_with_opc('FREQuency:CENTer 2450e6')  # Center Frequency to 2450 MHz
-    instrument.write_str_with_opc('FREQuency:SPAN 100e6')  # SPAN is 100 MHz now
-    instrument.write_str_with_opc('DISPlay:TRACe1:MODE MAXHold')  # Trace to Max Hold
+    FPC1000.write_str_with_opc('FREQuency:CENTer 2450e6')  # Center Frequency to 2450 MHz
+    FPC1000.write_str_with_opc('FREQuency:SPAN 100e6')  # SPAN is 100 MHz now
+    FPC1000.write_str_with_opc('DISPlay:TRACe1:MODE MAXHold')  # Trace to Max Hold
 
 
 def trace_get():
     """Initialize continuous measurement, stop it after the desired time, query trace data"""
 
-    instrument.write_str_with_opc('INITiate:CONTinuous ON')  # Continuous measurement on trace 1 ON
+    FPC1000.write_str_with_opc('INITiate:CONTinuous ON')  # Continuous measurement on trace 1 ON
     print('Please wait for maxima to be found...')
     sleep(int(recdur))  # Wait for preset record time
-    instrument.write('DISPlay:TRACe1:MODE VIEW')  # Continuous measurement on trace 1 OFF
-    instrument.query_opc()
+    FPC1000.write('DISPlay:TRACe1:MODE VIEW')  # Continuous measurement on trace 1 OFF
+    FPC1000.query_opc()
     sleep(0.5)
 
     # Get y data (amplitude for each point)
-    trace_data = instrument.query('Trace:DATA? TRACe1')  # Read y data of trace 1
+    trace_data = FPC1000.query('Trace:DATA? TRACe1')  # Read y data of trace 1
     csv_trace_data = trace_data.split(",")  # Slice the amplitude list
     trace_len = len(csv_trace_data)  # Get number of elements of this list
 
     # Reconstruct x data (frequency for each point) as it can not be directly read from the instrument
-    start_freq = instrument.query_float('FREQuency:STARt?')
-    span = instrument.query_float('FREQuency:SPAN?')
+    start_freq = FPC1000.query_float('FREQuency:STARt?')
+    span = FPC1000.query_float('FREQuency:SPAN?')
     step_size = span / (trace_len-1)
 
     # Now write values into file
@@ -127,7 +127,7 @@ def trace_get():
 com_prep()
 com_check()
 meas_prep()
-instrument.write_str_with_opc('FORMat:DATA ASCii')
+FPC1000.write_str_with_opc('FORMat:DATA ASCii')
 trace_get()
 close()
 

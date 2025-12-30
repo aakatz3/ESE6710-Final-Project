@@ -1,3 +1,4 @@
+# VGS and VDS, Open Primary or loaded
 import pyvisa as visa
 import time
 import datetime as dtime
@@ -12,6 +13,7 @@ import tkinter.messagebox as mb
 import tkinter as tk
 from tkinter import ttk
 from sweep import Sweep
+from playsound import playsound as play
 
 # Flags
 PLOT = True
@@ -49,7 +51,7 @@ SWEEPS = [
 
 
 # Make sure to include these globals
-LOADS = ['50Ω Load', 'RB058LAM100TF', 'STPS360AF']
+LOADS = ['50Ω Load', 'RB058LAM100TF', 'STPS360AF', 'Open Primary']
 FETS = ['IGB070S10S1', 'IGB110S101', 'BSC065N06LS5', 'BSC096N10LS5', 'BSC160N15NS5']
 # slice list to include only ones actually soldered
 FETS = [FETS[1], FETS[3]]
@@ -113,6 +115,14 @@ def get_configuration():
 
 
 fet, load = get_configuration()
+
+if (load == '50Ω Load') or (load == 'Open Primary'):
+    SWEEPS[1] = Sweep('ROUT', ROUT_STD, 'R')
+if load == 'Open Primary':
+    SWEEPS[0] = Sweep('VIN', VIN_STD, 'V')
+    SWEEPS[2] = Sweep('FREQ', FREQ_STD, 'Hz')
+    SWEEPS[3] = Sweep('DUTY', DUTY_STD)
+
 dir = p.Path('data', DATASET, fet, load)
 wavepath = p.Path(dir, 'waveform')
 sspath = p.Path(dir, 'scope')
@@ -339,6 +349,8 @@ try:
                     raise AssertionError
                 
             time.sleep(0.5)
+            E3634A.write(':SOURce:VOLTage:PROTection:CLEar')
+            time.sleep(0.5)
             # General Measurements
             MSO7034B.write(':RUN')
             
@@ -495,9 +507,10 @@ try:
                     print(e)
                     time.sleep(10)
         df_measurements.to_csv(p.Path(sweeppath, 'measurements.csv'), index=False)
-
+    play(p.Path('sound','Success.wav'))
 except BaseException as e:
     print(e)
+    play(p.Path('sound','Error.wav'))
 finally:
     E3634A.write(':OUTPut:STATe %d' % (0))
     E3631A.write(':OUTPut:STATe %d' % (0))

@@ -29,8 +29,8 @@ from time import sleep
 
 # Define variables
 # resource = 'TCPIP::10.205.0.41::INSTR'  # VISA resource string for the device
-# resource = 'TCPIP::172.16.10.10::INSTR'  # Original resource string when using USB connection
-resource = 'USB0::0x0AAD::0x01BB::101228::2::INSTR'  # Original resource string when using USB connection
+resource = 'TCPIP::172.16.10.10::INSTR'  # Original resource string when using USB connection
+# resource = 'USB0::0x0AAD::0x01BB::101228::2::INSTR'  # Original resource string when using USB connection
 recdur = 10  # Time in seconds to find max hold peaks
 inst_filename = '"\Public\Screen Shots\screenshot.png"'
 pc_filename = 'FPC_ScreenShot.PNG'#r'C:\test\FSH_ScreenShot.PNG'

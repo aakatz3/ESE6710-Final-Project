@@ -50,10 +50,10 @@ rm = visa.ResourceManager()
 # Instruments
 v33521A = rm.open_resource('USB0::2391::5639::MY50000944::0::INSTR')
 v33510B = rm.open_resource('USB0::0x0957::0x2607::MY62003856::0::INSTR')
-v34401A = rm.open_resource('ASRL13::INSTR', write_termination = '\r\n')
+# v34401A = rm.open_resource('ASRL13::INSTR', write_termination = '\r\n')
 E3631A = rm.open_resource('ASRL12::INSTR', write_termination = '\r\n')
 E3634A = rm.open_resource('ASRL14::INSTR', write_termination = '\r\n')
-EDU34450A = rm.open_resource('USB0::0x2A8D::0x8E01::CN62180094::0::INSTR')
+# EDU34450A = rm.open_resource('USB0::0x2A8D::0x8E01::CN62180094::0::INSTR')
 EL34143A = rm.open_resource('USB0::0x2A8D::0x3802::MY61001508::0::INSTR')
 MSO7034B = rm.open_resource('USB0::2391::5949::MY50340240::0::INSTR')
 MSO6014A = rm.open_resource('USB0::0x0957::0x1724::MY45007084::0::INSTR')
@@ -130,14 +130,14 @@ try:
 
     E3631A.read_termination = '\r\n'
     E3634A.read_termination = '\r\n'
-    v34401A.read_termination = '\r\n'
-    v34401A.timeout = 30000
+    # v34401A.read_termination = '\r\n'
+    # v34401A.timeout = 30000
     MSO7034B.timeout = 30000
     MSO6014A.timeout = 30000
-    EDU34450A.timeout = 20000
+    # EDU34450A.timeout = 20000
 
 
-    v34401A.write(':SYSTem:REMote')
+    # v34401A.write(':SYSTem:REMote')
     E3634A.write(':SYSTem:REMote')
     E3634A.write(':OUTPut:STATe %d' % (0))
     v33510B.write(':OUTPut1 %d' % (0))
@@ -149,7 +149,7 @@ try:
             log.write('Timestamp: ' +
                     dtime.datetime.now().astimezone().isoformat() + os.linesep)
             print('Instruments Utilized:')
-            for inst in [E3634A, E3631A, v33521A, v33510B, v34401A, EDU34450A, MSO7034B, MSO6014A, EL34143A]:
+            for inst in [E3634A, E3631A, v33521A, v33510B, MSO7034B, MSO6014A, EL34143A]: #, v34401A, EDU34450A]:
                 try:
                     inst.write('*CLS')
                     time.sleep(1)
@@ -171,7 +171,7 @@ try:
                         log.write('REPORTED PROBES: ' + ", ".join(probes))
 
     # Set clock
-    for inst in [v33510B, v33521A, EDU34450A, MSO7034B, EL34143A]:
+    for inst in [v33510B, v33521A, MSO7034B, EL34143A]:#, EDU34450A]:
         time_now = dtime.datetime.now().astimezone()
         inst.write(':SYSTem:TIME %d,%d,%d' % (time_now.hour, time_now.minute, time_now.second))
         inst.write(':SYSTem:DATE %d,%d,%d' % (time_now.year, time_now.month, time_now.day))
@@ -239,15 +239,15 @@ try:
 
  
 
-    # Voltage DMM Setup
-    vin_v = v34401A.query_ascii_values(':MEASure:VOLTage:DC? %s,%s' % ('DEF', 'MIN')) [0]
+    # # Voltage DMM Setup
+    # vin_v = v34401A.query_ascii_values(':MEASure:VOLTage:DC? %s,%s' % ('DEF', 'MIN')) [0]
 
-    # Current DMM Setup
-    EDU34450A.write(':SENSe:PRIMary:CURRent:DC:RANGe %s' % ('MAX'))
-    EDU34450A.write(':SENSe:PRIMary:CURRent:DC:RESolution %s' % ('MIN'))
-    EDU34450A.write(':FORMat:OUTPut %d' % (1))
+    # # Current DMM Setup
+    # EDU34450A.write(':SENSe:PRIMary:CURRent:DC:RANGe %s' % ('MAX'))
+    # EDU34450A.write(':SENSe:PRIMary:CURRent:DC:RESolution %s' % ('MIN'))
+    # EDU34450A.write(':FORMat:OUTPut %d' % (1))
 
-    Idc = EDU34450A.query_ascii_values(':MEASure:PRIMary:CURRent:DC?')
+    # Idc = EDU34450A.query_ascii_values(':MEASure:PRIMary:CURRent:DC?')
 
     # Scope Setup
     MSO7034B.write(':SYSTem:PRECision %d' % (1))
@@ -598,7 +598,7 @@ try:
             # Screenshot
             MSO6014A.write(':RUN')
             if load == '50Ω Load':
-                MSO7034B.write(':CHANnel4:DISPlay %d' % (0))
+                MSO6014A.write(':CHANnel4:DISPlay %d' % (0))
             time.sleep(1)
 
 
@@ -629,15 +629,15 @@ finally:
     v33510B.write(':OUTPut1 %d' % (0))
     v33510B.write(':OUTPut2 %d' % (0))
     time.sleep(0.5)
-    v34401A.write(':SYSTem:LOCal')
+    # v34401A.write(':SYSTem:LOCal')
     E3634A.write(':SYSTem:LOCal')
     E3631A.write(':SYSTem:LOCal')
     time.sleep(1)
     v33510B.close()
-    v34401A.close()
+    # v34401A.close()
     E3631A.close()
     E3634A.close()
-    EDU34450A.close()
+    # EDU34450A.close()
     EL34143A.close()
     MSO7034B.close()
     rm.close()
