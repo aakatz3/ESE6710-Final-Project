@@ -11,6 +11,7 @@ import tkinter as tk
 from tkinter import ttk
 import tkinter.messagebox as mb
 from sweep import Sweep
+from playsound import playsound as play
 
 # Flags
 PLOT = True
@@ -50,10 +51,10 @@ rm = visa.ResourceManager()
 # Instruments
 v33521A = rm.open_resource('USB0::2391::5639::MY50000944::0::INSTR')
 v33510B = rm.open_resource('USB0::0x0957::0x2607::MY62003856::0::INSTR')
-# v34401A = rm.open_resource('ASRL13::INSTR', write_termination = '\r\n')
+v34401A = rm.open_resource('ASRL13::INSTR', write_termination = '\r\n')
 E3631A = rm.open_resource('ASRL12::INSTR', write_termination = '\r\n')
 E3634A = rm.open_resource('ASRL14::INSTR', write_termination = '\r\n')
-# EDU34450A = rm.open_resource('USB0::0x2A8D::0x8E01::CN62180094::0::INSTR')
+EDU34450A = rm.open_resource('USB0::0x2A8D::0x8E01::CN62180094::0::INSTR')
 EL34143A = rm.open_resource('USB0::0x2A8D::0x3802::MY61001508::0::INSTR')
 MSO7034B = rm.open_resource('USB0::2391::5949::MY50340240::0::INSTR')
 MSO6014A = rm.open_resource('USB0::0x0957::0x1724::MY45007084::0::INSTR')
@@ -130,14 +131,14 @@ try:
 
     E3631A.read_termination = '\r\n'
     E3634A.read_termination = '\r\n'
-    # v34401A.read_termination = '\r\n'
-    # v34401A.timeout = 30000
+    v34401A.read_termination = '\r\n'
+    v34401A.timeout = 30000
     MSO7034B.timeout = 30000
     MSO6014A.timeout = 30000
-    # EDU34450A.timeout = 20000
+    EDU34450A.timeout = 20000
 
 
-    # v34401A.write(':SYSTem:REMote')
+    v34401A.write(':SYSTem:REMote')
     E3634A.write(':SYSTem:REMote')
     E3634A.write(':OUTPut:STATe %d' % (0))
     v33510B.write(':OUTPut1 %d' % (0))
@@ -149,7 +150,7 @@ try:
             log.write('Timestamp: ' +
                     dtime.datetime.now().astimezone().isoformat() + os.linesep)
             print('Instruments Utilized:')
-            for inst in [E3634A, E3631A, v33521A, v33510B, MSO7034B, MSO6014A, EL34143A]: #, v34401A, EDU34450A]:
+            for inst in [E3634A, E3631A, v33521A, v33510B, MSO7034B, MSO6014A, EL34143A, v34401A, EDU34450A]:
                 try:
                     inst.write('*CLS')
                     time.sleep(1)
@@ -171,7 +172,7 @@ try:
                         log.write('REPORTED PROBES: ' + ", ".join(probes))
 
     # Set clock
-    for inst in [v33510B, v33521A, MSO7034B, EL34143A]:#, EDU34450A]:
+    for inst in [v33510B, v33521A, MSO7034B, EL34143A, EDU34450A]:
         time_now = dtime.datetime.now().astimezone()
         inst.write(':SYSTem:TIME %d,%d,%d' % (time_now.hour, time_now.minute, time_now.second))
         inst.write(':SYSTem:DATE %d,%d,%d' % (time_now.year, time_now.month, time_now.day))
@@ -239,13 +240,13 @@ try:
 
  
 
-    # # Voltage DMM Setup
-    # vin_v = v34401A.query_ascii_values(':MEASure:VOLTage:DC? %s,%s' % ('DEF', 'MIN')) [0]
+    # Voltage DMM Setup
+    vin_v = v34401A.query_ascii_values(':MEASure:VOLTage:DC? %s,%s' % ('DEF', 'MIN')) [0]
 
-    # # Current DMM Setup
-    # EDU34450A.write(':SENSe:PRIMary:CURRent:DC:RANGe %s' % ('MAX'))
-    # EDU34450A.write(':SENSe:PRIMary:CURRent:DC:RESolution %s' % ('MIN'))
-    # EDU34450A.write(':FORMat:OUTPut %d' % (1))
+    # Current DMM Setup
+    EDU34450A.write(':SENSe:PRIMary:CURRent:DC:RANGe %s' % ('MAX'))
+    EDU34450A.write(':SENSe:PRIMary:CURRent:DC:RESolution %s' % ('MIN'))
+    EDU34450A.write(':FORMat:OUTPut %d' % (1))
 
     # Idc = EDU34450A.query_ascii_values(':MEASure:PRIMary:CURRent:DC?')
 
@@ -284,8 +285,8 @@ try:
     MSO7034B.write(':TRIGger:EDGE:SLOPe %s' % ('POSitive'))
     MSO7034B.write(':TRIGger:SWEep %s' % ('NORMal'))
     MSO7034B.write(':TIMebase:MAIN:SCALe %G NS' % (50.0))
-    MSO7034B.write(':CHANnel1:PROBe %s' % ('X10'))
-    MSO7034B.write(':CHANnel3:PROBe %s' % ('X10'))
+    MSO7034B.write(':CHANnel1:PROBe %s' % ('X100'))
+    MSO7034B.write(':CHANnel3:PROBe %s' % ('X100'))
 
     # Scope 2 setup
     MSO6014A.write(':SYSTem:PRECision %d' % (1))
@@ -367,11 +368,8 @@ try:
         v33510B.write(':SOURce1:FREQuency %G HZ' % (FREQ_STD[0]))
         E3634A.query_ascii_values(':MEASure:VOLTage:DC?')
         E3634A.write(':OUTPut:STATe %d' % (1))
-        # df_measurements = pd.DataFrame(columns=[
-        #         swp.Name, 'V_IN', 'I_IN', 'P_IN', 'V_OUT', 'I_OUT', 'P_OUT'
-        #     ])
         
-
+        rows = list()
         for var in swp.Points:
             print(f'{swp.Name}:{var}')
             
@@ -408,11 +406,11 @@ try:
             
 
 
-            # vin = v34401A.query_ascii_values(':MEASure:VOLTage:DC? %s,%s' % ('DEF', 'MIN'))[0]
-            # iin = EDU34450A.query_ascii_values(':MEASure:PRIMary:CURRent:DC? %G,%s' % (3.0, 'MIN'))[0]
+            vin = v34401A.query_ascii_values(':MEASure:VOLTage:DC? %s,%s' % ('DEF', 'MIN'))[0]
+            iin = EDU34450A.query_ascii_values(':MEASure:PRIMary:CURRent:DC? %G,%s' % (3.0, 'MIN'))[0]
             vout = EL34143A.query_ascii_values(':MEASure:SCALar:VOLTage:ACDC?')[0]
-            # iout = EL34143A.query_ascii_values(':MEASure:SCALar:CURRent:ACDC?')[0]
-            # pout = EL34143A.query_ascii_values(':MEASure:SCALar:POWer:DC?')[0]
+            iout = EL34143A.query_ascii_values(':MEASure:SCALar:CURRent:ACDC?')[0]
+            pout = EL34143A.query_ascii_values(':MEASure:SCALar:POWer:DC?')[0]
 
             # Scope measurements
 
@@ -431,30 +429,9 @@ try:
             #     else:
             #         newoffset = offset3 + 0.125
             #         MSO7034B.write(':CHANnel3:OFFSet %G' % (offset3))
-            # MSO7034B.write(':MEASure:CLEar')
-            # MSO7034B.write(':MEASure:VPP %s' % ('CHANNEL1'))
-            # MSO7034B.write(':MEASure:VPP %s' % ('CHANNEL2'))
-            # MSO7034B.write(':MEASure:VPP %s' % ('CHANNEL3'))
-            # MSO7034B.write(':MEASure:VPP %s' % ('CHANNEL4'))
-
-            # vinpp = MSO7034B.query_ascii_values(':MEASure:VPP? %s' % ('CHANNEL1')) [0]
-            # iinpp = MSO7034B.query_ascii_values(':MEASure:VPP? %s' % ('CHANNEL2')) [0]
-            # voutpp = MSO7034B.query_ascii_values(':MEASure:VPP? %s' % ('CHANNEL3')) [0]
-            # ioutpp = MSO7034B.query_ascii_values(':MEASure:VPP? %s' % ('CHANNEL4')) [0]
 
 
             
-
-            # new_row = {
-            #     swp.Name: var,
-            #     'V_IN': vin,
-            #     'I_IN': iin,
-            #     'P_IN': vin*iin,
-            #     'V_OUT': vout,
-            #     'I_OUT': iout,
-            #     'P_OUT': pout,
-            # }
-            # df_measurements = df_measurements._append(new_row, ignore_index=True)
 
             # Scope captures
             MSO7034B.write(':AUToscale')
@@ -496,9 +473,64 @@ try:
 
             if load == '50Ω Load':
                 MSO6014A.write(':CHANnel4:DISPlay %d' % (0))
+            
+
 
             MSO7034B.write(':STOP')
             MSO6014A.write(':STOP')
+
+            MSO7034B.write(':MEASure:CLEar')
+            MSO7034B.write(':MEASure:VPP %s' % ('CHANNEL1'))
+            MSO7034B.write(':MEASure:VPP %s' % ('CHANNEL2'))
+            MSO7034B.write(':MEASure:VPP %s' % ('CHANNEL3'))
+            MSO7034B.write(':MEASure:VPP %s' % ('CHANNEL4'))
+
+            MSO6014A.write(':MEASure:CLEar')
+            MSO6014A.write(':MEASure:VPP %s' % ('CHANNEL1'))
+            MSO6014A.write(':MEASure:VPP %s' % ('CHANNEL2'))
+            MSO6014A.write(':MEASure:VPP %s' % ('CHANNEL3'))
+            MSO6014A.write(':MEASure:VPP %s' % ('CHANNEL4'))
+
+            V_TANK_IN_PP = MSO7034B.query_ascii_values(':MEASure:VPP? %s' % ('CHANNEL1')) [0]
+            I_PRI_PP = MSO7034B.query_ascii_values(':MEASure:VPP? %s' % ('CHANNEL2')) [0]
+            I_PRI_RMS = MSO7034B.query_ascii_values(':MEASure:VRMS? %s' % ('CHANNEL2')) [0]
+            I_PRI_AVG = MSO7034B.query_ascii_values(':MEASure:VAVerage? %s' % ('CHANNEL2')) [0]
+            V_TANK_OUT_PP = MSO7034B.query_ascii_values(':MEASure:VPP? %s' % ('CHANNEL3')) [0]
+            I_SEC_PP = MSO7034B.query_ascii_values(':MEASure:VPP? %s' % ('CHANNEL4')) [0]
+            I_SEC_RMS = MSO7034B.query_ascii_values(':MEASure:VRMS? %s' % ('CHANNEL4')) [0]
+            I_SEC_AVG = MSO7034B.query_ascii_values(':MEASure:VAVerage? %s' % ('CHANNEL4')) [0]
+
+            V_PRI_PP = MSO6014A.query_ascii_values(':MEASure:VPP? %s' % ('CHANNEL1')) [0]
+            V_SEC_PP = MSO6014A.query_ascii_values(':MEASure:VPP? %s' % ('CHANNEL2')) [0]
+            V_IN_PP = MSO6014A.query_ascii_values(':MEASure:VPP? %s' % ('CHANNEL3')) [0]
+            V_IN_AVG = MSO6014A.query_ascii_values(':MEASure:VAVerage? %s' % ('CHANNEL3')) [0]
+            V_OUT_PP = MSO6014A.query_ascii_values(':MEASure:VPP? %s' % ('CHANNEL4')) [0]
+            V_OUT_AVG = MSO6014A.query_ascii_values(':MEASure:VAVerage? %s' % ('CHANNEL4')) [0]
+
+            rows.append({
+                'FET': fet,
+                'LOAD': load,
+                'V_IN': vin,
+                'I_IN': iin,
+                'V_OUT': vout,
+                'I_OUT': iout,
+                'P_OUT': pout,
+                'V_IN_PP': V_IN_PP,
+                'V_IN_AVG': V_IN_AVG,
+                'I_PRI_AVG': I_PRI_AVG,
+                'I_PRI_PP': I_PRI_PP,
+                'I_PRI_RMS': I_PRI_RMS,
+                'V_OUT_PP': V_OUT_PP,
+                'V_OUT_AVG': V_OUT_AVG,
+                'I_SEC_PP': I_SEC_PP,
+                'I_SEC_AVG': I_SEC_AVG,
+                'I_SEC_RMS': I_SEC_RMS,
+                'V_PRI_PP': V_PRI_PP,
+                'V_SEC_PP': V_SEC_PP,
+                'V_TANK_IN_PP': V_TANK_IN_PP,
+                'V_TANK_OUT_PP': V_TANK_OUT_PP
+            })
+
             if PLOT:
                 plt.figure()
             for c in range(0, 4):
@@ -619,25 +651,27 @@ try:
                 except BaseException as e:
                     print(e)
                     time.sleep(10)
-        # df_measurements.to_csv(p.Path(sweeppath, 'measurements.csv'), index=False)
-
+        measurements = pd.DataFrame(rows)
+        measurements.to_csv(p.Path(sweeppath, 'measurements.csv'), index=False)
+    play(p.Path('sound','Success.wav'))
 except BaseException as e:
     print(e)
+    play(p.Path('sound','Error.wav'))
 finally:
     E3634A.write(':OUTPut:STATe %d' % (0))
     E3631A.write(':OUTPut:STATe %d' % (0))
     v33510B.write(':OUTPut1 %d' % (0))
     v33510B.write(':OUTPut2 %d' % (0))
     time.sleep(0.5)
-    # v34401A.write(':SYSTem:LOCal')
+    v34401A.write(':SYSTem:LOCal')
     E3634A.write(':SYSTem:LOCal')
     E3631A.write(':SYSTem:LOCal')
     time.sleep(1)
     v33510B.close()
-    # v34401A.close()
+    v34401A.close()
     E3631A.close()
     E3634A.close()
-    # EDU34450A.close()
+    EDU34450A.close()
     EL34143A.close()
     MSO7034B.close()
     rm.close()

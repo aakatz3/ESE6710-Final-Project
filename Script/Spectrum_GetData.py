@@ -1,7 +1,6 @@
-
 # Probe notes:
-# CH1, CH3: N2791A
-# CH2, CH4: 1147B
+# all 10X/diff probe: connect via BNC U, also connect to scope channel 1
+# For spec A: run through 1Meg resistor and through ZFL-500LN+
 import pyvisa as visa
 import time
 from RsInstrument import RsInstrument as RS
@@ -216,12 +215,12 @@ def meas_prep():
 
     # Reference setup
     v33521A.write(':OUTPut:LOAD %s' % ('INFinity'))
-    v33521A.write(':SOURce:APPLy:SINusoid %G MHZ,%G VPP,%G' % (10.0, 3.0, 0.0))
+    v33521A.write(':SOURce:APPLy:SINusoid %G MHZ,%G VPP,%G' % (10.0, 4.5, 0.0))
     
     # Spectrum Analyzer Setup
     FPC1000.write_str_with_opc('SYSTem:BNC:MODE REFerence')
-    FPC1000.write_str_with_opc('FREQ:STAR 0')
-    FPC1000.write_str_with_opc('FREQ:STOP 30e6')
+    FPC1000.write_str_with_opc('FREQ:STAR 0.6e6')
+    FPC1000.write_str_with_opc('FREQ:STOP 60e6')
     FPC1000.write_str_with_opc('SENSe:BANDwidth:RESolution %G' % (10e3))
     FPC1000.write_str_with_opc('SENSe:BANDwidth:VIDeo:AUTO 1')
     FPC1000.write_str_with_opc('DISPlay:TRACe1:MODE WRITe')  # Trace to Write mode
@@ -255,6 +254,8 @@ def meas_prep():
     v33510B.write(':SOURce:FREQuency:COUPle:STATe %d' % (1))
     v33510B.write(':DISPlay:FOCus %s' % ('CH1'))
 
+    time.sleep(0.5)
+
     # Logic Power Setup:
     E3631A.write(':SYSTem:REMote')
     E3631A.write(':INSTrument:SELect %s' % ('P6V'))
@@ -262,6 +263,7 @@ def meas_prep():
     E3631A.write(':SOURce:VOLTage:LEVel:IMMediate:AMPLitude %G' % (5.0))
     E3631A.write(':OUTPut:STATe %d' % (1))
     E3631A.query_ascii_values(':MEASure:VOLTage:DC? %s' % ('P6V')) # To return to live measure
+    time.sleep(0.5)
     
     # Technially inefficient but it doesn't matter
     # E-Load Setup
@@ -269,13 +271,18 @@ def meas_prep():
     EL34143A.write(':SOURce:MODE %s' % ('RESistance'))
     EL34143A.write(':SOURce:RESistance:LEVel:IMMediate:AMPLitude %G' % ROUT_STD[0])
     EL34143A.write(':OUTPut:STATe %d' % (1))
+    time.sleep(0.5)
 
     # Main Power Setup
     E3634A.write(':SOURce:VOLTage:RANGe %s' % ('HIGH')) # or LOW
+    E3634A.write(':SOURce:VOLTage:PROTection:STATe 0')
+    E3634A.write(':SOURce:VOLTage:PROTection:CLEar')
     E3634A.write(':SOURce:VOLTage:LEVel:IMMediate:AMPLitude %G' % VIN_STD[0])
     E3634A.write(':SOURce:CURRent:LEVel:IMMediate:AMPLitude %G' % (2.2))
     E3634A.query_ascii_values(':MEASure:VOLTage:DC?')
     E3634A.write(':OUTPut:STATe %d' % (0))
+    time.sleep(0.5)
+   
 
     # Scope Setup
     MSO7034B.write(':SYSTem:PRECision %d' % (1))
@@ -308,7 +315,7 @@ def meas_prep():
     MSO7034B.write(':TRIGger:EDGE:SLOPe %s' % ('POSitive'))
     MSO7034B.write(':TRIGger:SWEep %s' % ('NORMal'))
     MSO7034B.write(':TIMebase:MAIN:SCALe %G NS' % (50.0))
-
+    time.sleep(0.5)
 
 df_measurements = None
 
@@ -332,17 +339,23 @@ def do_sweep(swp : Sweep):
     E3634A.write(':OUTPut:STATe %d' % (0))
     time.sleep(0.2)
     E3634A.write(':SOURce:VOLTage:LEVel:IMMediate:AMPLitude %G' % VIN_STD[0])
+    E3634A.write(':OUTPut:STATe %d' % (0))
+    # E3634A.write(':SOURce:VOLTage:PROTection:CLEar')
+    E3634A.write(':SOURce:VOLTage:PROTection:STATe 0')
+
     EL34143A.write(':SOURce:RESistance:LEVel:IMMediate:AMPLitude %G' % ROUT_STD[0])
     v33510B.write(':SOURce1:FUNCtion:SQUare:DCYCle %G' % (DUTY_STD[0] * 100))
     v33510B.write(':SOURce2:FUNCtion:SQUare:DCYCle %G' % (DUTY_STD[0] * 100))
     v33510B.write(':SOURce1:FREQuency %G HZ' % (FREQ_STD[0]))
     v33510B.write(':OUTPut1 %d' % (1))
     v33510B.write(':OUTPut2 %d' % (1))
+    time.sleep(0.5)
     E3634A.query_ascii_values(':MEASure:VOLTage:DC?')
+    time.sleep(0.5)
     E3634A.write(':OUTPut:STATe %d' % (1))
-    df_measurements = pd.DataFrame(columns=[
-            swp.Name, 'V_IN', 'I_IN', 'P_IN', 'V_OUT', 'I_OUT', 'P_OUT'
-        ])
+    E3634A.write(':SOURce:VOLTage:PROTection:STATe 0')
+    # E3634A.write(':SOURce:VOLTage:PROTection:CLEar')
+    time.sleep(1)
     for var in swp.Points:
         print(f'{swp.Name}:{var}')
             
@@ -352,20 +365,26 @@ def do_sweep(swp : Sweep):
             case 'FREQ':
                 v33510B.write(':SOURce1:FREQuency %G HZ' % (var))
             case 'DUTY':
+                E3634A.write(':OUTPut:STATe %d' % (0))
                 v33510B.write(':OUTPut1 %d' % (0))
                 v33510B.write(':OUTPut2 %d' % (0))
-                E3634A.write(':OUTPut:STATe %d' % (0))
-                time.sleep(0.2)
+                
+                time.sleep(1)
                 v33510B.write(':SOURce1:FUNCtion:SQUare:DCYCle %G' % (var * 100))
                 v33510B.write(':SOURce2:FUNCtion:SQUare:DCYCle %G' % (var * 100))
                 time.sleep(0.1)
                 v33510B.write(':OUTPut1 %d' % (1))
                 v33510B.write(':OUTPut2 %d' % (1))
-                time.sleep(0.2)
+                time.sleep(1)
                 E3634A.write(':OUTPut:STATe %d' % (1))
             case _:
                 print(swp.Name)
                 raise AssertionError
+        time.sleep(1)
+        E3634A.write(':SOURce:VOLTage:PROTection:STATe 0')
+        # E3634A.write(':SOURce:VOLTage:PROTection:CLEar')
+        E3634A.query_ascii_values(':MEASure:VOLTage:DC?')
+        time.sleep(1)
         trace_get()
         screen_copy()
         time.sleep(0.5)
@@ -409,6 +428,41 @@ def trace_get():
             f.write(f'{amp:.2f}')  # Write adequate amplitude information
             f.write("\n")
             x = x + 1
+    MSO7034B.write(':SINGLE')
+    time.sleep(0.2)
+    for c in range(0, 1):
+        MSO7034B.write(':WAVeform:SOURce %s' % ('CHANnel%d' % (c + 1)))
+        MSO7034B.write(':WAVeform:POINts %s' % ('MAXimum'))
+        MSO7034B.write(':WAVeform:FORMat %s' % ('WORD'))
+        MSO7034B.write(':WAVeform:UNSigned %d' % (1))
+        MSO7034B.write(':WAVeform:BYTeorder %s' % ('LSBFirst'))
+        r = MSO7034B.query(':waveform:preamble?')
+        xinc, xorg, xref, yinc, yorg, yref = [
+            float(i) for i in r.split(',')[4:]
+        ]
+        binary_block_data = MSO7034B.query_binary_values(':WAVeform:DATA?',
+                                                        datatype='H')
+        acq_data = np.array(binary_block_data)
+        scaled_data = (acq_data - yref) * yinc + yorg
+        if c == 0:
+            times = np.arange(0, xinc * len(acq_data), xinc)
+            dat_tmp = {
+                "Time (s)": times[0:min(len(times), len(scaled_data))],
+                ANALOG_LABELS[c]: scaled_data[0:min(len(times), len(scaled_data))]
+            }
+            dframe = pd.DataFrame(dat_tmp)
+        else:
+            dframe.insert(c + 1, ANALOG_LABELS[c],
+                        scaled_data[0:min(len(times), len(scaled_data))])
+    MSO7034B.write(':RUN')
+
+   
+
+    dframe.to_csv(p.Path(wavepath, f'{filename}_MSO7034B.csv'),
+                        index=False)
+    
+    
+
     
 
 def screen_copy():
@@ -428,6 +482,23 @@ def screen_copy():
     FPC1000.data_chunk_size = 10000
     FPC1000.query_bin_block_to_file(f'MMEMory:DATA? {inst_filename}', f'{p.Path(spectrumpath, f"{filename}.png")}', append=False)
     FPC1000.write(f'MMEMory:DELete {inst_filename}')  # And delete it on the instrument
+
+    succeed = False
+    while not succeed:
+        try:
+            time.sleep(0.25)
+            img = MSO7034B.query_binary_values(':DISPlay:DATA? %s,%s,%s' %
+                                                ('PNG', 'SCReen', 'COLor'),
+                                                datatype='c')
+            MSO7034B.write(':STOP')
+            
+            with open(p.Path(sspath, f'{filename}_MSO7034B.png'), 'wb') as f:
+                for b in img:
+                    f.write(b)
+            succeed = True
+        except BaseException as e:
+            print(e)
+            time.sleep(10)
 
 def measure_get():
     # General Measurements
@@ -462,8 +533,10 @@ try:
     print('Program successfully ended.')
     print('Wrote trace data into', filename)
     # print('Wrote screenshot data into', pc_filename)
+    play(p.Path('sound','Success.wav'))
 except BaseException as e:
     print(e)
+    play(p.Path('sound','Error.wav'))
 finally:
     close()
 

@@ -60,7 +60,7 @@ with open(p.Path(sspath, f'E5063A.png'), 'bw') as f:
     imagebytes = bytearray(img)
     f.write(imagebytes)
 
-E5063A.write(":SYST:POFF")
+# E5063A.write(":SYST:POFF")
 E5063A.close()
 rm.close()
 
