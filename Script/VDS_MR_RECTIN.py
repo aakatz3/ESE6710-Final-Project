@@ -417,7 +417,7 @@ try:
             MSO7034B.write(':STOP')
             if PLOT:
                 plt.figure()
-            for c in range(0, 3):
+            for c in range(0, 4):
                 MSO7034B.write(':WAVeform:SOURce %s' % ('CHANnel%d' % (c + 1)))
                 MSO7034B.write(':WAVeform:POINts %s' % ('MAXimum'))
                 MSO7034B.write(':WAVeform:FORMat %s' % ('WORD'))
