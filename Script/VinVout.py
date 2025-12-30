@@ -18,7 +18,7 @@ from sweep import Sweep
 from playsound import playsound as play
 
 # Flags
-PLOT = False
+PLOT = True
 SHOW_PLOT = False
 CLEAR_PREVIOUS = False
 DATASET = 'VinVout'
@@ -116,6 +116,11 @@ fet, load = get_configuration()
 dir = p.Path('data', DATASET, fet, load)
 wavepath = p.Path(dir, 'waveform')
 sspath = p.Path(dir, 'scope')
+
+RF_LOAD = load == '50Ω Load'
+
+if RF_LOAD:
+    SWEEPS[1] = Sweep('ROUT', [50], 'R')
 
 if CLEAR_PREVIOUS and os.path.isdir(dir.resolve()):
     shutil.rmtree(dir.resolve())
@@ -275,6 +280,15 @@ try:
     offset3 = 0.1
     offset4 = 0.1
 
+    if RF_LOAD:
+        MSO7034B.write(':CHANnel3:SCALe %G V' % (50.0))
+        MSO7034B.write(':CHANnel4:SCALe %G V' % (1.0))
+        offset3 = 97.5
+        offset4 = 1
+
+
+
+
     # General measurements Dataframe:
 
     v33510B.write(':OUTPut1 %d' % (1))
@@ -340,6 +354,9 @@ try:
                 case _:
                     print(swp.Name)
                     raise AssertionError
+                
+
+            E3634A.write(':SOURce:VOLTage:PROTection:CLEar')
 
             time.sleep(1)
             # General Measurements
@@ -356,8 +373,12 @@ try:
 
             MSO7034B.write(':CHANnel1:OFFSet %G' % (offset1 + vin))
             MSO7034B.write(':CHANnel2:OFFSet %G' % (offset2 + iin))
-            MSO7034B.write(':CHANnel3:OFFSet %G' % (offset3 + vout))
-            MSO7034B.write(':CHANnel4:OFFSet %G' % (offset4 + iout))
+            if not RF_LOAD:
+                MSO7034B.write(':CHANnel3:OFFSet %G' % (offset3 + vout))
+                MSO7034B.write(':CHANnel4:OFFSet %G' % (offset4 + iout))
+            else:
+                MSO7034B.write(':CHANnel3:OFFSet %G' % (offset3))
+                MSO7034B.write(':CHANnel4:OFFSet %G' % (offset4))
             # newoffset1 = vin - 1
             # newoffset2 = iin - 2
             newoffset3 = offset3
@@ -372,6 +393,8 @@ try:
                 if (voutmax < 1e10) and (voutmin > -1e10) and (voutmin < 1e10):
                     break
                 else:
+                    if RF_LOAD:
+                        raise ValueError("Bad offset in RF load")
                     # if (voutmax < 1e10) or (voutmin ):
                     if newoffset3 < 150:
                         newoffset3 = newoffset3 + 0.125
@@ -488,6 +511,8 @@ finally:
     v33510B.write(':OUTPut1 %d' % (0))
     v33510B.write(':OUTPut2 %d' % (0))
     time.sleep(0.5)
+    E3634A.write(':SYST:LOCAL')
+    E3631A.write(':SYST:LOCAL')
     v33510B.close()
     v34401A.close()
     E3631A.close()
