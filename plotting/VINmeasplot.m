@@ -14,7 +14,7 @@ getcol = @(T,n) getColumnByNames(T,n);
 Vin_m  = getcol(Tmeas, ["V_IN"]);
 Vout_m = getcol(Tmeas, ["V_OUT","Vout","VOUT"]);
 Pout_m = getcol(Tmeas, ["P_OUT","Pout","POUT"]);
-Vds_m  = getcol(Tmeas, ["V_DS_A","vdsmax","V_DS"]);
+Vds_m  = getcol(Tmeas, ["V_DS_A_max","vdsmax","V_DS"]);
 Pin_m  = getcol(Tmeas, ["P_IN","Pin","PIN"]);
 
 eff_m  = (Pout_m ./ Pin_m) * 100;
@@ -76,7 +76,7 @@ makeOneFig(Vin_s,eff_s,Vin_m,eff_m, ...
     'figVIN_Eff', LW, figW, figH, applyStyle, setYlimRule, outDir, legendLoc);
 
 makeOneFig(Vin_s,Vds_s,Vin_m,Vds_m, ...
-    '$V_{\mathrm{in}}\ (\mathrm{V})$', '$V_{\mathrm{DS,max}}\ \mathrm{(V)}$', ...
+    '$V_{\mathrm{in}}\ (\mathrm{V})$', '$V_{\mathrm{ds,max}}\ \mathrm{(V)}$', ...
     'figVIN_Vdsmax', LW, figW, figH, applyStyle, setYlimRule, outDir, legendLoc);
 
 disp("EPS figures exported to the script folder successfully.");
@@ -124,6 +124,5 @@ function makeOneFig(xs, ys, xm, ym, xlab, ylab, fname, ...
     set(fig,'Renderer','painters');
     print(fig, fullfile(outDir, fname), '-depsc2', '-painters');
 
-    close(fig);
 end
 

@@ -3,7 +3,7 @@ clear; clc;
 csvFile = "measurementsduty.csv";
 simFile = "simdutysweep.log.txt";
 
-scriptDir = fileparts(mfilename('fullpath'));   % 与脚本相同的文件夹
+scriptDir = fileparts(mfilename('fullpath'));   
 outDir = scriptDir;
 
 LW = 1.2;
@@ -15,7 +15,7 @@ getcol = @(T,n) getColumnByNames(T,n);
 D_m    = getcol(Tmeas, ["D","Duty","Dutycycle","duty","DUTY"]);
 Vout_m = getcol(Tmeas, ["V_OUT","Vout","VOUT"]);
 Pout_m = getcol(Tmeas, ["P_OUT","Pout","POUT"]);
-Vds_m  = getcol(Tmeas, ["V_DS_A","vdsmax","V_DS"]);
+Vds_m  = getcol(Tmeas, ["V_DS_A_max","vdsmax","V_DS"]);
 Pin_m  = getcol(Tmeas, ["P_IN","Pin","PIN"]);
 
 eff_m  = (Pout_m ./ Pin_m) * 100;
@@ -70,19 +70,19 @@ legendLoc = 'northwest';
 %% ---------------- Plot & export ----------------
 makeOneFig(D_s,Vout_s,D_m,Vout_m, ...
     'D ', '$V_{\mathrm{out}}\ \mathrm{(V)}$', ...
-    'fig_Vout', LW, figW, figH, applyStyle, setYlimRule, outDir, legendLoc);
+    'fig_duty_Vout', LW, figW, figH, applyStyle, setYlimRule, outDir, legendLoc);
 
 makeOneFig(D_s,Pout_s,D_m,Pout_m, ...
     'D ', '$P_{\mathrm{out}}\ \mathrm{(W)}$', ...
-    'fig_Pout', LW, figW, figH, applyStyle, setYlimRule, outDir, legendLoc);
+    'fig_duty_Pout', LW, figW, figH, applyStyle, setYlimRule, outDir, legendLoc);
 
 makeOneFig(D_s,eff_s,D_m,eff_m, ...
     'D ', '$\eta\ \mathrm{(\%)}$', ...
-    'fig_Eff', LW, figW, figH, applyStyle, setYlimRule, outDir, legendLoc);
+    'fig_duty_Eff', LW, figW, figH, applyStyle, setYlimRule, outDir, legendLoc);
 
 makeOneFig(D_s,Vds_s,D_m,Vds_m, ...
-    'D ', '$V_{\mathrm{DS,max}}\ \mathrm{(V)}$', ...
-    'fig_Vdsmax', LW, figW, figH, applyStyle, setYlimRule, outDir, legendLoc);
+    'D ', '$V_{\mathrm{ds,max}}\ \mathrm{(V)}$', ...
+    'fig_duty_Vdsmax', LW, figW, figH, applyStyle, setYlimRule, outDir, legendLoc);
 
 disp("EPS figures exported to the script folder successfully.");
 
@@ -130,5 +130,4 @@ function makeOneFig(Ds, ys, Dm, ym, xlab, ylab, fname, ...
     set(fig,'Renderer','painters');
     print(fig, fullfile(outDir, fname), '-depsc2', '-painters');
 
-    close(fig);
 end

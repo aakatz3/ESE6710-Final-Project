@@ -15,7 +15,7 @@ getcol = @(T,n) getColumnByNames(T,n);
 Ro_m   = getcol(Tmeas, ["ROUT"]);
 Vout_m = getcol(Tmeas, ["V_OUT","Vout","VOUT"]);
 Pout_m = getcol(Tmeas, ["P_OUT","Pout","POUT"]);
-Vds_m  = getcol(Tmeas, ["V_DS_A","vdsmax","V_DS"]);
+Vds_m  = getcol(Tmeas, ["V_DS_A_max","vdsmax","V_DS"]);
 Pin_m  = getcol(Tmeas, ["P_IN","Pin","PIN"]);
 
 eff_m  = (Pout_m ./ Pin_m) * 100;
@@ -81,7 +81,7 @@ makeOneFig(Ro_s,eff_s,Ro_m,eff_m, ...
     'fig_Ro_Eff', LW, figW, figH, applyStyle, setYlimRule, outDir, legendLoc);
 
 makeOneFig(Ro_s,Vds_s,Ro_m,Vds_m, ...
-    '$R_o\ (\Omega)$', '$V_{\mathrm{DS,max}}\ \mathrm{(V)}$', ...
+    '$R_o\ (\Omega)$', '$V_{\mathrm{ds,max}}\ \mathrm{(V)}$', ...
     'fig_Ro_Vdsmax', LW, figW, figH, applyStyle, setYlimRule, outDir, legendLoc);
 
 disp("EPS figures exported to the script folder successfully.");
@@ -130,6 +130,5 @@ function makeOneFig(xs, ys, xm, ym, xlab, ylab, fname, ...
     set(fig,'Renderer','painters');
     print(fig, fullfile(outDir, fname), '-depsc2', '-painters');
 
-    close(fig);
 end
 

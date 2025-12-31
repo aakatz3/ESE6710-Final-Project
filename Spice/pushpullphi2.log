@@ -1,7 +1,7 @@
 LTspice 24.1.10 for Windows
 Circuit: C:\Users\13285\Desktop\ese6710\final\ESE6710-Final-Project\Spice\pushpullphi2.txt
-Start Time: Fri Dec 26 06:37:50 2025
-Options: itl1=100000  itl2=100000  itl4=100000  method=Trap abstol=1n vntol=1e-3 reltol=0.001 solver=alt  measdgt=99  numdgt=99  gmin=1e-15
+Start Time: Tue Dec 30 21:30:00 2025
+Options: Thev_Induc=1  itl1=100000  itl2=100000  itl4=100000  method=Trap abstol=1n vntol=1e-3 reltol=0.001 solver=alt  measdgt=99  numdgt=99  gmin=1e-15
 C:\Users\13285\Desktop\ese6710\final\ESE6710-Final-Project\Spice\SN74LVC1G34.cir(141): Note: The caret character means exponentiation in this context. If you wish to silence this warning, use the "**" operator instead or add ".OPTIONS NO_CARET_WARNING" to your netlist.
 + 2*MAXICC*((V(IN,VEE)-VT)/V(VCC,VEE))^2)*(1 + SGN(V(VCC,VEE) - VCC_MIN))*V(VSWITCH,VEE)}
                                       ^
@@ -61,7 +61,7 @@ volttol = 0.001
 ERROR: Node n_cs2 is floating and connected to current source F1
 
 Per .tran options, skipping operating point for transient analysis.
-.step ro=40
+.step duty=0.3
 C:\Users\13285\Desktop\ese6710\final\ESE6710-Final-Project\Spice\SN74LVC1G34.cir(141): Note: The caret character means exponentiation in this context. If you wish to silence this warning, use the "**" operator instead or add ".OPTIONS NO_CARET_WARNING" to your netlist.
 + 2*MAXICC*((V(IN,VEE)-VT)/V(VCC,VEE))^2)*(1 + SGN(V(VCC,VEE) - VCC_MIN))*V(VSWITCH,VEE)}
                                       ^
@@ -110,57 +110,8 @@ C:\Users\13285\Desktop\ese6710\final\ESE6710-Final-Project\Spice\SN74LVC1G34.cir
 C:\Users\13285\Desktop\ese6710\final\ESE6710-Final-Project\Spice\SN74LVC1G34.cir(147): Note: The caret character means exponentiation in this context. If you wish to silence this warning, use the "**" operator instead or add ".OPTIONS NO_CARET_WARNING" to your netlist.
 + 2*MAXICC*((V(IN,VEE)-(V(VCC,VEE)-VT))/V(VCC,VEE))^2)*(1 + SGN(V(VCC,VEE) - VCC_MIN))*V(VSWITCH1,VEE)}
                                                    ^
-.step ro=60
-C:\Users\13285\Desktop\ese6710\final\ESE6710-Final-Project\Spice\SN74LVC1G34.cir(141): Note: The caret character means exponentiation in this context. If you wish to silence this warning, use the "**" operator instead or add ".OPTIONS NO_CARET_WARNING" to your netlist.
-+ 2*MAXICC*((V(IN,VEE)-VT)/V(VCC,VEE))^2)*(1 + SGN(V(VCC,VEE) - VCC_MIN))*V(VSWITCH,VEE)}
-                                      ^
-C:\Users\13285\Desktop\ese6710\final\ESE6710-Final-Project\Spice\SN74LVC1G34.cir(143): Note: The caret character means exponentiation in this context. If you wish to silence this warning, use the "**" operator instead or add ".OPTIONS NO_CARET_WARNING" to your netlist.
-+ 2*MAXICC*((V(IN,VEE)-VT)/V(VCC,VEE))^2)*(1 + SGN(V(VCC,VEE) - VCC_MIN))*V(VSWITCH,VEE)}
-                                      ^
-C:\Users\13285\Desktop\ese6710\final\ESE6710-Final-Project\Spice\SN74LVC1G34.cir(145): Note: The caret character means exponentiation in this context. If you wish to silence this warning, use the "**" operator instead or add ".OPTIONS NO_CARET_WARNING" to your netlist.
-+ 2*MAXICC*((V(IN,VEE)-(V(VCC,VEE)-VT))/V(VCC,VEE))^2)*(1 + SGN(V(VCC,VEE) - VCC_MIN))*V(VSWITCH1,VEE)}
-                                                   ^
-C:\Users\13285\Desktop\ese6710\final\ESE6710-Final-Project\Spice\SN74LVC1G34.cir(147): Note: The caret character means exponentiation in this context. If you wish to silence this warning, use the "**" operator instead or add ".OPTIONS NO_CARET_WARNING" to your netlist.
-+ 2*MAXICC*((V(IN,VEE)-(V(VCC,VEE)-VT))/V(VCC,VEE))^2)*(1 + SGN(V(VCC,VEE) - VCC_MIN))*V(VSWITCH1,VEE)}
-                                                   ^
-C:\Users\13285\Desktop\ese6710\final\ESE6710-Final-Project\Spice\SN74LVC1G34.cir(141): Note: The caret character means exponentiation in this context. If you wish to silence this warning, use the "**" operator instead or add ".OPTIONS NO_CARET_WARNING" to your netlist.
-+ 2*MAXICC*((V(IN,VEE)-VT)/V(VCC,VEE))^2)*(1 + SGN(V(VCC,VEE) - VCC_MIN))*V(VSWITCH,VEE)}
-                                      ^
-C:\Users\13285\Desktop\ese6710\final\ESE6710-Final-Project\Spice\SN74LVC1G34.cir(143): Note: The caret character means exponentiation in this context. If you wish to silence this warning, use the "**" operator instead or add ".OPTIONS NO_CARET_WARNING" to your netlist.
-+ 2*MAXICC*((V(IN,VEE)-VT)/V(VCC,VEE))^2)*(1 + SGN(V(VCC,VEE) - VCC_MIN))*V(VSWITCH,VEE)}
-                                      ^
-C:\Users\13285\Desktop\ese6710\final\ESE6710-Final-Project\Spice\SN74LVC1G34.cir(145): Note: The caret character means exponentiation in this context. If you wish to silence this warning, use the "**" operator instead or add ".OPTIONS NO_CARET_WARNING" to your netlist.
-+ 2*MAXICC*((V(IN,VEE)-(V(VCC,VEE)-VT))/V(VCC,VEE))^2)*(1 + SGN(V(VCC,VEE) - VCC_MIN))*V(VSWITCH1,VEE)}
-                                                   ^
-C:\Users\13285\Desktop\ese6710\final\ESE6710-Final-Project\Spice\SN74LVC1G34.cir(147): Note: The caret character means exponentiation in this context. If you wish to silence this warning, use the "**" operator instead or add ".OPTIONS NO_CARET_WARNING" to your netlist.
-+ 2*MAXICC*((V(IN,VEE)-(V(VCC,VEE)-VT))/V(VCC,VEE))^2)*(1 + SGN(V(VCC,VEE) - VCC_MIN))*V(VSWITCH1,VEE)}
-                                                   ^
-C:\Users\13285\Desktop\ese6710\final\ESE6710-Final-Project\Spice\SN74LVC1G34.cir(141): Note: The caret character means exponentiation in this context. If you wish to silence this warning, use the "**" operator instead or add ".OPTIONS NO_CARET_WARNING" to your netlist.
-+ 2*MAXICC*((V(IN,VEE)-VT)/V(VCC,VEE))^2)*(1 + SGN(V(VCC,VEE) - VCC_MIN))*V(VSWITCH,VEE)}
-                                      ^
-C:\Users\13285\Desktop\ese6710\final\ESE6710-Final-Project\Spice\SN74LVC1G34.cir(143): Note: The caret character means exponentiation in this context. If you wish to silence this warning, use the "**" operator instead or add ".OPTIONS NO_CARET_WARNING" to your netlist.
-+ 2*MAXICC*((V(IN,VEE)-VT)/V(VCC,VEE))^2)*(1 + SGN(V(VCC,VEE) - VCC_MIN))*V(VSWITCH,VEE)}
-                                      ^
-C:\Users\13285\Desktop\ese6710\final\ESE6710-Final-Project\Spice\SN74LVC1G34.cir(145): Note: The caret character means exponentiation in this context. If you wish to silence this warning, use the "**" operator instead or add ".OPTIONS NO_CARET_WARNING" to your netlist.
-+ 2*MAXICC*((V(IN,VEE)-(V(VCC,VEE)-VT))/V(VCC,VEE))^2)*(1 + SGN(V(VCC,VEE) - VCC_MIN))*V(VSWITCH1,VEE)}
-                                                   ^
-C:\Users\13285\Desktop\ese6710\final\ESE6710-Final-Project\Spice\SN74LVC1G34.cir(147): Note: The caret character means exponentiation in this context. If you wish to silence this warning, use the "**" operator instead or add ".OPTIONS NO_CARET_WARNING" to your netlist.
-+ 2*MAXICC*((V(IN,VEE)-(V(VCC,VEE)-VT))/V(VCC,VEE))^2)*(1 + SGN(V(VCC,VEE) - VCC_MIN))*V(VSWITCH1,VEE)}
-                                                   ^
-C:\Users\13285\Desktop\ese6710\final\ESE6710-Final-Project\Spice\SN74LVC1G34.cir(141): Note: The caret character means exponentiation in this context. If you wish to silence this warning, use the "**" operator instead or add ".OPTIONS NO_CARET_WARNING" to your netlist.
-+ 2*MAXICC*((V(IN,VEE)-VT)/V(VCC,VEE))^2)*(1 + SGN(V(VCC,VEE) - VCC_MIN))*V(VSWITCH,VEE)}
-                                      ^
-C:\Users\13285\Desktop\ese6710\final\ESE6710-Final-Project\Spice\SN74LVC1G34.cir(143): Note: The caret character means exponentiation in this context. If you wish to silence this warning, use the "**" operator instead or add ".OPTIONS NO_CARET_WARNING" to your netlist.
-+ 2*MAXICC*((V(IN,VEE)-VT)/V(VCC,VEE))^2)*(1 + SGN(V(VCC,VEE) - VCC_MIN))*V(VSWITCH,VEE)}
-                                      ^
-C:\Users\13285\Desktop\ese6710\final\ESE6710-Final-Project\Spice\SN74LVC1G34.cir(145): Note: The caret character means exponentiation in this context. If you wish to silence this warning, use the "**" operator instead or add ".OPTIONS NO_CARET_WARNING" to your netlist.
-+ 2*MAXICC*((V(IN,VEE)-(V(VCC,VEE)-VT))/V(VCC,VEE))^2)*(1 + SGN(V(VCC,VEE) - VCC_MIN))*V(VSWITCH1,VEE)}
-                                                   ^
-C:\Users\13285\Desktop\ese6710\final\ESE6710-Final-Project\Spice\SN74LVC1G34.cir(147): Note: The caret character means exponentiation in this context. If you wish to silence this warning, use the "**" operator instead or add ".OPTIONS NO_CARET_WARNING" to your netlist.
-+ 2*MAXICC*((V(IN,VEE)-(V(VCC,VEE)-VT))/V(VCC,VEE))^2)*(1 + SGN(V(VCC,VEE) - VCC_MIN))*V(VSWITCH1,VEE)}
-                                                   ^
-.step ro=100
-Total elapsed time: 361.701 seconds.
+.step duty=0.4
+Total elapsed time: 347.266 seconds.
 
 Files loaded:
 C:\Users\13285\Desktop\ese6710\final\ESE6710-Final-Project\Spice\pushpullphi2.txt
@@ -170,148 +121,125 @@ C:\Users\13285\Desktop\ese6710\final\ESE6710-Final-Project\Spice\SN74LVC1G34.cir
 C:\Users\13285\Desktop\ese6710\final\ESE6710-Final-Project\Spice\ST_POWER_SCHOTTKY_V10.LIB
 C:\Users\13285\Desktop\ese6710\final\ESE6710-Final-Project\Spice\rb168lam100tf_ltspice.lib
 C:\Users\13285\Desktop\ese6710\final\ESE6710-Final-Project\Spice\rb058lam100_ltspice.lib
+C:\Users\13285\Desktop\ese6710\final\ESE6710-Final-Project\Spice\OptiMOS_OptiMOS5_60V_LTSpice.lib
 
 
 Measurement: show_lf
   step	L1
      1	2.758216196651578e-06
      2	2.758216196651578e-06
-     3	2.758216196651578e-06
 
 Measurement: show_lmr
   step	L2
      1	5.516432393303157e-07
      2	5.516432393303157e-07
-     3	5.516432393303157e-07
 
 Measurement: show_cmr
   step	C2
      1	2.497253233727097e-10
      2	2.497253233727097e-10
-     3	2.497253233727097e-10
 
 Measurement: show_cpext
   step	C1ext
      1	2.72770001687647e-10
      2	2.72770001687647e-10
-     3	2.72770001687647e-10
 
 Measurement: show_rl
   step	RL_phase
      1	25
      2	25
-     3	25
 
 Measurement: show_l1andl2
   step	Ls2
      1	4.118277262637669e-06
      2	4.118277262637669e-06
-     3	4.118277262637669e-06
 
 Measurement: show_c1andc2
   step	Cs2
      1	1.338028282630978e-10
      2	1.338028282630978e-10
-     3	1.338028282630978e-10
 
 Measurement: iin
   step	AVG(-I(V1))	FROM	TO
-     1	1.029290469530524	0	1.474926253687316e-06
-     2	1.558147324073509	0	1.474926253687316e-06
-     3	2.529253874974418	0	1.474926253687316e-06
+     1	1.608568049749104	0	1.474926253687316e-06
+     2	1.914421042387826	0	1.474926253687316e-06
 
 Measurement: vin
   step	AVG(V(in))	FROM	TO
-     1	24.99999999995361	0	1.474926253687316e-06
-     2	24.99999999995423	0	1.474926253687316e-06
-     3	24.99999999995429	0	1.474926253687316e-06
+     1	24.99999999995253	0	1.474926253687316e-06
+     2	24.9999999999525	0	1.474926253687316e-06
 
 Measurement: iout
   step	AVG(I(R_L))	FROM	TO
-     1	0.7900633934271637	0	1.474926253687316e-06
-     2	0.7975460317854169	0	1.474926253687316e-06
-     3	0.7861140858818516	0	1.474926253687316e-06
+     1	0.7948315721168787	0	1.474926253687316e-06
+     2	0.8201055436756075	0	1.474926253687316e-06
 
 Measurement: vout
   step	AVG(V(Vout))	FROM	TO
-     1	31.6025357370863	0	1.474926253687316e-06
-     2	47.85276190712592	0	1.474926253687316e-06
-     3	78.61140858818372	0	1.474926253687316e-06
+     1	49.02918552603051	0	1.474926253687316e-06
+     2	50.58821046163131	0	1.474926253687316e-06
 
 Measurement: vds1max
   step	MAX(V(n_top_mid))	FROM	TO
-     1	56.33253708681523	0	1.474926253687316e-06
-     2	55.90045581246063	0	1.474926253687316e-06
-     3	55.61898805999112	0	1.474926253687316e-06
+     1	57.68890908948111	0	1.474926253687316e-06
+     2	61.95248593931667	0	1.474926253687316e-06
 
 Measurement: vds2max
   step	MAX(V(n_bot_mid))	FROM	TO
-     1	56.26293883185109	0	1.474926253687316e-06
-     2	55.9366449418698	0	1.474926253687316e-06
-     3	55.62965810434186	0	1.474926253687316e-06
+     1	57.57163641392772	0	1.474926253687316e-06
+     2	62.44382894873143	0	1.474926253687316e-06
 
 Measurement: t1
   step	V(Mid_Node)=0
-     1	9.139850448035724e-08
-     2	8.964608696709575e-08
-     3	8.608218660897042e-08
+     1	9.414686447286203e-08
+     2	1.099382147977707e-07
 
 Measurement: t2
   step	V(Mid_Node)=0
-     1	1.65240036671209e-07
-     2	1.633685740216163e-07
-     3	1.598008572407683e-07
+     1	1.678889701326877e-07
+     2	1.836227468486646e-07
 
 Measurement: t
   step	't2 - t1'
-     1	7.384153219085177e-08
-     2	7.372248705452056e-08
-     3	7.371867063179785e-08
+     1	7.374210565982571e-08
+     2	7.368453205089388e-08
 
 Measurement: mrfreq
   step	1/T
-     1	13542514.22377568
-     2	13564382.32015236
-     3	13565084.54953961
+     1	13560773.60487951
+     2	13571369.35210907
 
 Measurement: vmrpp
   step	PP(V(Mid_Node))	FROM	TO
-     1	108.266680022662	0	1.474926253687316e-06
-     2	113.1060825276785	0	1.474926253687316e-06
-     3	116.5758241798902	0	1.474926253687316e-06
+     1	114.0429595071956	0	1.474926253687316e-06
+     2	119.6722386791127	0	1.474926253687316e-06
 
 Measurement: vsecpp
   step	PP(V(Sec_res)-V(Sec_c22))	FROM	TO
-     1	64.93236930013542	0	1.474926253687316e-06
-     2	97.4382497507504	0	1.474926253687316e-06
-     3	158.9794124047466	0	1.474926253687316e-06
+     1	99.79026832676792	0	1.474926253687316e-06
+     2	102.9194979877123	0	1.474926253687316e-06
 
 Measurement: pinavg
   step	AVG(I(V1)*V(in))	FROM	TO
-     1	-25.73226173826263	0	1.474926253687316e-06
-     2	-38.95368310183897	0	1.474926253687316e-06
-     3	-63.23134687436001	0	1.474926253687316e-06
+     1	-40.21420124372831	0	1.474926253687316e-06
+     2	-47.86052605969699	0	1.474926253687316e-06
 
 Measurement: pout
   step	INTEG(I(R_L)*V(Vout))	FROM	TO
-     1	3.682608423876774e-05	0	1.474926253687316e-06
-     2	5.629031843152979e-05	0	1.474926253687316e-06
-     3	9.114685827579916e-05	0	1.474926253687316e-06
+     1	5.747787370819155e-05	0	1.474926253687316e-06
+     2	6.119133975248079e-05	0	1.474926253687316e-06
 
 Measurement: poutavg
   step	AVG(I(R_L)*V(Vout))	FROM	TO
-     1	24.96808511381784	0	1.474926253687316e-06
-     2	38.16483589647684	0	1.474926253687316e-06
-     3	61.79756991083067	0	1.474926253687316e-06
+     1	38.9699983740489	0	1.474926253687316e-06
+     2	41.48772835206999	0	1.474926253687316e-06
 
 Measurement: pin
   step	INTEG(I(V1)*V(in))	FROM	TO
-     1	-3.795318840461853e-05	0	1.474926253687316e-06
-     2	-5.745380988486933e-05	0	1.474926253687316e-06
-     3	-9.326157356124617e-05	0	1.474926253687316e-06
+     1	-5.931298118559976e-05	0	1.474926253687316e-06
+     2	-7.059074640092356e-05	0	1.474926253687316e-06
 
 Measurement: eff
   step	(-Pout/Pin)
-     1	0.9703027805243991
-     2	0.9797490983509877
-     3	0.9773249023719479
+     1	0.9690606096553153
+     2	0.8668464759522674

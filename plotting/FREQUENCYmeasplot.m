@@ -15,7 +15,7 @@ getcol = @(T,n) getColumnByNames(T,n);
 fs_m   = getcol(Tmeas, ["FREQ"]);
 Vout_m = getcol(Tmeas, ["V_OUT","Vout","VOUT"]);
 Pout_m = getcol(Tmeas, ["P_OUT","Pout","POUT"]);
-Vds_m  = getcol(Tmeas, ["V_DS_A","vdsmax","V_DS"]);
+Vds_m  = getcol(Tmeas, ["V_DS_A_max","vdsmax","V_DS"]);
 Pin_m  = getcol(Tmeas, ["P_IN","Pin","PIN"]);
 
 eff_m  = (Pout_m ./ Pin_m) * 100;
@@ -45,8 +45,9 @@ eff_m  = eff_m(im);  Vds_m  = Vds_m(im);
 Vout_s = Vout_s(is); Pout_s = Pout_s(is);
 eff_s  = eff_s(is);  Vds_s  = Vds_s(is);
 
-xmin = min([fs_m; fs_s]);
-xmax = max([fs_m; fs_s]);
+%% ---------------- X-axis range (fixed: 6.25–7 MHz) ----------------
+xmin = 6.0e6;
+xmax = 7.0e6;
 
 %% ---------------- figure style ----------------
 figW = 3.45;
@@ -63,7 +64,7 @@ applyStyle = @(ax) set(ax, ...
     'Layer','top', ...
     'TickLabelInterpreter','latex');
 
-setYlimRule = @(ax,y) ylim(ax, [0.92*min(y) 1.08*max(y)]);
+setYlimRule = @(ax,y) ylim(ax, [0.1*min(y) 1.4*max(y)]);
 
 legendLoc = 'northwest';
 
@@ -81,7 +82,7 @@ makeOneFig(fs_s,eff_s,fs_m,eff_m, ...
     'fig_fs_Eff', LW, figW, figH, applyStyle, setYlimRule, outDir, legendLoc);
 
 makeOneFig(fs_s,Vds_s,fs_m,Vds_m, ...
-    '$f_s\ (\mathrm{Hz})$', '$V_{\mathrm{DS,max}}\ \mathrm{(V)}$', ...
+    '$f_s\ (\mathrm{Hz})$', '$V_{\mathrm{ds,max}}\ \mathrm{(V)}$', ...
     'fig_fs_Vdsmax', LW, figW, figH, applyStyle, setYlimRule, outDir, legendLoc);
 
 disp("EPS figures exported to the script folder successfully.");
@@ -129,6 +130,5 @@ function makeOneFig(xs, ys, xm, ym, xlab, ylab, fname, ...
 
     set(fig,'Renderer','painters');
     print(fig, fullfile(outDir, fname), '-depsc2', '-painters');
-
-    close(fig);
 end
+
