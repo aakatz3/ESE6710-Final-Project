@@ -14,33 +14,33 @@ import tkinter as tk
 from tkinter import ttk
 from sweep import Sweep
 from playsound import playsound as play
+import jsonpickle
+import json
 
 # Flags
-PLOT = True
+PLOT = False
 SHOW_PLOT = False
 CLEAR_PREVIOUS = False
-SHORT = True
-LONG = False
 DATASET = 'VGS_VDS'
 
 ANALOG_LABELS = ['VGS_A', 'VGS_B', 'VDS_A', 'VDS_B']
 DIGITAL_LABELS = ['CRTL_A', 'IN_A', 'CRTL_B', 'IN_B', 'nEN']
 
 # Standard parameters
-ROUT_STD = [50 * np.pi **2 / 8]
-DUTY_STD = [0.32]
-VIN_STD = [25]
-FREQ_STD = [6.78e6]
+with open('OperatingConditions.json', 'r+') as f:
+    NOMINAL = jsonpickle.decode(f.read())
 
-VINS = np.unique(np.append(VIN_STD, np.arange(18,28.01, 0.5)))
-ROUTS = np.unique(np.append(ROUT_STD, np.arange(50,75,0.5)))
-FREQS = np.unique(np.append(FREQ_STD, np.arange(6.0e6,7.501e6,0.1e6)))
-DUTYS = np.unique(np.append(DUTY_STD, np.arange(0.3,0.4,0.01)))
 
-# VINS = VIN_STD
-# DUTYS = DUTY_STD
-# ROUTS = ROUT_STD
-# FREQS = FREQ_STD
+
+VINS = np.unique(np.append(NOMINAL.VIN, np.arange(18,28.01, 0.5)))
+ROUTS = np.unique(np.append(NOMINAL.ROUT, np.arange(50,75,0.5)))
+FREQS = np.unique(np.append(NOMINAL.FREQ, np.arange(6.0e6,7.501e6,0.1e6)))
+DUTYS = np.unique(np.append(NOMINAL.DUTY, np.arange(0.3,0.4,0.01)))
+
+# VINS = NOMINAL.VIN
+# DUTYS = NOMINAL.DUTY
+# ROUTS = NOMINAL.ROUT
+# FREQS = NOMINAL.FREQ
 
 SWEEPS = [
         Sweep('VIN', VINS, 'V'),
@@ -117,11 +117,11 @@ def get_configuration():
 fet, load = get_configuration()
 
 if (load == '50Ω Load') or (load == 'Open Primary'):
-    SWEEPS[1] = Sweep('ROUT', ROUT_STD, 'R')
+    SWEEPS[1] = Sweep('ROUT', NOMINAL.ROUT, 'R')
 if load == 'Open Primary':
-    SWEEPS[0] = Sweep('VIN', VIN_STD, 'V')
-    SWEEPS[2] = Sweep('FREQ', FREQ_STD, 'Hz')
-    SWEEPS[3] = Sweep('DUTY', DUTY_STD)
+    SWEEPS[0] = Sweep('VIN', NOMINAL.VIN, 'V')
+    SWEEPS[2] = Sweep('FREQ', NOMINAL.FREQ, 'Hz')
+    SWEEPS[3] = Sweep('DUTY', NOMINAL.DUTY)
 
 dir = p.Path('data', DATASET, fet, load)
 wavepath = p.Path(dir, 'waveform')
@@ -182,15 +182,15 @@ try:
     v33510B.write(':DISPlay:FOCus %s' % ('CH1'))
     v33510B.write(':DISPlay:UNIT:VOLTage %s' % ('HIGHlow'))
     v33510B.write(':SOURce1:FUNCtion %s' % ('SQUare'))
-    v33510B.write(':SOURce1:FUNCtion:SQUare:DCYCle %G' % (DUTY_STD[0] * 100))
+    v33510B.write(':SOURce1:FUNCtion:SQUare:DCYCle %G' % (NOMINAL.DUTY[0] * 100))
     v33510B.write(':SOURce2:FUNCtion %s' % ('SQUare'))
-    v33510B.write(':SOURce2:FUNCtion:SQUare:DCYCle %G' % (DUTY_STD[0] * 100))
+    v33510B.write(':SOURce2:FUNCtion:SQUare:DCYCle %G' % (NOMINAL.DUTY[0] * 100))
     v33510B.write(':SOURce1:VOLTage:HIGH %G' % (5.0))
     v33510B.write(':SOURce1:VOLTage:LOW %G' % (0.0))
     v33510B.write(':SOURce2:VOLTage:HIGH %G' % (5.0))
     v33510B.write(':SOURce2:VOLTage:LOW %G' % (0.0))
-    v33510B.write(':SOURce1:FREQuency %G HZ' % (FREQ_STD[0]))
-    v33510B.write(':SOURce2:FREQuency %G HZ' % (FREQ_STD[0]))
+    v33510B.write(':SOURce1:FREQuency %G HZ' % (NOMINAL.FREQ[0]))
+    v33510B.write(':SOURce2:FREQuency %G HZ' % (NOMINAL.FREQ[0]))
     v33510B.write(':SOURce:PHASe:SYNChronize')
     v33510B.write(':SOURce2:PHASe:ADJust %G' % (180.0))
     v33510B.write(':DISPlay:FOCus %s' % ('CH2'))
@@ -210,13 +210,13 @@ try:
     # E-Load Setup
     EL34143A.write(':SOURce:VOLTage:SENSe:SOURce %s' % ('EXTernal'))
     EL34143A.write(':SOURce:MODE %s' % ('RESistance'))
-    EL34143A.write(':SOURce:RESistance:LEVel:IMMediate:AMPLitude %G' % ROUT_STD[0])
+    EL34143A.write(':SOURce:RESistance:LEVel:IMMediate:AMPLitude %G' % NOMINAL.ROUT[0])
     EL34143A.write(':OUTPut:STATe %d' % (1))
 
 
     # Main Power Setup
     E3634A.write(':SOURce:VOLTage:RANGe %s' % ('HIGH')) # or LOW
-    E3634A.write(':SOURce:VOLTage:LEVel:IMMediate:AMPLitude %G' % VIN_STD[0])
+    E3634A.write(':SOURce:VOLTage:LEVel:IMMediate:AMPLitude %G' % NOMINAL.VIN[0])
     E3634A.write(':SOURce:CURRent:LEVel:IMMediate:AMPLitude %G' % (2.2))
     E3634A.query_ascii_values(':MEASure:VOLTage:DC?')
     E3634A.write(':OUTPut:STATe %d' % (0))
@@ -306,17 +306,18 @@ try:
         # Reset to std
         E3634A.write(':OUTPut:STATe %d' % (0))
         time.sleep(0.2)
-        E3634A.write(':SOURce:VOLTage:LEVel:IMMediate:AMPLitude %G' % VIN_STD[0])
-        EL34143A.write(':SOURce:RESistance:LEVel:IMMediate:AMPLitude %G' % ROUT_STD[0])
-        v33510B.write(':SOURce1:FUNCtion:SQUare:DCYCle %G' % (DUTY_STD[0] * 100))
-        v33510B.write(':SOURce2:FUNCtion:SQUare:DCYCle %G' % (DUTY_STD[0] * 100))
-        v33510B.write(':SOURce1:FREQuency %G HZ' % (FREQ_STD[0]))
+        E3634A.write(':SOURce:VOLTage:LEVel:IMMediate:AMPLitude %G' % NOMINAL.VIN[0])
+        EL34143A.write(':SOURce:RESistance:LEVel:IMMediate:AMPLitude %G' % NOMINAL.ROUT[0])
+        v33510B.write(':SOURce1:FUNCtion:SQUare:DCYCle %G' % (NOMINAL.DUTY[0] * 100))
+        v33510B.write(':SOURce2:FUNCtion:SQUare:DCYCle %G' % (NOMINAL.DUTY[0] * 100))
+        v33510B.write(':SOURce1:FREQuency %G HZ' % (NOMINAL.FREQ[0]))
         E3634A.query_ascii_values(':MEASure:VOLTage:DC?')
         E3634A.write(':OUTPut:STATe %d' % (1))
         df_measurements = pd.DataFrame(columns=[
                 swp.Name, 'V_IN', 'I_IN', 'P_IN', 'V_OUT', 'I_OUT', 'P_OUT'
             ])
-        
+        with open(p.Path(sweeppath, 'SweepConditions.json'), 'w') as f:
+            f.write(jsonpickle.encode( (NOMINAL, SWEEPS) ))
 
         for var in swp.Points:
             print(f'{swp.Name}:{var}')
@@ -476,6 +477,17 @@ try:
                 if PLOT:
                     plt.plot(times[0:min(len(times), len(scaled_data))],
                             scaled_data[0:min(len(times), len(scaled_data))])
+            # Get digital data too!
+            MSO7034B.write(':WAVeform:SOURce %s' % ('POD1'))
+            MSO7034B.write(':WAVeform:POINts:MODE %s' % ('MAXimum'))
+            MSO7034B.write(':WAVeform:FORMat %s' % ('WORD'))
+            MSO7034B.write(':WAVeform:UNSigned %d' % (1))
+            MSO7034B.write(':WAVeform:BYTeorder %s' % ('LSBFirst'))
+
+            binary_block_data = MSO7034B.query_binary_values(':WAVeform:DATA?', datatype='H')
+            digital_data = np.array(binary_block_data, dtype=np.int64)
+            dframe.insert(5,json.dumps(DIGITAL_LABELS), digital_data[0:min(len(times), len(digital_data))])
+
             if PLOT:
                     if SHOW_PLOT:
                         plt.show()

@@ -12,33 +12,36 @@ from tkinter import ttk
 import tkinter.messagebox as mb
 from sweep import Sweep
 from playsound import playsound as play
+from operating_conditions import OperatingConditions
+import jsonpickle
 
 # Flags
 PLOT = True
 SHOW_PLOT = False
 DATASET = 'PrimarySecondary'
+SCREENSHOT_ALL = False
 
 ANALOG_LABELS_1 = ['V_TANK_IN', 'I_PRI', 'V_TANK_OUT', 'I_SEC']
 ANALOG_LABELS_2 = ['V_PRI', 'V_SEC', 'V_IN', 'V_OUT']
 DIGITAL_LABELS = ['CRTL_A', 'IN_A', 'CRTL_B', 'IN_B', 'nEN']
 
 # Standard parameters
+with open('OperatingConditions.json', 'r+') as f:
+    NOMINAL : OperatingConditions = jsonpickle.decode(f.read())
 
-ROUT_STD = [50 * np.pi **2 / 8]
-DUTY_STD = [0.32]
-VIN_STD = [25]
-FREQ_STD = [6.78e6]
 
-VINS = np.unique(np.append(VIN_STD, np.arange(18,28.01, 0.5)))
-ROUTS = np.unique(np.append(ROUT_STD, np.arange(50,75,0.5)))
-FREQS = np.unique(np.append(FREQ_STD, np.arange(6.0e6,7.501e6,0.1e6)))
-DUTYS = np.unique(np.append(DUTY_STD, np.arange(0.3,0.4,0.01)))
+
+VINS = np.unique(np.append(NOMINAL.VIN, np.arange(18,28.01, 0.5)))
+ROUTS = np.unique(np.append(NOMINAL.ROUT, np.arange(50,75,0.5)))
+FREQS = np.unique(np.append(NOMINAL.FREQ, np.arange(6.0e6,7.501e6,0.1e6)))
+DUTYS = np.unique(np.append(NOMINAL.DUTY, np.arange(0.3,0.4,0.01)))
 
 SWEEPS = [
         Sweep('VIN', VINS, 'V'),
         Sweep('ROUT', ROUTS, 'R'),
         Sweep('FREQ', FREQS, 'Hz'),
-        Sweep('DUTY', DUTYS)
+        Sweep('DUTY', DUTYS),
+        None
     ]
 
 
@@ -368,6 +371,7 @@ try:
         v33510B.write(':SOURce1:FREQuency %G HZ' % (FREQ_STD[0]))
         E3634A.query_ascii_values(':MEASure:VOLTage:DC?')
         E3634A.write(':OUTPut:STATe %d' % (1))
+
         
         rows = list()
         for var in swp.Points:
@@ -375,7 +379,7 @@ try:
             
 
             filename = f'{var}{swp.Unit}'
-
+            FORCE_SCREENSHOT = False
             match swp.Name:
                 case 'VIN':
                     E3634A.write(':SOURce:VOLTage:LEVel:IMMediate:AMPLitude %G' % var)
@@ -396,6 +400,8 @@ try:
                     v33510B.write(':OUTPut2 %d' % (1))
                     time.sleep(0.2)
                     E3634A.write(':OUTPut:STATe %d' % (1))
+                case None:
+                    FORCE_SCREENSHOT = True
                 case _:
                     print(swp.Name)
                     raise AssertionError
@@ -633,24 +639,23 @@ try:
                 MSO6014A.write(':CHANnel4:DISPlay %d' % (0))
             time.sleep(1)
 
-
-
-            succeed = False
-            while not succeed:
-                try:
-                    time.sleep(0.25)
-                    img = MSO6014A.query_binary_values(':DISPlay:DATA? %s,%s,%s' %
-                                                        ('PNG', 'SCReen', 'COLor'),
-                                                        datatype='c')
-                    MSO6014A.write(':STOP')
-                    
-                    with open(p.Path(sspath, f'{filename}_MSO6014A.png'), 'wb') as f:
-                        for b in img:
-                            f.write(b)
-                    succeed = True
-                except BaseException as e:
-                    print(e)
-                    time.sleep(10)
+            if SCREENSHOT_ALL or FORCE_SCREENSHOT:
+                succeed = False
+                while not succeed:
+                    try:
+                        time.sleep(0.25)
+                        img = MSO6014A.query_binary_values(':DISPlay:DATA? %s,%s,%s' %
+                                                            ('PNG', 'SCReen', 'COLor'),
+                                                            datatype='c')
+                        MSO6014A.write(':STOP')
+                        
+                        with open(p.Path(sspath, f'{filename}_MSO6014A.png'), 'wb') as f:
+                            for b in img:
+                                f.write(b)
+                        succeed = True
+                    except BaseException as e:
+                        print(e)
+                        time.sleep(10)
         measurements = pd.DataFrame(rows)
         measurements.to_csv(p.Path(sweeppath, 'measurements.csv'), index=False)
     play(p.Path('sound','Success.wav'))
