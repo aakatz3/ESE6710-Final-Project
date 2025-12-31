@@ -18,36 +18,25 @@ import jsonpickle
 import json
 
 # Flags
-PLOT = False
+PLOT = True
 SHOW_PLOT = False
-CLEAR_PREVIOUS = False
+CLEAR_PREVIOUS = True
 DATASET = 'VGS_VDS'
 
 ANALOG_LABELS = ['VGS_A', 'VGS_B', 'VDS_A', 'VDS_B']
 DIGITAL_LABELS = ['CRTL_A', 'IN_A', 'CRTL_B', 'IN_B', 'nEN']
 
+OPERATING_CONDITIONS_FILE = p.Path('OperatingConditions.json')
+SWEEPS_FILE = p.Path('Sweeps.json')
 # Standard parameters
-with open('OperatingConditions.json', 'r+') as f:
+with OPERATING_CONDITIONS_FILE.open('r') as f:
     NOMINAL = jsonpickle.decode(f.read())
 
 
 
-VINS = np.unique(np.append(NOMINAL.VIN, np.arange(18,28.01, 0.5)))
-ROUTS = np.unique(np.append(NOMINAL.ROUT, np.arange(50,75,0.5)))
-FREQS = np.unique(np.append(NOMINAL.FREQ, np.arange(6.0e6,7.501e6,0.1e6)))
-DUTYS = np.unique(np.append(NOMINAL.DUTY, np.arange(0.3,0.4,0.01)))
+with open("Sweeps.json", "r+") as f:
+    SWEEP_CONFIGS = jsonpickle.decode(f.read())
 
-# VINS = NOMINAL.VIN
-# DUTYS = NOMINAL.DUTY
-# ROUTS = NOMINAL.ROUT
-# FREQS = NOMINAL.FREQ
-
-SWEEPS = [
-        Sweep('VIN', VINS, 'V'),
-        Sweep('ROUT', ROUTS, 'R'),
-        Sweep('FREQ', FREQS, 'Hz'),
-        Sweep('DUTY', DUTYS)
-    ]
 
 
 # Make sure to include these globals
@@ -117,11 +106,14 @@ def get_configuration():
 fet, load = get_configuration()
 
 if (load == '50Ω Load') or (load == 'Open Primary'):
-    SWEEPS[1] = Sweep('ROUT', NOMINAL.ROUT, 'R')
+    SWEEP_CONFIGS[1].disable()
 if load == 'Open Primary':
-    SWEEPS[0] = Sweep('VIN', NOMINAL.VIN, 'V')
-    SWEEPS[2] = Sweep('FREQ', NOMINAL.FREQ, 'Hz')
-    SWEEPS[3] = Sweep('DUTY', NOMINAL.DUTY)
+    SWEEP_CONFIGS[0].disable()
+    SWEEP_CONFIGS[2].disable()
+    SWEEP_CONFIGS[3].disable()
+
+
+SWEEPS = [swp.get_sweep() for swp in SWEEP_CONFIGS]
 
 dir = p.Path('data', DATASET, fet, load)
 wavepath = p.Path(dir, 'waveform')
@@ -130,8 +122,14 @@ sspath = p.Path(dir, 'scope')
 if CLEAR_PREVIOUS and os.path.isdir(dir.resolve()):
     shutil.rmtree(dir.resolve())
 
+
 os.makedirs(dir, exist_ok=True)
 
+with p.Path(dir,'OperatingConditions.json').open('w') as f:
+    f.write(jsonpickle.encode(NOMINAL))
+
+with p.Path(dir, 'Sweeps.json').open('w') as f:
+    f.write(jsonpickle.encode(SWEEP_CONFIGS))
 
 
 try:
@@ -182,15 +180,15 @@ try:
     v33510B.write(':DISPlay:FOCus %s' % ('CH1'))
     v33510B.write(':DISPlay:UNIT:VOLTage %s' % ('HIGHlow'))
     v33510B.write(':SOURce1:FUNCtion %s' % ('SQUare'))
-    v33510B.write(':SOURce1:FUNCtion:SQUare:DCYCle %G' % (NOMINAL.DUTY[0] * 100))
+    v33510B.write(':SOURce1:FUNCtion:SQUare:DCYCle %G' % (NOMINAL.DUTY* 100))
     v33510B.write(':SOURce2:FUNCtion %s' % ('SQUare'))
-    v33510B.write(':SOURce2:FUNCtion:SQUare:DCYCle %G' % (NOMINAL.DUTY[0] * 100))
+    v33510B.write(':SOURce2:FUNCtion:SQUare:DCYCle %G' % (NOMINAL.DUTY * 100))
     v33510B.write(':SOURce1:VOLTage:HIGH %G' % (5.0))
     v33510B.write(':SOURce1:VOLTage:LOW %G' % (0.0))
     v33510B.write(':SOURce2:VOLTage:HIGH %G' % (5.0))
     v33510B.write(':SOURce2:VOLTage:LOW %G' % (0.0))
-    v33510B.write(':SOURce1:FREQuency %G HZ' % (NOMINAL.FREQ[0]))
-    v33510B.write(':SOURce2:FREQuency %G HZ' % (NOMINAL.FREQ[0]))
+    v33510B.write(':SOURce1:FREQuency %G HZ' % (NOMINAL.FREQ))
+    v33510B.write(':SOURce2:FREQuency %G HZ' % (NOMINAL.FREQ))
     v33510B.write(':SOURce:PHASe:SYNChronize')
     v33510B.write(':SOURce2:PHASe:ADJust %G' % (180.0))
     v33510B.write(':DISPlay:FOCus %s' % ('CH2'))
@@ -210,13 +208,13 @@ try:
     # E-Load Setup
     EL34143A.write(':SOURce:VOLTage:SENSe:SOURce %s' % ('EXTernal'))
     EL34143A.write(':SOURce:MODE %s' % ('RESistance'))
-    EL34143A.write(':SOURce:RESistance:LEVel:IMMediate:AMPLitude %G' % NOMINAL.ROUT[0])
+    EL34143A.write(':SOURce:RESistance:LEVel:IMMediate:AMPLitude %G' % NOMINAL.ROUT)
     EL34143A.write(':OUTPut:STATe %d' % (1))
 
 
     # Main Power Setup
     E3634A.write(':SOURce:VOLTage:RANGe %s' % ('HIGH')) # or LOW
-    E3634A.write(':SOURce:VOLTage:LEVel:IMMediate:AMPLitude %G' % NOMINAL.VIN[0])
+    E3634A.write(':SOURce:VOLTage:LEVel:IMMediate:AMPLitude %G' % NOMINAL.VIN)
     E3634A.write(':SOURce:CURRent:LEVel:IMMediate:AMPLitude %G' % (2.2))
     E3634A.query_ascii_values(':MEASure:VOLTage:DC?')
     E3634A.write(':OUTPut:STATe %d' % (0))
@@ -270,8 +268,8 @@ try:
     MSO7034B.write(':TIMebase:MAIN:SCALe %G NS' % (50.0))
 
 
-    MSO7034B.write(':CHANnel1:SCALe %G V' % (2.0))
-    MSO7034B.write(':CHANnel2:SCALe %G V' % (2.0))
+    MSO7034B.write(':CHANnel1:SCALe %G V' % (2.5))
+    MSO7034B.write(':CHANnel2:SCALe %G V' % (2.5))
     MSO7034B.write(':CHANnel3:SCALe %G V' % (20.0))
     MSO7034B.write(':CHANnel4:SCALe %G V' % (20.0))
 
@@ -306,18 +304,17 @@ try:
         # Reset to std
         E3634A.write(':OUTPut:STATe %d' % (0))
         time.sleep(0.2)
-        E3634A.write(':SOURce:VOLTage:LEVel:IMMediate:AMPLitude %G' % NOMINAL.VIN[0])
-        EL34143A.write(':SOURce:RESistance:LEVel:IMMediate:AMPLitude %G' % NOMINAL.ROUT[0])
-        v33510B.write(':SOURce1:FUNCtion:SQUare:DCYCle %G' % (NOMINAL.DUTY[0] * 100))
-        v33510B.write(':SOURce2:FUNCtion:SQUare:DCYCle %G' % (NOMINAL.DUTY[0] * 100))
-        v33510B.write(':SOURce1:FREQuency %G HZ' % (NOMINAL.FREQ[0]))
+        E3634A.write(':SOURce:VOLTage:LEVel:IMMediate:AMPLitude %G' % NOMINAL.VIN)
+        EL34143A.write(':SOURce:RESistance:LEVel:IMMediate:AMPLitude %G' % NOMINAL.ROUT)
+        v33510B.write(':SOURce1:FUNCtion:SQUare:DCYCle %G' % (NOMINAL.DUTY * 100))
+        v33510B.write(':SOURce2:FUNCtion:SQUare:DCYCle %G' % (NOMINAL.DUTY * 100))
+        v33510B.write(':SOURce1:FREQuency %G HZ' % (NOMINAL.FREQ))
         E3634A.query_ascii_values(':MEASure:VOLTage:DC?')
         E3634A.write(':OUTPut:STATe %d' % (1))
         df_measurements = pd.DataFrame(columns=[
                 swp.Name, 'V_IN', 'I_IN', 'P_IN', 'V_OUT', 'I_OUT', 'P_OUT'
             ])
-        with open(p.Path(sweeppath, 'SweepConditions.json'), 'w') as f:
-            f.write(jsonpickle.encode( (NOMINAL, SWEEPS) ))
+        
 
         for var in swp.Points:
             print(f'{swp.Name}:{var}')
@@ -351,6 +348,7 @@ try:
                 
             time.sleep(0.5)
             E3634A.write(':SOURce:VOLTage:PROTection:CLEar')
+            E3634A.query_ascii_values(':MEASure:VOLTage:DC?')
             time.sleep(0.5)
             # General Measurements
             MSO7034B.write(':RUN')
@@ -447,7 +445,7 @@ try:
             df_measurements = df_measurements._append(new_row, ignore_index=True)
 
             # Scope captures
-            MSO7034B.write(':STOP')
+            MSO7034B.write(':SINGLE')
             if PLOT:
                 plt.figure()
             for c in range(0, 4):
@@ -500,7 +498,7 @@ try:
 
             # Screenshot
             MSO7034B.write(':RUN')
-            time.sleep(3)
+            time.sleep(1)
 
             succeed = False
             while not succeed:
