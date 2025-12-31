@@ -439,9 +439,9 @@ try:
 
             # Scope captures
             MSO7034B.write(':AUToscale')
-            time.sleep(1)
+            time.sleep(0.2)
             MSO6014A.write(':AUToscale')
-            time.sleep(1)
+            time.sleep(0.2)
             MSO7034B.write(':TRIGger:EDGE:SOURce %s' % ('EXTernal'))
             MSO7034B.write(':TRIGger:EDGE:LEVel %G' % (0.5))
             MSO7034B.write(':TRIGger:EDGE:SLOPe %s' % ('POSitive'))

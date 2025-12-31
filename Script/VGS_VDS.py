@@ -457,6 +457,8 @@ try:
             df_measurements = df_measurements._append(new_row, ignore_index=True)
 
             # Scope captures
+            MSO7034B.write(':POD1:DISPlay 1')
+            time.sleep(0.2)
             MSO7034B.write(':SINGLE')
             if PLOT:
                 plt.figure()
@@ -522,6 +524,7 @@ try:
                     img = MSO7034B.query_binary_values(':DISPlay:DATA? %s,%s,%s' %
                                                         ('PNG', 'SCReen', 'COLor'),
                                                         datatype='c')
+                    time.sleep(0.5)
                     MSO7034B.write(':STOP')
                     
                     with open(p.Path(sspath, f'{filename}_MSO7034B.png'), 'wb') as f:

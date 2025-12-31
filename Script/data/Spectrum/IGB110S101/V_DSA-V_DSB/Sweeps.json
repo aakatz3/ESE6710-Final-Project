@@ -1,0 +1,1 @@
+[{"py/object": "sweep.SweepConfig", "Name": "FREQ", "NominalValue": 6780000.0, "MinValue": 6700000.0, "MaxValue": 6900000.0, "StepValue": 10000.0, "Unit": "Hz", "Enabled": true}, {"py/object": "sweep.SweepConfig", "Name": "DUTY", "NominalValue": 0.32, "MinValue": 0.3, "MaxValue": 0.4, "StepValue": 0.01, "Unit": "", "Enabled": true}]

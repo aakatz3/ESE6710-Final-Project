@@ -24,7 +24,7 @@ class SweepConfig:
     def get_sweep(self):
         if self.Enabled:
             return Sweep(Name=self.Name,
-                         Points=np.unique(np.append([self.NominalValue], np.arange(self.MinValue,self.MaxValue + 1e-12, self.StepValue))),
+                         Points=np.unique(np.append([self.NominalValue], np.arange(self.MinValue,self.MaxValue + self.StepValue / 2, self.StepValue))),
                          Unit=self.Unit)
         else:
             return Sweep(Name=self.Name, Points=[self.NominalValue], Unit=self.Unit)
