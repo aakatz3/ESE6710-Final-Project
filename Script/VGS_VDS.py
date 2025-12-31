@@ -12,7 +12,6 @@ import sys
 import tkinter.messagebox as mb
 import tkinter as tk
 from tkinter import ttk
-from sweep import Sweep
 from playsound import playsound as play
 import jsonpickle
 import json
@@ -24,16 +23,13 @@ CLEAR_PREVIOUS = True
 DATASET = 'VGS_VDS'
 
 ANALOG_LABELS = ['VGS_A', 'VGS_B', 'VDS_A', 'VDS_B']
-DIGITAL_LABELS = ['CRTL_A', 'IN_A', 'CRTL_B', 'IN_B', 'nEN']
+DIGITAL_LABELS = ['CRTL_A', 'IN_A', 'CRTL_B', 'IN_B', 'nEN', 'GATE_1', 'GATE_2']
 
 OPERATING_CONDITIONS_FILE = p.Path('OperatingConditions.json')
 SWEEPS_FILE = p.Path('Sweeps.json')
 # Standard parameters
 with OPERATING_CONDITIONS_FILE.open('r') as f:
     NOMINAL = jsonpickle.decode(f.read())
-
-
-
 with open("Sweeps.json", "r+") as f:
     SWEEP_CONFIGS = jsonpickle.decode(f.read())
 
@@ -49,6 +45,7 @@ rm = visa.ResourceManager()
 
 
 # Instruments
+v33521A = rm.open_resource('USB0::2391::5639::MY50000944::0::INSTR')
 v33510B = rm.open_resource('USB0::0x0957::0x2607::MY62003856::0::INSTR')
 v34401A = rm.open_resource('ASRL13::INSTR', write_termination = '\r\n')
 E3631A = rm.open_resource('ASRL12::INSTR', write_termination = '\r\n')
@@ -154,7 +151,7 @@ try:
             log.write('Timestamp: ' +
                     dtime.datetime.now().astimezone().isoformat() + os.linesep)
             print('Instruments Utilized:')
-            for inst in [E3634A, E3631A, v33510B, v34401A, EDU34450A, MSO7034B, EL34143A]:
+            for inst in [E3634A, E3631A, v33521A, v33510B, v34401A, EDU34450A, MSO7034B, EL34143A]:
                 try:
                     inst.write('*CLS')
                     time.sleep(1)
@@ -171,7 +168,15 @@ try:
                         inst.write('*CLS')
 
 
+    # Reference setup
+    v33521A.write(':OUTPut:LOAD %s' % ('INFinity'))
+    v33521A.write(':SOURce:APPLy:SINusoid %G MHZ,%G VPP,%G' % (10.0, 3.0, 0.0))
+
+    # Wait for PLLs to lock
+    time.sleep(5)
+
     # Wavegen Setup
+    v33510B.write(':SOURce:ROSCillator:SOURce %s' % ('EXTernal'))
     v33510B.write(':OUTPut1:LOAD %s' % ('INFinity'))
     v33510B.write(':OUTPut2:LOAD %s' % ('INFinity'))
     v33510B.write(':DISPlay:VIEW %s' % ('DUAL'))
@@ -241,6 +246,11 @@ try:
     MSO7034B.write(':DIGital2:THReshold %s' % ('CMOS'))
     MSO7034B.write(':DIGital3:THReshold %s' % ('CMOS'))
     MSO7034B.write(':DIGital4:THReshold %s' % ('CMOS'))
+    MSO7034B.write(':DIGital5:THReshold %s' % ('CMOS'))
+    MSO7034B.write(':DIGital6:THReshold %s' % ('CMOS'))
+    MSO7034B.write(':DIGital7:DISPlay %d' % (0))
+    MSO7034B.write(':DIGital6:DISPlay %d' % (0))
+    MSO7034B.write(':DIGital5:DISPlay %d' % (0))
     MSO7034B.write(':DIGital4:DISPlay %d' % (1))
     MSO7034B.write(':DIGital3:DISPlay %d' % (1))
     MSO7034B.write(':DIGital2:DISPlay %d' % (1))
@@ -252,6 +262,8 @@ try:
     MSO7034B.write(':DIGital2:LABel "%s"' % DIGITAL_LABELS[2])
     MSO7034B.write(':DIGital3:LABel "%s"' % DIGITAL_LABELS[3])
     MSO7034B.write(':DIGital4:LABel "%s"' % DIGITAL_LABELS[4])
+    MSO7034B.write(':DIGital5:LABel "%s"' % DIGITAL_LABELS[5])
+    MSO7034B.write(':DIGital6:LABel "%s"' % DIGITAL_LABELS[6])
     MSO7034B.write(':ACQuire:TYPE %s' % ('Normal'))
     MSO7034B.write(':CHANnel1:LABel "%s"' % ANALOG_LABELS[0])
     MSO7034B.write(':CHANnel2:LABel "%s"' % ANALOG_LABELS[1])
@@ -494,7 +506,10 @@ try:
             dframe.to_csv(p.Path(wavepath, f'{filename}_MSO7034B.csv'),
                         index=False)
             
-
+            MSO7034B.write(':DIGital7:DISPlay %d' % (0))
+            MSO7034B.write(':DIGital6:DISPlay %d' % (0))
+            MSO7034B.write(':DIGital5:DISPlay %d' % (0))
+    
 
             # Screenshot
             MSO7034B.write(':RUN')

@@ -10,10 +10,9 @@ import sys
 import tkinter as tk
 from tkinter import ttk
 import tkinter.messagebox as mb
-from sweep import Sweep
 from playsound import playsound as play
-from operating_conditions import OperatingConditions
 import jsonpickle
+import json
 
 # Flags
 PLOT = True
@@ -23,29 +22,16 @@ SCREENSHOT_ALL = False
 
 ANALOG_LABELS_1 = ['V_TANK_IN', 'I_PRI', 'V_TANK_OUT', 'I_SEC']
 ANALOG_LABELS_2 = ['V_PRI', 'V_SEC', 'V_IN', 'V_OUT']
-DIGITAL_LABELS = ['CRTL_A', 'IN_A', 'CRTL_B', 'IN_B', 'nEN']
+DIGITAL_LABELS = ['CRTL_A', 'IN_A', 'CRTL_B', 'IN_B', 'nEN', 'GATE_1', 'GATE_2']
 
 # Standard parameters
-with open('OperatingConditions.json', 'r+') as f:
-    NOMINAL : OperatingConditions = jsonpickle.decode(f.read())
-
-
-
-VINS = np.unique(np.append(NOMINAL.VIN, np.arange(18,28.01, 0.5)))
-ROUTS = np.unique(np.append(NOMINAL.ROUT, np.arange(50,75,0.5)))
-FREQS = np.unique(np.append(NOMINAL.FREQ, np.arange(6.0e6,7.501e6,0.1e6)))
-DUTYS = np.unique(np.append(NOMINAL.DUTY, np.arange(0.3,0.4,0.01)))
-
-SWEEPS = [
-        Sweep('VIN', VINS, 'V'),
-        Sweep('ROUT', ROUTS, 'R'),
-        Sweep('FREQ', FREQS, 'Hz'),
-        Sweep('DUTY', DUTYS),
-        None
-    ]
-
-
-
+OPERATING_CONDITIONS_FILE = p.Path('OperatingConditions.json')
+SWEEPS_FILE = p.Path('Sweeps.json')
+# Standard parameters
+with OPERATING_CONDITIONS_FILE.open('r') as f:
+    NOMINAL = jsonpickle.decode(f.read())
+with open("Sweeps.json", "r+") as f:
+    SWEEP_CONFIGS = jsonpickle.decode(f.read())
 
 
 rm = visa.ResourceManager()
@@ -121,16 +107,21 @@ try:
     fet,load = get_configuration()
 
     if load == '50Ω Load':
-        SWEEPS[1] = Sweep('ROUT', [50], 'R')
+        SWEEP_CONFIGS[1].disable()
 
     dir = p.Path(f'data', DATASET, fet,load)
     wavepath = p.Path(dir, 'waveform')
     sspath = p.Path(dir, 'scope')
 
-
-
     os.makedirs(dir, exist_ok=True)
     
+    with p.Path(dir,'OperatingConditions.json').open('w') as f:
+        f.write(jsonpickle.encode(NOMINAL))
+
+    with p.Path(dir, 'Sweeps.json').open('w') as f:
+        f.write(jsonpickle.encode(SWEEP_CONFIGS))
+
+    SWEEPS = [swp.get_sweep() for swp in SWEEP_CONFIGS]
 
     E3631A.read_termination = '\r\n'
     E3634A.read_termination = '\r\n'
@@ -202,15 +193,15 @@ try:
     v33510B.write(':DISPlay:FOCus %s' % ('CH1'))
     v33510B.write(':DISPlay:UNIT:VOLTage %s' % ('HIGHlow'))
     v33510B.write(':SOURce1:FUNCtion %s' % ('SQUare'))
-    v33510B.write(':SOURce1:FUNCtion:SQUare:DCYCle %G' % (DUTY_STD[0] * 100))
+    v33510B.write(':SOURce1:FUNCtion:SQUare:DCYCle %G' % (NOMINAL.DUTY* 100))
     v33510B.write(':SOURce2:FUNCtion %s' % ('SQUare'))
-    v33510B.write(':SOURce2:FUNCtion:SQUare:DCYCle %G' % (DUTY_STD[0] * 100))
+    v33510B.write(':SOURce2:FUNCtion:SQUare:DCYCle %G' % (NOMINAL.DUTY * 100))
     v33510B.write(':SOURce1:VOLTage:HIGH %G' % (5.0))
     v33510B.write(':SOURce1:VOLTage:LOW %G' % (0.0))
     v33510B.write(':SOURce2:VOLTage:HIGH %G' % (5.0))
     v33510B.write(':SOURce2:VOLTage:LOW %G' % (0.0))
-    v33510B.write(':SOURce1:FREQuency %G HZ' % (FREQ_STD[0]))
-    v33510B.write(':SOURce2:FREQuency %G HZ' % (FREQ_STD[0]))
+    v33510B.write(':SOURce1:FREQuency %G HZ' % (NOMINAL.FREQ))
+    v33510B.write(':SOURce2:FREQuency %G HZ' % (NOMINAL.FREQ))
     v33510B.write(':SOURce:PHASe:SYNChronize')
     v33510B.write(':SOURce2:PHASe:ADJust %G' % (180.0))
     v33510B.write(':DISPlay:FOCus %s' % ('CH2'))
@@ -230,13 +221,13 @@ try:
     # E-Load Setup
     EL34143A.write(':SOURce:VOLTage:SENSe:SOURce %s' % ('EXTernal'))
     EL34143A.write(':SOURce:MODE %s' % ('RESistance'))
-    EL34143A.write(':SOURce:RESistance:LEVel:IMMediate:AMPLitude %G' % ROUT_STD[0])
+    EL34143A.write(':SOURce:RESistance:LEVel:IMMediate:AMPLitude %G' % NOMINAL.ROUT)
     EL34143A.write(':OUTPut:STATe %d' % (1))
 
 
     # Main Power Setup
     E3634A.write(':SOURce:VOLTage:RANGe %s' % ('HIGH')) # or LOW
-    E3634A.write(':SOURce:VOLTage:LEVel:IMMediate:AMPLitude %G' % VIN_STD[0])
+    E3634A.write(':SOURce:VOLTage:LEVel:IMMediate:AMPLitude %G' % NOMINAL.VIN)
     E3634A.write(':SOURce:CURRent:LEVel:IMMediate:AMPLitude %G' % (2.2))
     E3634A.query_ascii_values(':MEASure:VOLTage:DC?')
     E3634A.write(':OUTPut:STATe %d' % (0))
@@ -263,17 +254,24 @@ try:
     MSO7034B.write(':DIGital2:THReshold %s' % ('CMOS'))
     MSO7034B.write(':DIGital3:THReshold %s' % ('CMOS'))
     MSO7034B.write(':DIGital4:THReshold %s' % ('CMOS'))
-    # MSO7034B.write(':DIGital4:DISPlay %d' % (1))
-    # MSO7034B.write(':DIGital3:DISPlay %d' % (1))
-    # MSO7034B.write(':DIGital2:DISPlay %d' % (1))
-    # MSO7034B.write(':DIGital1:DISPlay %d' % (1))
-    # MSO7034B.write(':DIGital0:DISPlay %d' % (1))
+    MSO7034B.write(':DIGital5:THReshold %s' % ('CMOS'))
+    MSO7034B.write(':DIGital6:THReshold %s' % ('CMOS'))
+    MSO7034B.write(':DIGital7:DISPlay %d' % (0))
+    MSO7034B.write(':DIGital6:DISPlay %d' % (0))
+    MSO7034B.write(':DIGital5:DISPlay %d' % (0))
+    MSO7034B.write(':DIGital4:DISPlay %d' % (0))
+    MSO7034B.write(':DIGital3:DISPlay %d' % (0))
+    MSO7034B.write(':DIGital2:DISPlay %d' % (0))
+    MSO7034B.write(':DIGital1:DISPlay %d' % (0))
+    MSO7034B.write(':DIGital0:DISPlay %d' % (1))
     MSO7034B.write(':POD1:SIZE %s' % ('SMALl'))
     MSO7034B.write(':DIGital0:LABel "%s"' % DIGITAL_LABELS[0])
     MSO7034B.write(':DIGital1:LABel "%s"' % DIGITAL_LABELS[1])
     MSO7034B.write(':DIGital2:LABel "%s"' % DIGITAL_LABELS[2])
     MSO7034B.write(':DIGital3:LABel "%s"' % DIGITAL_LABELS[3])
     MSO7034B.write(':DIGital4:LABel "%s"' % DIGITAL_LABELS[4])
+    MSO7034B.write(':DIGital5:LABel "%s"' % DIGITAL_LABELS[5])
+    MSO7034B.write(':DIGital6:LABel "%s"' % DIGITAL_LABELS[6])
     MSO7034B.write(':ACQuire:TYPE %s' % ('HRESolution'))
     MSO7034B.write(':CHANnel1:LABel "%s"' % ANALOG_LABELS_1[0])
     MSO7034B.write(':CHANnel2:LABel "%s"' % ANALOG_LABELS_1[1])
@@ -364,11 +362,11 @@ try:
         # Reset to std
         E3634A.write(':OUTPut:STATe %d' % (0))
         time.sleep(0.2)
-        E3634A.write(':SOURce:VOLTage:LEVel:IMMediate:AMPLitude %G' % VIN_STD[0])
-        EL34143A.write(':SOURce:RESistance:LEVel:IMMediate:AMPLitude %G' % ROUT_STD[0])
-        v33510B.write(':SOURce1:FUNCtion:SQUare:DCYCle %G' % (DUTY_STD[0] * 100))
-        v33510B.write(':SOURce2:FUNCtion:SQUare:DCYCle %G' % (DUTY_STD[0] * 100))
-        v33510B.write(':SOURce1:FREQuency %G HZ' % (FREQ_STD[0]))
+        E3634A.write(':SOURce:VOLTage:LEVel:IMMediate:AMPLitude %G' % NOMINAL.VIN)
+        EL34143A.write(':SOURce:RESistance:LEVel:IMMediate:AMPLitude %G' % NOMINAL.ROUT)
+        v33510B.write(':SOURce1:FUNCtion:SQUare:DCYCle %G' % (NOMINAL.DUTY * 100))
+        v33510B.write(':SOURce2:FUNCtion:SQUare:DCYCle %G' % (NOMINAL.DUTY * 100))
+        v33510B.write(':SOURce1:FREQuency %G HZ' % (NOMINAL.FREQ))
         E3634A.query_ascii_values(':MEASure:VOLTage:DC?')
         E3634A.write(':OUTPut:STATe %d' % (1))
 
@@ -566,6 +564,25 @@ try:
                 if PLOT:
                     plt.plot(times[0:min(len(times), len(scaled_data))],
                             scaled_data[0:min(len(times), len(scaled_data))])
+             # Get digital data too!
+            MSO7034B.write(':WAVeform:SOURce %s' % ('POD1'))
+            MSO7034B.write(':WAVeform:POINts:MODE %s' % ('MAXimum'))
+            MSO7034B.write(':WAVeform:FORMat %s' % ('WORD'))
+            MSO7034B.write(':WAVeform:UNSigned %d' % (1))
+            MSO7034B.write(':WAVeform:BYTeorder %s' % ('LSBFirst'))
+
+            binary_block_data = MSO7034B.query_binary_values(':WAVeform:DATA?', datatype='H')
+            digital_data = np.array(binary_block_data, dtype=np.int64)
+            dframe.insert(5,json.dumps(DIGITAL_LABELS), digital_data[0:min(len(times), len(digital_data))])
+
+            MSO7034B.write(':DIGital7:DISPlay %d' % (0))
+            MSO7034B.write(':DIGital6:DISPlay %d' % (0))
+            MSO7034B.write(':DIGital5:DISPlay %d' % (0))
+            MSO7034B.write(':DIGital4:DISPlay %d' % (0))
+            MSO7034B.write(':DIGital3:DISPlay %d' % (0))
+            MSO7034B.write(':DIGital2:DISPlay %d' % (0))
+            MSO7034B.write(':DIGital1:DISPlay %d' % (0))
+
             if PLOT:
                     if SHOW_PLOT:
                         plt.show()
