@@ -1,0 +1,24 @@
+Inductors:
+L1A
+2.754uH
+RM6 K1
+gap=1.01mm
+8 turns
+
+L1B
+RM6 K1
+2.7857e-6 H
+gap=0.99mm
+8 turns
+
+L_MR_A
+T-108
+564.97nH
+14 turns
+
+L_MR_B
+T-108
+14 turns
+566.72nH
+
+CMr=488.41p

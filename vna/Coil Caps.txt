@@ -1,0 +1,35 @@
+Mag induct (open circuit): 4.2206µH
+Leakage + Magnitizing (short circuit): 3.7919µH
+CS_TX_B = 288.54pF
+
+
+Desired primary capacitance (per branch) 264.8
+B:0.8+1+
+A:1.2+8.2+
+
+Secondary capacitance per branch 267.8
+B:240+24+1.2+0.3
+A:3.3+ 	
+
+
+
+
+RX_H=266.74
+RX_L=266.74
+TX_H=263.8??
+TX_L=263.7
+
+
+
+
+JR500 replacement: ganfet: 47pf
+
+
+
+Desired CP EXT=272pF
+
+
+CMr=499
+targ=487
+
+C22:222?

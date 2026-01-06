@@ -1,0 +1,6 @@
+INCLUDE $HPEESOF_DIR/oalibs/analog_rf.defs
+INCLUDE $HPEESOF_DIR/oalibs/dsp.defs
+INCLUDE $HOME/Documents/ESE578/ADS/AVX_RF_Components/lib.defs
+INCLUDE $HOME/design_kits/TDK_Library_for_ADS_v2022.07/lib.defs
+DEFINE ADS_Wrk_lib ADS_Wrk_lib
+ASSIGN ADS_Wrk_lib libMode shared
