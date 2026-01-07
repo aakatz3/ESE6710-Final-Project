@@ -10,3 +10,6 @@
 [submodule "Altium/Coil Interface Board"]
 	path = Altium/Coil Interface Board
 	url = https://afs-vcs-ue1.365.altium.com/git/7BF7D7C3-856B-4F23-BFD8-6C8A5E9D09CF.git
+[submodule "Altium/aakatz ESE6710 capacitance stub PCB"]
+	path = Altium/aakatz ESE6710 capacitance stub PCB
+	url = https://afs-vcs-ue1.365.altium.com/git/F85D3709-3D05-4CCB-B731-56E7BD981CA1.git 
