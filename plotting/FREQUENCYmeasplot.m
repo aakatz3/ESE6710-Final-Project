@@ -46,8 +46,8 @@ Vout_s = Vout_s(is); Pout_s = Pout_s(is);
 eff_s  = eff_s(is);  Vds_s  = Vds_s(is);
 
 %% ---------------- X-axis range (fixed: 6.25–7 MHz) ----------------
-xmin = 6.0e6;
-xmax = 7.0e6;
+xmin = 6.7e6;
+xmax = 6.9e6;
 
 %% ---------------- figure style ----------------
 figW = 3.45;
@@ -64,7 +64,7 @@ applyStyle = @(ax) set(ax, ...
     'Layer','top', ...
     'TickLabelInterpreter','latex');
 
-setYlimRule = @(ax,y) ylim(ax, [0.1*min(y) 1.4*max(y)]);
+setYlimRule = @(ax,y) ylim(ax, [0.8*min(y) 1.2*max(y)]);
 
 legendLoc = 'northwest';
 
