@@ -1,0 +1,69 @@
+// Copyright Keysight Technologies 2017 - 2019  
+/*----------------------------------------------------------------------------+/
+
+FILE         : User_Input.ael
+
+COMMENTS     : user to specify the via layers and parameter range values
+
+/+----------------------------------------------------------------------------*/
+
+// Process specific parameter ranges
+decl spcgMin = 2;   	// minimum value of spacing
+decl spcgMax = 30;		// Maximum value of spacing
+decl WMin = 2.5;		// minimum value of Line width
+decl WMax = 100;		// Maximum value of Line width
+
+decl WsolMin = 30;		// minimum value of Solenoid width
+decl WsolMax = 200;		// Maximum value of Solenoid width
+
+decl noTurnsMax = 6;		// Maximum value of number of turns
+decl uPasWMax = 30;	// Maximum value of UPass Width
+decl uPasWMin = 2.5;	// minimum value of UPass Width
+
+decl LMin = 2.5;
+decl LMax = 100;
+	
+decl GndWmlnMin = 2.5;
+decl GndWmlnMax = 100;		
+decl GndWcpwMin = 2.5;
+decl GndWcpwMax = 100;	
+	
+decl GndSpcMin = 2.5;
+decl GndSpcMax = 100;	
+decl viaRowsMin = 2;
+decl viaRowsMax = 10;
+// List containing the top and bottom layers of Via layers
+// Metal and Via layers name should be same as in technology 
+decl viaLayerList = list( "metal2", "metal1",  "via1",
+						  "metal3", "metal2",  "via2",
+						  "metal4", "metal3",  "via3",
+						  "metal5", "metal4",  "via4",
+						  "metal6", "metal5",  "via5",
+						  "metal7", "metal6",  "via6",
+						  "metal8", "metal7",  "via7",
+						  "metal9", "metal8",  "via8",
+						  "metal10","metal9",  "via9",
+						  "metal11","metal10", "via10",
+						  "metal12","metal11", "via11",
+						  "metal13","metal12", "via12",
+						  "metal14","metal13", "via13",
+						  "metal15","metal14", "via14"
+						  );
+
+// List containing the Dimensions of Via layers		
+								// viaSi, viaSp, viaEnc
+decl viaDimList = list("via1", 0.26 um, 0.26 um, 0.07 um,
+                       "via2", 0.26 um, 0.26 um, 0.07 um,
+                       "via3", 0.26 um, 0.26 um, 0.07 um,
+                       "via4", 0.5 um, 0.5 um, 0.35 um,
+                       "via5", 0.5 um, 0.5 um, 0.35 um,
+                       "via6", "NA", "NA", "NA",
+                       "via7", "NA", "NA", "NA",
+                       "via8", "NA", "NA", "NA",
+                       "via9", "NA", "NA", "NA",
+                       "via10", "NA", "NA", "NA",
+                       "via11", "NA", "NA", "NA",
+                       "via12", "NA", "NA", "NA",
+                       "via13", "NA", "NA", "NA",
+                       "via14", "NA", "NA", "NA"
+					   );

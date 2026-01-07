@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<abl:ABLRoot xmlns:abl="http://keysight.com/eesof/abl" version="1.13" sourceName="ADS">
+    <abl:Library name="ADS_Wrk_lib">
+        <abl:Technology>
+            <abl:ReferencedTechnologies>
+                <abl:ReferencedTechnology referencedLibraryName="ads_schematic_layers_ic">
+                    <abl:Technology>
+                        <abl:TechUnits>
+                            <abl:SchematicUnits oaUserUnits="inch" userUnits="in" DBUperUU="160"/>
+                            <abl:SymbolUnits oaUserUnits="inch" userUnits="in" DBUperUU="160"/>
+                            <abl:LayoutUnits unitsEnabled="false" oaUserUnits="micron" userUnits="um" DBUperUU="1000"/>
+                            <abl:DefaultManufacturingGrid manufacturingGrid="0"/>
+                        </abl:TechUnits>
+                        <abl:Layers>
+                            <abl:Layer number="240" processRole="Conductor" name="substrate" manufacturingGrid="0"/>
+                            <abl:Layer number="254" processRole="Conductor" name="background" manufacturingGrid="0"/>
+                            <abl:Layer number="251" processRole="Conductor" name="grid" manufacturingGrid="0"/>
+                            <abl:Layer number="237" processRole="Conductor" name="annotate" manufacturingGrid="0"/>
+                            <abl:Layer number="236" processRole="Conductor" name="instance" manufacturingGrid="0"/>
+                            <abl:Layer number="235" processRole="Conductor" name="prBoundary" manufacturingGrid="0"/>
+                            <abl:Layer number="234" processRole="Conductor" name="align" manufacturingGrid="0"/>
+                            <abl:Layer number="205" processRole="Conductor" name="hardFence" manufacturingGrid="0"/>
+                            <abl:Layer number="206" processRole="Conductor" name="softFence" manufacturingGrid="0"/>
+                            <abl:Layer number="230" processRole="Conductor" name="text" manufacturingGrid="0"/>
+                            <abl:Layer number="232" processRole="Conductor" name="border" manufacturingGrid="0"/>
+                            <abl:Layer number="231" processRole="Conductor" name="device" manufacturingGrid="0"/>
+                            <abl:Layer number="228" processRole="Conductor" name="wire" manufacturingGrid="0"/>
+                            <abl:Layer number="229" processRole="Conductor" name="pin" manufacturingGrid="0"/>
+                            <abl:Layer number="252" processRole="Conductor" name="axis" manufacturingGrid="0"/>
+                            <abl:Layer number="219" processRole="Conductor" name="edgeLayer" manufacturingGrid="0"/>
+                            <abl:Layer number="233" processRole="Conductor" name="snap" manufacturingGrid="0"/>
+                            <abl:Layer number="218" processRole="Conductor" name="stretch" manufacturingGrid="0"/>
+                            <abl:Layer number="207" processRole="Conductor" name="y0" manufacturingGrid="0"/>
+                            <abl:Layer number="208" processRole="Conductor" name="y1" manufacturingGrid="0"/>
+                            <abl:Layer number="209" processRole="Conductor" name="y2" manufacturingGrid="0"/>
+                            <abl:Layer number="210" processRole="Conductor" name="y3" manufacturingGrid="0"/>
+                            <abl:Layer number="211" processRole="Conductor" name="y4" manufacturingGrid="0"/>
+                            <abl:Layer number="212" processRole="Conductor" name="y5" manufacturingGrid="0"/>
+                            <abl:Layer number="213" processRole="Conductor" name="y6" manufacturingGrid="0"/>
+                            <abl:Layer number="214" processRole="Conductor" name="y7" manufacturingGrid="0"/>
+                            <abl:Layer number="215" processRole="Conductor" name="y8" manufacturingGrid="0"/>
+                            <abl:Layer number="216" processRole="Conductor" name="y9" manufacturingGrid="0"/>
+                            <abl:Layer number="253" processRole="Conductor" name="hilite" manufacturingGrid="0"/>
+                            <abl:Layer number="239" processRole="Conductor" name="select" manufacturingGrid="0"/>
+                            <abl:Layer number="226" processRole="Conductor" name="drive" manufacturingGrid="0"/>
+                            <abl:Layer number="224" processRole="Conductor" name="hiz" manufacturingGrid="0"/>
+                            <abl:Layer number="225" processRole="Conductor" name="resist" manufacturingGrid="0"/>
+                            <abl:Layer number="223" processRole="Conductor" name="spike" manufacturingGrid="0"/>
+                            <abl:Layer number="227" processRole="Conductor" name="supply" manufacturingGrid="0"/>
+                            <abl:Layer number="222" processRole="Conductor" name="unknown" manufacturingGrid="0"/>
+                            <abl:Layer number="221" processRole="Conductor" name="unset" manufacturingGrid="0"/>
+                            <abl:Layer number="217" processRole="Conductor" name="designFlow" manufacturingGrid="0"/>
+                            <abl:Layer number="220" processRole="Conductor" name="changedLayer" manufacturingGrid="0"/>
+                            <abl:Layer number="238" processRole="Conductor" name="marker" manufacturingGrid="0"/>
+                            <abl:Layer number="201" processRole="Conductor" name="Row" manufacturingGrid="0"/>
+                            <abl:Layer number="202" processRole="Conductor" name="Group" manufacturingGrid="0"/>
+                            <abl:Layer number="203" processRole="Conductor" name="Cannotoccupy" manufacturingGrid="0"/>
+                            <abl:Layer number="204" processRole="Conductor" name="Canplace" manufacturingGrid="0"/>
+                            <abl:Layer number="200" processRole="Conductor" name="Unrouted" manufacturingGrid="0"/>
+                            <abl:Layer number="255" processRole="DRC" name="drc_error" manufacturingGrid="0"/>
+                        </abl:Layers>
+                        <abl:ReservedPurposes>
+                            <abl:Purpose number="-1" type="drawing" name="drawing"/>
+                            <abl:Purpose number="-2" type="fill" name="fill"/>
+                            <abl:Purpose number="-3" type="slot" name="slot"/>
+                            <abl:Purpose number="-4" type="OPCSerif" name="OPCSerif"/>
+                            <abl:Purpose number="-5" type="OPCAntiSerif" name="OPCAntiSerif"/>
+                            <abl:Purpose number="-6" type="annotation" name="annotation"/>
+                            <abl:Purpose number="-7" type="gapFill" name="gapFill"/>
+                            <abl:Purpose number="-8" type="redundant" name="redundant"/>
+                            <abl:Purpose number="-9" type="oaAny" name="oaAny"/>
+                            <abl:Purpose number="-10" type="oaNo" name="oaNo"/>
+                            <abl:Purpose number="-11" type="oaFillOPC" name="oaFillOPC"/>
+                            <abl:Purpose number="-12" type="oaCustomFill" name="oaCustomFill"/>
+                        </abl:ReservedPurposes>
+                        <abl:Purposes>
+                            <abl:Purpose number="246" type="drawing" name="drawing6"/>
+                            <abl:Purpose number="255" type="drawing" name="all"/>
+                            <abl:Purpose number="254" type="drawing" name="cell"/>
+                            <abl:Purpose number="253" type="drawing" name="net"/>
+                            <abl:Purpose number="251" type="drawing" name="pin"/>
+                            <abl:Purpose number="250" type="drawing" name="boundary"/>
+                            <abl:Purpose number="249" type="drawing" name="drawing9"/>
+                            <abl:Purpose number="248" type="drawing" name="drawing8"/>
+                            <abl:Purpose number="247" type="drawing" name="drawing7"/>
+                            <abl:Purpose number="245" type="drawing" name="drawing5"/>
+                            <abl:Purpose number="244" type="drawing" name="drawing4"/>
+                            <abl:Purpose number="243" type="drawing" name="drawing3"/>
+                            <abl:Purpose number="242" type="drawing" name="drawing2"/>
+                            <abl:Purpose number="241" type="drawing" name="drawing1"/>
+                            <abl:Purpose number="240" type="drawing" name="annotate"/>
+                            <abl:Purpose number="239" type="drawing" name="error"/>
+                            <abl:Purpose number="238" type="drawing" name="flight"/>
+                            <abl:Purpose number="237" type="drawing" name="label"/>
+                            <abl:Purpose number="236" type="drawing" name="tool0"/>
+                            <abl:Purpose number="235" type="drawing" name="tool1"/>
+                            <abl:Purpose number="234" type="drawing" name="warning"/>
+                            <abl:Purpose number="231" type="drawing" name="grid"/>
+                            <abl:Purpose number="229" type="drawing" name="track"/>
+                            <abl:Purpose number="228" type="drawing" name="info"/>
+                            <abl:Purpose number="227" type="drawing" name="ackWarn"/>
+                            <abl:Purpose number="226" type="drawing" name="soError"/>
+                            <abl:Purpose number="225" type="drawing" name="soCritical"/>
+                            <abl:Purpose number="224" type="drawing" name="critical"/>
+                            <abl:Purpose number="223" type="drawing" name="fatal"/>
+                            <abl:Purpose number="0" type="drawing" name="unknown"/>
+                            <abl:Purpose number="230" type="drawing" name="blockage"/>
+                        </abl:Purposes>
+                        <abl:DisplayProperties>
+                            <abl:DisplayProperty layer="device" purpose="label" displayMode="Outlined" lineType="Solid" fillType="100001" visible="true" protected="false" r="255" g="0" b="255" alpha="200"/>
+                            <abl:DisplayProperty layer="instance" purpose="drawing" displayMode="Outlined" lineType="Solid" fillType="-2" visible="false" protected="true" r="255" g="0" b="0" alpha="200"/>
+                            <abl:DisplayProperty layer="instance" purpose="label" displayMode="Outlined" lineType="Solid" fillType="-2" visible="true" protected="true" r="0" g="0" b="255" alpha="200"/>
+                            <abl:DisplayProperty layer="annotate" purpose="drawing" displayMode="Outlined" lineType="Solid" fillType="-2" visible="true" protected="false" r="51" g="51" b="153" alpha="200"/>
+                            <abl:DisplayProperty layer="annotate" purpose="drawing1" displayMode="Outlined" lineType="Solid" fillType="-2" visible="true" protected="false" r="51" g="51" b="153" alpha="200"/>
+                            <abl:DisplayProperty layer="annotate" purpose="drawing2" displayMode="Outlined" lineType="Solid" fillType="-2" visible="true" protected="false" r="0" g="0" b="255" alpha="200"/>
+                            <abl:DisplayProperty layer="annotate" purpose="drawing3" displayMode="Outlined" lineType="Solid" fillType="-2" visible="true" protected="false" r="0" g="0" b="255" alpha="200"/>
+                            <abl:DisplayProperty layer="annotate" purpose="drawing4" displayMode="Outlined" lineType="Solid" fillType="-2" visible="true" protected="false" r="0" g="0" b="0" alpha="200"/>
+                            <abl:DisplayProperty layer="annotate" purpose="drawing5" displayMode="Outlined" lineType="Solid" fillType="100001" visible="true" protected="false" r="0" g="0" b="255" alpha="200"/>
+                            <abl:DisplayProperty layer="annotate" purpose="drawing6" displayMode="Outlined" lineType="Solid" fillType="100001" visible="true" protected="false" r="0" g="0" b="0" alpha="200"/>
+                            <abl:DisplayProperty layer="annotate" purpose="drawing7" displayMode="Outlined" lineType="Solid" fillType="-2" visible="true" protected="false" r="0" g="0" b="255" alpha="200"/>
+                            <abl:DisplayProperty layer="annotate" purpose="drawing8" displayMode="Outlined" lineType="Solid" fillType="-2" visible="true" protected="false" r="0" g="0" b="0" alpha="200"/>
+                            <abl:DisplayProperty layer="annotate" purpose="drawing9" displayMode="Outlined" lineType="Solid" fillType="100001" visible="true" protected="false" r="0" g="0" b="255" alpha="200"/>
+                            <abl:DisplayProperty layer="device" purpose="annotate" displayMode="Outlined" lineType="Solid" fillType="-2" visible="true" protected="false" r="57" g="191" b="255" alpha="200"/>
+                            <abl:DisplayProperty layer="device" purpose="drawing" displayMode="Outlined" lineType="Solid" fillType="-2" visible="true" protected="false" r="51" g="51" b="153" alpha="200"/>
+                            <abl:DisplayProperty layer="device" purpose="drawing1" displayMode="Filled" lineType="Solid" fillType="-2" visible="true" protected="false" r="0" g="204" b="102" alpha="200"/>
+                            <abl:DisplayProperty layer="device" purpose="drawing3" displayMode="Outlined" lineType="Solid" fillType="-2" visible="true" protected="false" r="255" g="0" b="255" alpha="200"/>
+                            <abl:DisplayProperty layer="device" purpose="drawing4" displayMode="Outlined" lineType="Solid" fillType="-2" visible="true" protected="false" r="0" g="0" b="0" alpha="200"/>
+                            <abl:DisplayProperty layer="device" purpose="drawing5" displayMode="Filled" lineType="Solid" fillType="-2" visible="true" protected="false" r="0" g="0" b="255" alpha="200"/>
+                            <abl:DisplayProperty layer="device" purpose="drawing6" displayMode="Outlined" lineType="Solid" fillType="-2" visible="true" protected="false" r="0" g="0" b="255" alpha="200"/>
+                            <abl:DisplayProperty layer="device" purpose="drawing7" displayMode="Outlined" lineType="Solid" fillType="-2" visible="true" protected="false" r="0" g="204" b="102" alpha="200"/>
+                            <abl:DisplayProperty layer="pin" purpose="label" displayMode="Outlined" lineType="Solid" fillType="-2" visible="true" protected="false" r="0" g="0" b="255" alpha="200"/>
+                            <abl:DisplayProperty layer="text" purpose="drawing" displayMode="Outlined" lineType="Solid" fillType="-2" visible="true" protected="false" r="0" g="0" b="0" alpha="200"/>
+                            <abl:DisplayProperty layer="wire" purpose="drawing" displayMode="Outlined" lineType="Solid" fillType="-2" visible="true" protected="false" r="199" g="21" b="133" alpha="200"/>
+                            <abl:DisplayProperty layer="y7" purpose="drawing" displayMode="Outlined" lineType="Solid" fillType="-2" visible="true" protected="false" r="57" g="191" b="255" alpha="200"/>
+                            <abl:DisplayProperty layer="y8" purpose="drawing" displayMode="Both" lineType="Solid" fillType="-2" visible="true" protected="false" r="255" g="128" b="0" alpha="200"/>
+                            <abl:DisplayProperty layer="wire" purpose="label" displayMode="Outlined" lineType="Solid" fillType="-2" visible="true" protected="false" r="199" g="21" b="133" alpha="200"/>
+                            <abl:DisplayProperty layer="pin" purpose="annotate" displayMode="Outlined" lineType="Solid" fillType="-2" visible="true" protected="false" r="255" g="0" b="255" alpha="200"/>
+                            <abl:DisplayProperty layer="y9" purpose="drawing1" displayMode="Both" lineType="Solid" fillType="-2" visible="true" protected="false" r="255" g="128" b="0" alpha="200"/>
+                            <abl:DisplayProperty layer="y9" purpose="drawing2" displayMode="Both" lineType="Solid" fillType="-2" visible="true" protected="false" r="255" g="0" b="255" alpha="200"/>
+                            <abl:DisplayProperty layer="y9" purpose="drawing3" displayMode="Both" lineType="Solid" fillType="-2" visible="true" protected="false" r="0" g="0" b="255" alpha="200"/>
+                            <abl:DisplayProperty layer="y9" purpose="drawing4" displayMode="Both" lineType="Solid" fillType="-2" visible="true" protected="false" r="38" g="140" b="107" alpha="200"/>
+                            <abl:DisplayProperty layer="y9" purpose="drawing5" displayMode="Both" lineType="Solid" fillType="-2" visible="true" protected="false" r="0" g="0" b="0" alpha="200"/>
+                            <abl:DisplayProperty layer="y9" purpose="drawing6" displayMode="Both" lineType="Solid" fillType="-2" visible="true" protected="false" r="255" g="0" b="0" alpha="200"/>
+                            <abl:DisplayProperty layer="y9" purpose="drawing7" displayMode="Both" lineType="Solid" fillType="-2" visible="true" protected="false" r="191" g="64" b="38" alpha="200"/>
+                            <abl:DisplayProperty layer="drc_error" purpose="drawing" displayMode="Outlined" lineType="Solid" fillType="-2" visible="true" protected="false" r="255" g="255" b="0" alpha="200"/>
+                        </abl:DisplayProperties>
+                        <abl:Materials/>
+                        <abl:ViaDefinitions/>
+                        <abl:LineTypes>
+                            <abl:LineItems/>
+                            <abl:DefaultLineItems/>
+                        </abl:LineTypes>
+                    </abl:Technology>
+                </abl:ReferencedTechnology>
+            </abl:ReferencedTechnologies>
+            <abl:TechUnits>
+                <abl:SchematicUnits unitsEnabled="false" oaUserUnits="inch" userUnits="in" DBUperUU="160"/>
+                <abl:SymbolUnits unitsEnabled="false" oaUserUnits="inch" userUnits="in" DBUperUU="160"/>
+                <abl:LayoutUnits unitsEnabled="false" oaUserUnits="micron" userUnits="um" DBUperUU="1000"/>
+                <abl:DefaultManufacturingGrid manufacturingGrid="0"/>
+            </abl:TechUnits>
+            <abl:ReservedPurposes>
+                <abl:Purpose number="-1" type="drawing" name="drawing"/>
+                <abl:Purpose number="-2" type="fill" name="fill"/>
+                <abl:Purpose number="-3" type="slot" name="slot"/>
+                <abl:Purpose number="-4" type="OPCSerif" name="OPCSerif"/>
+                <abl:Purpose number="-5" type="OPCAntiSerif" name="OPCAntiSerif"/>
+                <abl:Purpose number="-6" type="annotation" name="annotation"/>
+                <abl:Purpose number="-7" type="gapFill" name="gapFill"/>
+                <abl:Purpose number="-8" type="redundant" name="redundant"/>
+                <abl:Purpose number="-9" type="oaAny" name="oaAny"/>
+                <abl:Purpose number="-10" type="oaNo" name="oaNo"/>
+                <abl:Purpose number="-11" type="oaFillOPC" name="oaFillOPC"/>
+                <abl:Purpose number="-12" type="oaCustomFill" name="oaCustomFill"/>
+            </abl:ReservedPurposes>
+            <abl:DisplayProperties>
+                <abl:DisplayProperty layer="device" purpose="label" displayMode="Outlined" lineType="Solid" fillType="100001" visible="true" protected="false" r="255" g="0" b="255" alpha="200"/>
+                <abl:DisplayProperty layer="instance" purpose="drawing" displayMode="Outlined" lineType="Solid" fillType="-2" visible="false" protected="true" r="255" g="0" b="0" alpha="200"/>
+                <abl:DisplayProperty layer="instance" purpose="label" displayMode="Outlined" lineType="Solid" fillType="-2" visible="true" protected="true" r="0" g="0" b="255" alpha="200"/>
+                <abl:DisplayProperty layer="annotate" purpose="drawing" displayMode="Outlined" lineType="Solid" fillType="-2" visible="true" protected="false" r="51" g="51" b="153" alpha="200"/>
+                <abl:DisplayProperty layer="annotate" purpose="drawing1" displayMode="Outlined" lineType="Solid" fillType="-2" visible="true" protected="false" r="51" g="51" b="153" alpha="200"/>
+                <abl:DisplayProperty layer="annotate" purpose="drawing2" displayMode="Outlined" lineType="Solid" fillType="-2" visible="true" protected="false" r="0" g="0" b="255" alpha="200"/>
+                <abl:DisplayProperty layer="annotate" purpose="drawing3" displayMode="Outlined" lineType="Solid" fillType="-2" visible="true" protected="false" r="0" g="0" b="255" alpha="200"/>
+                <abl:DisplayProperty layer="annotate" purpose="drawing4" displayMode="Outlined" lineType="Solid" fillType="-2" visible="true" protected="false" r="0" g="0" b="0" alpha="200"/>
+                <abl:DisplayProperty layer="annotate" purpose="drawing5" displayMode="Outlined" lineType="Solid" fillType="100001" visible="true" protected="false" r="0" g="0" b="255" alpha="200"/>
+                <abl:DisplayProperty layer="annotate" purpose="drawing6" displayMode="Outlined" lineType="Solid" fillType="100001" visible="true" protected="false" r="0" g="0" b="0" alpha="200"/>
+                <abl:DisplayProperty layer="annotate" purpose="drawing7" displayMode="Outlined" lineType="Solid" fillType="-2" visible="true" protected="false" r="0" g="0" b="255" alpha="200"/>
+                <abl:DisplayProperty layer="annotate" purpose="drawing8" displayMode="Outlined" lineType="Solid" fillType="-2" visible="true" protected="false" r="0" g="0" b="0" alpha="200"/>
+                <abl:DisplayProperty layer="annotate" purpose="drawing9" displayMode="Outlined" lineType="Solid" fillType="100001" visible="true" protected="false" r="0" g="0" b="255" alpha="200"/>
+                <abl:DisplayProperty layer="device" purpose="annotate" displayMode="Outlined" lineType="Solid" fillType="-2" visible="true" protected="false" r="57" g="191" b="255" alpha="200"/>
+                <abl:DisplayProperty layer="device" purpose="drawing" displayMode="Outlined" lineType="Solid" fillType="-2" visible="true" protected="false" r="51" g="51" b="153" alpha="200"/>
+                <abl:DisplayProperty layer="device" purpose="drawing1" displayMode="Filled" lineType="Solid" fillType="-2" visible="true" protected="false" r="0" g="204" b="102" alpha="200"/>
+                <abl:DisplayProperty layer="device" purpose="drawing3" displayMode="Outlined" lineType="Solid" fillType="-2" visible="true" protected="false" r="255" g="0" b="255" alpha="200"/>
+                <abl:DisplayProperty layer="device" purpose="drawing4" displayMode="Outlined" lineType="Solid" fillType="-2" visible="true" protected="false" r="0" g="0" b="0" alpha="200"/>
+                <abl:DisplayProperty layer="device" purpose="drawing5" displayMode="Filled" lineType="Solid" fillType="-2" visible="true" protected="false" r="0" g="0" b="255" alpha="200"/>
+                <abl:DisplayProperty layer="device" purpose="drawing6" displayMode="Outlined" lineType="Solid" fillType="-2" visible="true" protected="false" r="0" g="0" b="255" alpha="200"/>
+                <abl:DisplayProperty layer="device" purpose="drawing7" displayMode="Outlined" lineType="Solid" fillType="-2" visible="true" protected="false" r="0" g="204" b="102" alpha="200"/>
+                <abl:DisplayProperty layer="pin" purpose="label" displayMode="Outlined" lineType="Solid" fillType="-2" visible="true" protected="false" r="0" g="0" b="255" alpha="200"/>
+                <abl:DisplayProperty layer="text" purpose="drawing" displayMode="Outlined" lineType="Solid" fillType="-2" visible="true" protected="false" r="0" g="0" b="0" alpha="200"/>
+                <abl:DisplayProperty layer="wire" purpose="drawing" displayMode="Outlined" lineType="Solid" fillType="-2" visible="true" protected="false" r="199" g="21" b="133" alpha="200"/>
+                <abl:DisplayProperty layer="y7" purpose="drawing" displayMode="Outlined" lineType="Solid" fillType="-2" visible="true" protected="false" r="57" g="191" b="255" alpha="200"/>
+                <abl:DisplayProperty layer="y8" purpose="drawing" displayMode="Both" lineType="Solid" fillType="-2" visible="true" protected="false" r="255" g="128" b="0" alpha="200"/>
+                <abl:DisplayProperty layer="wire" purpose="label" displayMode="Outlined" lineType="Solid" fillType="-2" visible="true" protected="false" r="199" g="21" b="133" alpha="200"/>
+                <abl:DisplayProperty layer="pin" purpose="annotate" displayMode="Outlined" lineType="Solid" fillType="-2" visible="true" protected="false" r="255" g="0" b="255" alpha="200"/>
+                <abl:DisplayProperty layer="y9" purpose="drawing1" displayMode="Both" lineType="Solid" fillType="-2" visible="true" protected="false" r="255" g="128" b="0" alpha="200"/>
+                <abl:DisplayProperty layer="y9" purpose="drawing2" displayMode="Both" lineType="Solid" fillType="-2" visible="true" protected="false" r="255" g="0" b="255" alpha="200"/>
+                <abl:DisplayProperty layer="y9" purpose="drawing3" displayMode="Both" lineType="Solid" fillType="-2" visible="true" protected="false" r="0" g="0" b="255" alpha="200"/>
+                <abl:DisplayProperty layer="y9" purpose="drawing4" displayMode="Both" lineType="Solid" fillType="-2" visible="true" protected="false" r="38" g="140" b="107" alpha="200"/>
+                <abl:DisplayProperty layer="y9" purpose="drawing5" displayMode="Both" lineType="Solid" fillType="-2" visible="true" protected="false" r="0" g="0" b="0" alpha="200"/>
+                <abl:DisplayProperty layer="y9" purpose="drawing6" displayMode="Both" lineType="Solid" fillType="-2" visible="true" protected="false" r="255" g="0" b="0" alpha="200"/>
+                <abl:DisplayProperty layer="y9" purpose="drawing7" displayMode="Both" lineType="Solid" fillType="-2" visible="true" protected="false" r="191" g="64" b="38" alpha="200"/>
+                <abl:DisplayProperty layer="drc_error" purpose="drawing" displayMode="Outlined" lineType="Solid" fillType="-2" visible="true" protected="false" r="255" g="255" b="0" alpha="200"/>
+            </abl:DisplayProperties>
+            <abl:DisplayOrder currentLayerNumber="231" currentPurposeNumber="237" reverseOrder="false">
+                <abl:LayerID layerNumber="231" purposeNumber="237"/>
+                <abl:LayerID layerNumber="236" purposeNumber="-1"/>
+                <abl:LayerID layerNumber="236" purposeNumber="237"/>
+                <abl:LayerID layerNumber="237" purposeNumber="-1"/>
+                <abl:LayerID layerNumber="237" purposeNumber="241"/>
+                <abl:LayerID layerNumber="237" purposeNumber="242"/>
+                <abl:LayerID layerNumber="237" purposeNumber="243"/>
+                <abl:LayerID layerNumber="237" purposeNumber="244"/>
+                <abl:LayerID layerNumber="237" purposeNumber="245"/>
+                <abl:LayerID layerNumber="237" purposeNumber="246"/>
+                <abl:LayerID layerNumber="237" purposeNumber="247"/>
+                <abl:LayerID layerNumber="237" purposeNumber="248"/>
+                <abl:LayerID layerNumber="237" purposeNumber="249"/>
+                <abl:LayerID layerNumber="231" purposeNumber="240"/>
+                <abl:LayerID layerNumber="231" purposeNumber="-1"/>
+                <abl:LayerID layerNumber="231" purposeNumber="241"/>
+                <abl:LayerID layerNumber="231" purposeNumber="243"/>
+                <abl:LayerID layerNumber="231" purposeNumber="244"/>
+                <abl:LayerID layerNumber="231" purposeNumber="245"/>
+                <abl:LayerID layerNumber="231" purposeNumber="246"/>
+                <abl:LayerID layerNumber="231" purposeNumber="247"/>
+                <abl:LayerID layerNumber="229" purposeNumber="237"/>
+                <abl:LayerID layerNumber="230" purposeNumber="-1"/>
+                <abl:LayerID layerNumber="228" purposeNumber="-1"/>
+                <abl:LayerID layerNumber="214" purposeNumber="-1"/>
+                <abl:LayerID layerNumber="215" purposeNumber="-1"/>
+                <abl:LayerID layerNumber="228" purposeNumber="237"/>
+                <abl:LayerID layerNumber="229" purposeNumber="240"/>
+                <abl:LayerID layerNumber="216" purposeNumber="241"/>
+                <abl:LayerID layerNumber="216" purposeNumber="242"/>
+                <abl:LayerID layerNumber="216" purposeNumber="243"/>
+                <abl:LayerID layerNumber="216" purposeNumber="244"/>
+                <abl:LayerID layerNumber="216" purposeNumber="245"/>
+                <abl:LayerID layerNumber="216" purposeNumber="246"/>
+                <abl:LayerID layerNumber="216" purposeNumber="247"/>
+                <abl:LayerID layerNumber="255" purposeNumber="-1"/>
+            </abl:DisplayOrder>
+            <abl:Materials/>
+            <abl:ViaDefinitions/>
+            <abl:LineTypes>
+                <abl:LineItems/>
+                <abl:DefaultLineItems/>
+            </abl:LineTypes>
+        </abl:Technology>
+        <abl:LibraryPreferences>
+            <abl:SchematicPreferences fileName="schematic.prf">
+                <abl:FileContents><![CDATA[# @(#) $Source: /cvs/wlv/src/pde/text/schematic_lib.prf.mil,v $ $Revision: 1.1 $ $Date: 2010/11/02 04:49:22 $  
+textHeight 0.125000
+instTextHeight 0.125000
+gridSnapX 0.062500
+gridSnapY 0.062500
+tapLength 25.000000
+portSize 4.000000
+unitsLng 1
+instNameLayerID device:annotate
+instIDLayerID annotate:drawing7
+instParam1LayerID annotate:drawing
+pinAnnotLayerID pin:label
+]]></abl:FileContents>
+            </abl:SchematicPreferences>
+        </abl:LibraryPreferences>
+        <abl:Cells>
+            <abl:Cell name="converter_overall">
+                <abl:Views>
+                    <abl:SchematicView type="schematic" name="schematic">
+                        <abl:Shapes>
+                            <abl:Wire layerNum="228" oaType="Line" purposeNum="-1" hasPin="false" adsShapeType="Wire" adsShapeThickness="Thin">
+                                <abl:Net name="N__2"/>
+                                <abl:GenPolyline width="0.00000">
+                                    <abl:CenterLine hasArcs="false">
+                                        <abl:Points>0.00000,0.00000 0.43750,0.00000</abl:Points>
+                                    </abl:CenterLine>
+                                </abl:GenPolyline>
+                            </abl:Wire>
+                        </abl:Shapes>
+                        <abl:Instances>
+                            <abl:Instance libraryName="ads_pelib" cellName="GateDrv" viewName="symbol" instanceName="GDrv1" deactivated="false" deactivatedShort="false" isGround="false" specialFlagCode="0" isVAR="false">
+                                <abl:Parameters>
+                                    <abl:Parameter name="Vhigh" value="" visible="false"/>
+                                    <abl:Parameter name="Vlow" value="" visible="false"/>
+                                    <abl:Parameter name="Vth" value="" visible="false"/>
+                                    <abl:Parameter name="Trise" value="" visible="false"/>
+                                    <abl:Parameter name="Tfall" value="" visible="false"/>
+                                    <abl:Parameter name="Tau" value="" visible="false"/>
+                                    <abl:Parameter name="Td" value="" visible="false"/>
+                                    <abl:Parameter name="Cout" value="" visible="false"/>
+                                    <abl:Parameter name="Rin" value="" visible="false"/>
+                                    <abl:Parameter name="Rout" value="" visible="false"/>
+                                    <abl:Parameter name="Rhigh" value="" visible="false"/>
+                                    <abl:Parameter name="Rlow" value="" visible="false"/>
+                                    <abl:Parameter name="Invert" value="" visible="false"/>
+                                </abl:Parameters>
+                                <abl:PlacementTransform x="-1.00000" y="0.00000" angle="0.00000" xScale="1.00000" yScale="1.00000" mirrorX="false" mirrorY="false"/>
+                                <abl:AnnotationLocation dx="0.20625" dy="-0.45625"/>
+                                <abl:InstPins>
+                                    <abl:InstPin instTermName="on" instTermNumber="4" pinName="on" isNetForced="false">
+                                        <abl:Net name="N__6"/>
+                                    </abl:InstPin>
+                                    <abl:InstPin instTermName="op" instTermNumber="3" pinName="op" isNetForced="false">
+                                        <abl:Net name="N__2"/>
+                                    </abl:InstPin>
+                                    <abl:InstPin instTermName="in" instTermNumber="2" pinName="in" isNetForced="false">
+                                        <abl:Net name="N__8"/>
+                                    </abl:InstPin>
+                                    <abl:InstPin instTermName="ip" instTermNumber="1" pinName="ip" isNetForced="false">
+                                        <abl:Net name="N__5"/>
+                                    </abl:InstPin>
+                                </abl:InstPins>
+                            </abl:Instance>
+                            <abl:Instance libraryName="ads_rflib" cellName="FET" viewName="symbol" instanceName="FET1" deactivated="false" deactivatedShort="false" isGround="false" specialFlagCode="1073741824" isVAR="false">
+                                <abl:Parameters>
+                                    <abl:Parameter name="G" value="20.0 uS" visible="true"/>
+                                    <abl:Parameter name="T" value="1.0 nsec" visible="true"/>
+                                    <abl:Parameter name="F" value="1.0 GHz" visible="true"/>
+                                    <abl:Parameter name="Cgs" value="10.0 pF" visible="true"/>
+                                    <abl:Parameter name="Ggs" value="1.0 uS" visible="true"/>
+                                    <abl:Parameter name="Ri" value="0.1 Ohm" visible="true"/>
+                                    <abl:Parameter name="Cdg" value="10.0 pF" visible="true"/>
+                                    <abl:Parameter name="Cdc" value="10.0 pF" visible="true"/>
+                                    <abl:Parameter name="Cds" value="10.0 pF" visible="true"/>
+                                    <abl:Parameter name="Rds" value="500.0 Ohm" visible="true"/>
+                                </abl:Parameters>
+                                <abl:PlacementTransform x="3.25000" y="0.31250" angle="0.00000" xScale="1.00000" yScale="1.00000" mirrorX="false" mirrorY="false"/>
+                                <abl:AnnotationLocation dx="0.20625" dy="-0.58125"/>
+                                <abl:InstPins>
+                                    <abl:InstPin instTermName="P2" instTermNumber="2" pinName="P__2" isNetForced="false">
+                                        <abl:Net name="N__9"/>
+                                    </abl:InstPin>
+                                    <abl:InstPin instTermName="P3" instTermNumber="3" pinName="P__1" isNetForced="false">
+                                        <abl:Net name="N__10"/>
+                                    </abl:InstPin>
+                                    <abl:InstPin instTermName="P1" instTermNumber="1" pinName="P__0" isNetForced="false">
+                                        <abl:Net name="N__7"/>
+                                    </abl:InstPin>
+                                </abl:InstPins>
+                            </abl:Instance>
+                            <abl:Instance libraryName="ads_rflib" cellName="TF" viewName="symbol" instanceName="TF1" deactivated="false" deactivatedShort="false" isGround="false" specialFlagCode="1073741824" isVAR="false">
+                                <abl:Parameters>
+                                    <abl:Parameter name="T" value="1.00" visible="true"/>
+                                </abl:Parameters>
+                                <abl:PlacementTransform x="5.68750" y="1.18750" angle="0.00000" xScale="1.00000" yScale="1.00000" mirrorX="false" mirrorY="false"/>
+                                <abl:AnnotationLocation dx="0.20625" dy="-1.08125"/>
+                                <abl:InstPins>
+                                    <abl:InstPin instTermName="P4" instTermNumber="4" pinName="P__3" isNetForced="false">
+                                        <abl:Net name="N__3"/>
+                                    </abl:InstPin>
+                                    <abl:InstPin instTermName="P2" instTermNumber="2" pinName="P__2" isNetForced="false">
+                                        <abl:Net name="N__1"/>
+                                    </abl:InstPin>
+                                    <abl:InstPin instTermName="P3" instTermNumber="3" pinName="P__1" isNetForced="false">
+                                        <abl:Net name="N__0"/>
+                                    </abl:InstPin>
+                                    <abl:InstPin instTermName="P1" instTermNumber="1" pinName="P__0" isNetForced="false">
+                                        <abl:Net name="N__4"/>
+                                    </abl:InstPin>
+                                </abl:InstPins>
+                            </abl:Instance>
+                        </abl:Instances>
+                    </abl:SchematicView>
+                </abl:Views>
+            </abl:Cell>
+        </abl:Cells>
+    </abl:Library>
+</abl:ABLRoot>

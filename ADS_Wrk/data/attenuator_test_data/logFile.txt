@@ -1,0 +1,26 @@
+
+hpeesofsim (*) 620.shp Mar  6 2025, MINT version 5
+    (64-bit windows built: Fri Mar 07, 2025 05:21:57 +0000)
+
+
+***** Simulation started at Wed Jan  7 11:07:26 2026
+      Running on host: "AAKTHINKPADP16"
+      In Directory: "C:\Users\Andrew A. Katz\Documents\ESE6710\ESE6710-Final-Project\ADS_Wrk\data"
+      Process ID: 57524
+
+Warning detected by hpeesofsim in LinearCollapse '_2_' during analysis.
+    LinearCollapse is disabled because there is 'AC' analysis present.
+
+Warning detected by hpeesofsim in topology check during circuit set up.
+    Number of nodes with only one device attached (topology corrected): 2
+
+
+SP SP1[1] <ADS_Wrk_lib:attenuator_test:schematic>   freq=(600 kHz->60 MHz)
+
+
+AC AC1[1] <ADS_Wrk_lib:attenuator_test:schematic>   freq=(1 GHz->10 GHz)
+
+
+Resource usage:
+  Total stopwatch time     =     0.66 seconds.
+
