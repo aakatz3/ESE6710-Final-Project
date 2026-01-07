@@ -14,8 +14,10 @@ import sys
 from tkinter import messagebox as mb
 import tkinter as tk
 from tkinter import ttk
-from sweep import Sweep
+from sweep import Sweep, SweepConfig
 from playsound import playsound as play
+import jsonpickle
+import json
 
 # Flags
 PLOT = False
@@ -43,13 +45,15 @@ FETS = ['IGB070S10S1', 'IGB110S101', 'BSC065N06LS5', 'BSC096N10LS5', 'BSC160N15N
 FETS = [FETS[1], FETS[3]]
 DIODES = ['RB058LAM100TF', 'STPS360AF']
 
-FREQS = np.unique(np.append(FREQ_STD, np.arange(6.0e6,7.501e6,0.1e6)))
-DUTYS = np.unique(np.append(DUTY_STD, np.arange(0.3,0.4,0.01)))
-
-SWEEPS = [
-        Sweep('FREQ', FREQS, 'Hz'),
-        Sweep('DUTY', DUTYS)
-    ]
+OPERATING_CONDITIONS_FILE = p.Path('OperatingConditions.json')
+SWEEPS_FILE = p.Path('Sweeps.json')
+# Standard parameters
+with OPERATING_CONDITIONS_FILE.open('r') as f:
+    NOMINAL = jsonpickle.decode(f.read())
+SWEEP_CONFIGS = [
+    SweepConfig('FREQ', NOMINAL.FREQ, MinValue=6.7e6, MaxValue=6.9e6, StepValue=10e3, Unit='Hz'),
+    SweepConfig('DUTY', NOMINAL.DUTY, MinValue=0.3, MaxValue=0.4, StepValue=0.01)
+]
 
 rm = visa.ResourceManager()
 
@@ -237,15 +241,15 @@ def meas_prep():
     v33510B.write(':DISPlay:FOCus %s' % ('CH1'))
     v33510B.write(':DISPlay:UNIT:VOLTage %s' % ('HIGHlow'))
     v33510B.write(':SOURce1:FUNCtion %s' % ('SQUare'))
-    v33510B.write(':SOURce1:FUNCtion:SQUare:DCYCle %G' % (DUTY_STD[0] * 100))
+    v33510B.write(':SOURce1:FUNCtion:SQUare:DCYCle %G' % (NOMINAL.DUTY * 100))
     v33510B.write(':SOURce2:FUNCtion %s' % ('SQUare'))
-    v33510B.write(':SOURce2:FUNCtion:SQUare:DCYCle %G' % (DUTY_STD[0] * 100))
+    v33510B.write(':SOURce2:FUNCtion:SQUare:DCYCle %G' % (NOMINAL.DUTY * 100))
     v33510B.write(':SOURce1:VOLTage:HIGH %G' % (5.0))
     v33510B.write(':SOURce1:VOLTage:LOW %G' % (0.0))
     v33510B.write(':SOURce2:VOLTage:HIGH %G' % (5.0))
     v33510B.write(':SOURce2:VOLTage:LOW %G' % (0.0))
-    v33510B.write(':SOURce1:FREQuency %G HZ' % (FREQ_STD[0]))
-    v33510B.write(':SOURce2:FREQuency %G HZ' % (FREQ_STD[0]))
+    v33510B.write(':SOURce1:FREQuency %G HZ' % (NOMINAL.FREQ))
+    v33510B.write(':SOURce2:FREQuency %G HZ' % (NOMINAL.FREQ))
     v33510B.write(':SOURce:PHASe:SYNChronize')
     v33510B.write(':SOURce2:PHASe:ADJust %G' % (180.0))
     v33510B.write(':DISPlay:FOCus %s' % ('CH2'))
@@ -269,7 +273,7 @@ def meas_prep():
     # E-Load Setup
     EL34143A.write(':SOURce:VOLTage:SENSe:SOURce %s' % ('EXTernal'))
     EL34143A.write(':SOURce:MODE %s' % ('RESistance'))
-    EL34143A.write(':SOURce:RESistance:LEVel:IMMediate:AMPLitude %G' % ROUT_STD[0])
+    EL34143A.write(':SOURce:RESistance:LEVel:IMMediate:AMPLitude %G' % NOMINAL.ROUT)
     EL34143A.write(':OUTPut:STATe %d' % (1))
     time.sleep(0.5)
 
@@ -277,7 +281,7 @@ def meas_prep():
     E3634A.write(':SOURce:VOLTage:RANGe %s' % ('HIGH')) # or LOW
     E3634A.write(':SOURce:VOLTage:PROTection:STATe 0')
     E3634A.write(':SOURce:VOLTage:PROTection:CLEar')
-    E3634A.write(':SOURce:VOLTage:LEVel:IMMediate:AMPLitude %G' % VIN_STD[0])
+    E3634A.write(':SOURce:VOLTage:LEVel:IMMediate:AMPLitude %G' % NOMINAL.VIN)
     E3634A.write(':SOURce:CURRent:LEVel:IMMediate:AMPLitude %G' % (2.2))
     E3634A.query_ascii_values(':MEASure:VOLTage:DC?')
     E3634A.write(':OUTPut:STATe %d' % (0))
@@ -338,15 +342,15 @@ def do_sweep(swp : Sweep):
     # Reset to std
     E3634A.write(':OUTPut:STATe %d' % (0))
     time.sleep(0.2)
-    E3634A.write(':SOURce:VOLTage:LEVel:IMMediate:AMPLitude %G' % VIN_STD[0])
+    E3634A.write(':SOURce:VOLTage:LEVel:IMMediate:AMPLitude %G' % NOMINAL.VIN)
     E3634A.write(':OUTPut:STATe %d' % (0))
     # E3634A.write(':SOURce:VOLTage:PROTection:CLEar')
     E3634A.write(':SOURce:VOLTage:PROTection:STATe 0')
 
-    EL34143A.write(':SOURce:RESistance:LEVel:IMMediate:AMPLitude %G' % ROUT_STD[0])
-    v33510B.write(':SOURce1:FUNCtion:SQUare:DCYCle %G' % (DUTY_STD[0] * 100))
-    v33510B.write(':SOURce2:FUNCtion:SQUare:DCYCle %G' % (DUTY_STD[0] * 100))
-    v33510B.write(':SOURce1:FREQuency %G HZ' % (FREQ_STD[0]))
+    EL34143A.write(':SOURce:RESistance:LEVel:IMMediate:AMPLitude %G' % NOMINAL.ROUT)
+    v33510B.write(':SOURce1:FUNCtion:SQUare:DCYCle %G' % (NOMINAL.DUTY * 100))
+    v33510B.write(':SOURce2:FUNCtion:SQUare:DCYCle %G' % (NOMINAL.DUTY * 100))
+    v33510B.write(':SOURce1:FREQuency %G HZ' % (NOMINAL.FREQ))
     v33510B.write(':OUTPut1 %d' % (1))
     v33510B.write(':OUTPut2 %d' % (1))
     time.sleep(0.5)
@@ -522,8 +526,14 @@ try:
     ANALOG_LABELS[0] = signal
     global dir
     dir = p.Path('data', DATASET, fet, signal)
+    SWEEPS = [swp.get_sweep() for swp in SWEEP_CONFIGS]
     
     os.makedirs(dir, exist_ok=True)
+    with p.Path(dir,'OperatingConditions.json').open('w') as f:
+        f.write(jsonpickle.encode(NOMINAL))
+
+    with p.Path(dir, 'Sweeps.json').open('w') as f:
+        f.write(jsonpickle.encode(SWEEP_CONFIGS))
     com_prep()
     meas_prep()
     for swp in SWEEPS:

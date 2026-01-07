@@ -12,42 +12,27 @@ import sys
 import tkinter.messagebox as mb
 import tkinter as tk
 from tkinter import ttk
-from sweep import Sweep
 from playsound import playsound as play
+import jsonpickle
+import json
 
 # Flags
 PLOT = True
 SHOW_PLOT = False
-CLEAR_PREVIOUS = False
-SHORT = True
-LONG = False
+CLEAR_PREVIOUS = True
 DATASET = 'VGS_VDS'
 
 ANALOG_LABELS = ['VGS_A', 'VGS_B', 'VDS_A', 'VDS_B']
-DIGITAL_LABELS = ['CRTL_A', 'IN_A', 'CRTL_B', 'IN_B', 'nEN']
+DIGITAL_LABELS = ['CRTL_A', 'IN_A', 'CRTL_B', 'IN_B', 'nEN', 'GATE_1', 'GATE_2']
 
+OPERATING_CONDITIONS_FILE = p.Path('OperatingConditions.json')
+SWEEPS_FILE = p.Path('Sweeps.json')
 # Standard parameters
-ROUT_STD = [50 * np.pi **2 / 8]
-DUTY_STD = [0.32]
-VIN_STD = [25]
-FREQ_STD = [6.78e6]
+with OPERATING_CONDITIONS_FILE.open('r') as f:
+    NOMINAL = jsonpickle.decode(f.read())
+with open("Sweeps.json", "r+") as f:
+    SWEEP_CONFIGS = jsonpickle.decode(f.read())
 
-VINS = np.unique(np.append(VIN_STD, np.arange(18,28.01, 0.5)))
-ROUTS = np.unique(np.append(ROUT_STD, np.arange(50,75,0.5)))
-FREQS = np.unique(np.append(FREQ_STD, np.arange(6.0e6,7.501e6,0.1e6)))
-DUTYS = np.unique(np.append(DUTY_STD, np.arange(0.3,0.4,0.01)))
-
-# VINS = VIN_STD
-# DUTYS = DUTY_STD
-# ROUTS = ROUT_STD
-# FREQS = FREQ_STD
-
-SWEEPS = [
-        Sweep('VIN', VINS, 'V'),
-        Sweep('ROUT', ROUTS, 'R'),
-        Sweep('FREQ', FREQS, 'Hz'),
-        Sweep('DUTY', DUTYS)
-    ]
 
 
 # Make sure to include these globals
@@ -60,6 +45,7 @@ rm = visa.ResourceManager()
 
 
 # Instruments
+v33521A = rm.open_resource('USB0::2391::5639::MY50000944::0::INSTR')
 v33510B = rm.open_resource('USB0::0x0957::0x2607::MY62003856::0::INSTR')
 v34401A = rm.open_resource('ASRL13::INSTR', write_termination = '\r\n')
 E3631A = rm.open_resource('ASRL12::INSTR', write_termination = '\r\n')
@@ -117,11 +103,14 @@ def get_configuration():
 fet, load = get_configuration()
 
 if (load == '50Ω Load') or (load == 'Open Primary'):
-    SWEEPS[1] = Sweep('ROUT', ROUT_STD, 'R')
+    SWEEP_CONFIGS[1].disable()
 if load == 'Open Primary':
-    SWEEPS[0] = Sweep('VIN', VIN_STD, 'V')
-    SWEEPS[2] = Sweep('FREQ', FREQ_STD, 'Hz')
-    SWEEPS[3] = Sweep('DUTY', DUTY_STD)
+    SWEEP_CONFIGS[0].disable()
+    SWEEP_CONFIGS[2].disable()
+    SWEEP_CONFIGS[3].disable()
+
+
+SWEEPS = [swp.get_sweep() for swp in SWEEP_CONFIGS]
 
 dir = p.Path('data', DATASET, fet, load)
 wavepath = p.Path(dir, 'waveform')
@@ -130,8 +119,14 @@ sspath = p.Path(dir, 'scope')
 if CLEAR_PREVIOUS and os.path.isdir(dir.resolve()):
     shutil.rmtree(dir.resolve())
 
+
 os.makedirs(dir, exist_ok=True)
 
+with p.Path(dir,'OperatingConditions.json').open('w') as f:
+    f.write(jsonpickle.encode(NOMINAL))
+
+with p.Path(dir, 'Sweeps.json').open('w') as f:
+    f.write(jsonpickle.encode(SWEEP_CONFIGS))
 
 
 try:
@@ -156,7 +151,7 @@ try:
             log.write('Timestamp: ' +
                     dtime.datetime.now().astimezone().isoformat() + os.linesep)
             print('Instruments Utilized:')
-            for inst in [E3634A, E3631A, v33510B, v34401A, EDU34450A, MSO7034B, EL34143A]:
+            for inst in [E3634A, E3631A, v33521A, v33510B, v34401A, EDU34450A, MSO7034B, EL34143A]:
                 try:
                     inst.write('*CLS')
                     time.sleep(1)
@@ -173,7 +168,15 @@ try:
                         inst.write('*CLS')
 
 
+    # Reference setup
+    v33521A.write(':OUTPut:LOAD %s' % ('INFinity'))
+    v33521A.write(':SOURce:APPLy:SINusoid %G MHZ,%G VPP,%G' % (10.0, 3.0, 0.0))
+
+    # Wait for PLLs to lock
+    time.sleep(5)
+
     # Wavegen Setup
+    v33510B.write(':SOURce:ROSCillator:SOURce %s' % ('EXTernal'))
     v33510B.write(':OUTPut1:LOAD %s' % ('INFinity'))
     v33510B.write(':OUTPut2:LOAD %s' % ('INFinity'))
     v33510B.write(':DISPlay:VIEW %s' % ('DUAL'))
@@ -182,15 +185,15 @@ try:
     v33510B.write(':DISPlay:FOCus %s' % ('CH1'))
     v33510B.write(':DISPlay:UNIT:VOLTage %s' % ('HIGHlow'))
     v33510B.write(':SOURce1:FUNCtion %s' % ('SQUare'))
-    v33510B.write(':SOURce1:FUNCtion:SQUare:DCYCle %G' % (DUTY_STD[0] * 100))
+    v33510B.write(':SOURce1:FUNCtion:SQUare:DCYCle %G' % (NOMINAL.DUTY* 100))
     v33510B.write(':SOURce2:FUNCtion %s' % ('SQUare'))
-    v33510B.write(':SOURce2:FUNCtion:SQUare:DCYCle %G' % (DUTY_STD[0] * 100))
+    v33510B.write(':SOURce2:FUNCtion:SQUare:DCYCle %G' % (NOMINAL.DUTY * 100))
     v33510B.write(':SOURce1:VOLTage:HIGH %G' % (5.0))
     v33510B.write(':SOURce1:VOLTage:LOW %G' % (0.0))
     v33510B.write(':SOURce2:VOLTage:HIGH %G' % (5.0))
     v33510B.write(':SOURce2:VOLTage:LOW %G' % (0.0))
-    v33510B.write(':SOURce1:FREQuency %G HZ' % (FREQ_STD[0]))
-    v33510B.write(':SOURce2:FREQuency %G HZ' % (FREQ_STD[0]))
+    v33510B.write(':SOURce1:FREQuency %G HZ' % (NOMINAL.FREQ))
+    v33510B.write(':SOURce2:FREQuency %G HZ' % (NOMINAL.FREQ))
     v33510B.write(':SOURce:PHASe:SYNChronize')
     v33510B.write(':SOURce2:PHASe:ADJust %G' % (180.0))
     v33510B.write(':DISPlay:FOCus %s' % ('CH2'))
@@ -210,13 +213,13 @@ try:
     # E-Load Setup
     EL34143A.write(':SOURce:VOLTage:SENSe:SOURce %s' % ('EXTernal'))
     EL34143A.write(':SOURce:MODE %s' % ('RESistance'))
-    EL34143A.write(':SOURce:RESistance:LEVel:IMMediate:AMPLitude %G' % ROUT_STD[0])
+    EL34143A.write(':SOURce:RESistance:LEVel:IMMediate:AMPLitude %G' % NOMINAL.ROUT)
     EL34143A.write(':OUTPut:STATe %d' % (1))
 
 
     # Main Power Setup
     E3634A.write(':SOURce:VOLTage:RANGe %s' % ('HIGH')) # or LOW
-    E3634A.write(':SOURce:VOLTage:LEVel:IMMediate:AMPLitude %G' % VIN_STD[0])
+    E3634A.write(':SOURce:VOLTage:LEVel:IMMediate:AMPLitude %G' % NOMINAL.VIN)
     E3634A.write(':SOURce:CURRent:LEVel:IMMediate:AMPLitude %G' % (2.2))
     E3634A.query_ascii_values(':MEASure:VOLTage:DC?')
     E3634A.write(':OUTPut:STATe %d' % (0))
@@ -243,6 +246,11 @@ try:
     MSO7034B.write(':DIGital2:THReshold %s' % ('CMOS'))
     MSO7034B.write(':DIGital3:THReshold %s' % ('CMOS'))
     MSO7034B.write(':DIGital4:THReshold %s' % ('CMOS'))
+    MSO7034B.write(':DIGital5:THReshold %s' % ('CMOS'))
+    MSO7034B.write(':DIGital6:THReshold %s' % ('CMOS'))
+    MSO7034B.write(':DIGital7:DISPlay %d' % (0))
+    MSO7034B.write(':DIGital6:DISPlay %d' % (0))
+    MSO7034B.write(':DIGital5:DISPlay %d' % (0))
     MSO7034B.write(':DIGital4:DISPlay %d' % (1))
     MSO7034B.write(':DIGital3:DISPlay %d' % (1))
     MSO7034B.write(':DIGital2:DISPlay %d' % (1))
@@ -254,6 +262,8 @@ try:
     MSO7034B.write(':DIGital2:LABel "%s"' % DIGITAL_LABELS[2])
     MSO7034B.write(':DIGital3:LABel "%s"' % DIGITAL_LABELS[3])
     MSO7034B.write(':DIGital4:LABel "%s"' % DIGITAL_LABELS[4])
+    MSO7034B.write(':DIGital5:LABel "%s"' % DIGITAL_LABELS[5])
+    MSO7034B.write(':DIGital6:LABel "%s"' % DIGITAL_LABELS[6])
     MSO7034B.write(':ACQuire:TYPE %s' % ('Normal'))
     MSO7034B.write(':CHANnel1:LABel "%s"' % ANALOG_LABELS[0])
     MSO7034B.write(':CHANnel2:LABel "%s"' % ANALOG_LABELS[1])
@@ -270,8 +280,8 @@ try:
     MSO7034B.write(':TIMebase:MAIN:SCALe %G NS' % (50.0))
 
 
-    MSO7034B.write(':CHANnel1:SCALe %G V' % (2.0))
-    MSO7034B.write(':CHANnel2:SCALe %G V' % (2.0))
+    MSO7034B.write(':CHANnel1:SCALe %G V' % (2.5))
+    MSO7034B.write(':CHANnel2:SCALe %G V' % (2.5))
     MSO7034B.write(':CHANnel3:SCALe %G V' % (20.0))
     MSO7034B.write(':CHANnel4:SCALe %G V' % (20.0))
 
@@ -306,11 +316,11 @@ try:
         # Reset to std
         E3634A.write(':OUTPut:STATe %d' % (0))
         time.sleep(0.2)
-        E3634A.write(':SOURce:VOLTage:LEVel:IMMediate:AMPLitude %G' % VIN_STD[0])
-        EL34143A.write(':SOURce:RESistance:LEVel:IMMediate:AMPLitude %G' % ROUT_STD[0])
-        v33510B.write(':SOURce1:FUNCtion:SQUare:DCYCle %G' % (DUTY_STD[0] * 100))
-        v33510B.write(':SOURce2:FUNCtion:SQUare:DCYCle %G' % (DUTY_STD[0] * 100))
-        v33510B.write(':SOURce1:FREQuency %G HZ' % (FREQ_STD[0]))
+        E3634A.write(':SOURce:VOLTage:LEVel:IMMediate:AMPLitude %G' % NOMINAL.VIN)
+        EL34143A.write(':SOURce:RESistance:LEVel:IMMediate:AMPLitude %G' % NOMINAL.ROUT)
+        v33510B.write(':SOURce1:FUNCtion:SQUare:DCYCle %G' % (NOMINAL.DUTY * 100))
+        v33510B.write(':SOURce2:FUNCtion:SQUare:DCYCle %G' % (NOMINAL.DUTY * 100))
+        v33510B.write(':SOURce1:FREQuency %G HZ' % (NOMINAL.FREQ))
         E3634A.query_ascii_values(':MEASure:VOLTage:DC?')
         E3634A.write(':OUTPut:STATe %d' % (1))
         df_measurements = pd.DataFrame(columns=[
@@ -350,6 +360,7 @@ try:
                 
             time.sleep(0.5)
             E3634A.write(':SOURce:VOLTage:PROTection:CLEar')
+            E3634A.query_ascii_values(':MEASure:VOLTage:DC?')
             time.sleep(0.5)
             # General Measurements
             MSO7034B.write(':RUN')
@@ -446,7 +457,9 @@ try:
             df_measurements = df_measurements._append(new_row, ignore_index=True)
 
             # Scope captures
-            MSO7034B.write(':STOP')
+            MSO7034B.write(':POD1:DISPlay 1')
+            time.sleep(0.2)
+            MSO7034B.write(':SINGLE')
             if PLOT:
                 plt.figure()
             for c in range(0, 4):
@@ -476,6 +489,17 @@ try:
                 if PLOT:
                     plt.plot(times[0:min(len(times), len(scaled_data))],
                             scaled_data[0:min(len(times), len(scaled_data))])
+            # Get digital data too!
+            MSO7034B.write(':WAVeform:SOURce %s' % ('POD1'))
+            MSO7034B.write(':WAVeform:POINts:MODE %s' % ('MAXimum'))
+            MSO7034B.write(':WAVeform:FORMat %s' % ('WORD'))
+            MSO7034B.write(':WAVeform:UNSigned %d' % (1))
+            MSO7034B.write(':WAVeform:BYTeorder %s' % ('LSBFirst'))
+
+            binary_block_data = MSO7034B.query_binary_values(':WAVeform:DATA?', datatype='H')
+            digital_data = np.array(binary_block_data, dtype=np.int64)
+            dframe.insert(5,json.dumps(DIGITAL_LABELS), digital_data[0:min(len(times), len(digital_data))])
+
             if PLOT:
                     if SHOW_PLOT:
                         plt.show()
@@ -484,11 +508,14 @@ try:
             dframe.to_csv(p.Path(wavepath, f'{filename}_MSO7034B.csv'),
                         index=False)
             
-
+            MSO7034B.write(':DIGital7:DISPlay %d' % (0))
+            MSO7034B.write(':DIGital6:DISPlay %d' % (0))
+            MSO7034B.write(':DIGital5:DISPlay %d' % (0))
+    
 
             # Screenshot
             MSO7034B.write(':RUN')
-            time.sleep(3)
+            time.sleep(1)
 
             succeed = False
             while not succeed:
@@ -497,6 +524,7 @@ try:
                     img = MSO7034B.query_binary_values(':DISPlay:DATA? %s,%s,%s' %
                                                         ('PNG', 'SCReen', 'COLor'),
                                                         datatype='c')
+                    time.sleep(0.5)
                     MSO7034B.write(':STOP')
                     
                     with open(p.Path(sspath, f'{filename}_MSO7034B.png'), 'wb') as f:

@@ -1,0 +1,213 @@
+{
+    "py/tuple": [
+        {
+            "py/object": "operating_conditions.OperatingConditions",
+            "ROUT": 61.68502750680849,
+            "DUTY": 0.32,
+            "VIN": 25,
+            "FREQ": 6780000.0
+        },
+        [
+            {
+                "py/object": "sweep.Sweep",
+                "Name": "VIN",
+                "Points": {
+                    "py/reduce": [
+                        {
+                            "py/function": "numpy._core.multiarray._reconstruct"
+                        },
+                        {
+                            "py/tuple": [
+                                {
+                                    "py/type": "numpy.ndarray"
+                                },
+                                {
+                                    "py/tuple": [
+                                        0
+                                    ]
+                                },
+                                {
+                                    "py/b64": "Yg=="
+                                }
+                            ]
+                        },
+                        {
+                            "py/tuple": [
+                                1,
+                                {
+                                    "py/tuple": [
+                                        21
+                                    ]
+                                },
+                                {
+                                    "py/reduce": [
+                                        {
+                                            "py/type": "numpy.dtype"
+                                        },
+                                        {
+                                            "py/tuple": [
+                                                "f8",
+                                                false,
+                                                true
+                                            ]
+                                        },
+                                        {
+                                            "py/tuple": [
+                                                3,
+                                                "<",
+                                                null,
+                                                null,
+                                                null,
+                                                -1,
+                                                -1,
+                                                0
+                                            ]
+                                        }
+                                    ]
+                                },
+                                false,
+                                {
+                                    "py/b64": "AAAAAAAAMkAAAAAAAIAyQAAAAAAAADNAAAAAAACAM0AAAAAAAAA0QAAAAAAAgDRAAAAAAAAANUAAAAAAAIA1QAAAAAAAADZAAAAAAACANkAAAAAAAAA3QAAAAAAAgDdAAAAAAAAAOEAAAAAAAIA4QAAAAAAAADlAAAAAAACAOUAAAAAAAAA6QAAAAAAAgDpAAAAAAAAAO0AAAAAAAIA7QAAAAAAAADxA"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "Unit": "V"
+            },
+            {
+                "py/object": "sweep.Sweep",
+                "Name": "ROUT",
+                "Points": {
+                    "py/reduce": [
+                        {
+                            "py/function": "numpy._core.multiarray._reconstruct"
+                        },
+                        {
+                            "py/tuple": [
+                                {
+                                    "py/type": "numpy.ndarray"
+                                },
+                                {
+                                    "py/tuple": [
+                                        0
+                                    ]
+                                },
+                                {
+                                    "py/b64": "Yg=="
+                                }
+                            ]
+                        },
+                        {
+                            "py/tuple": [
+                                1,
+                                {
+                                    "py/tuple": [
+                                        51
+                                    ]
+                                },
+                                {
+                                    "py/id": 4
+                                },
+                                false,
+                                {
+                                    "py/b64": "AAAAAAAASUAAAAAAAEBJQAAAAAAAgElAAAAAAADASUAAAAAAAABKQAAAAAAAQEpAAAAAAACASkAAAAAAAMBKQAAAAAAAAEtAAAAAAABAS0AAAAAAAIBLQAAAAAAAwEtAAAAAAAAATEAAAAAAAEBMQAAAAAAAgExAAAAAAADATEAAAAAAAABNQAAAAAAAQE1AAAAAAACATUAAAAAAAMBNQAAAAAAAAE5AAAAAAABATkAAAAAAAIBOQAAAAAAAwE5AK005+67XTkAAAAAAAABPQAAAAAAAQE9AAAAAAACAT0AAAAAAAMBPQAAAAAAAAFBAAAAAAAAgUEAAAAAAAEBQQAAAAAAAYFBAAAAAAACAUEAAAAAAAKBQQAAAAAAAwFBAAAAAAADgUEAAAAAAAABRQAAAAAAAIFFAAAAAAABAUUAAAAAAAGBRQAAAAAAAgFFAAAAAAACgUUAAAAAAAMBRQAAAAAAA4FFAAAAAAAAAUkAAAAAAACBSQAAAAAAAQFJAAAAAAABgUkAAAAAAAIBSQAAAAAAAoFJA"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "Unit": "R"
+            },
+            {
+                "py/object": "sweep.Sweep",
+                "Name": "FREQ",
+                "Points": {
+                    "py/reduce": [
+                        {
+                            "py/function": "numpy._core.multiarray._reconstruct"
+                        },
+                        {
+                            "py/tuple": [
+                                {
+                                    "py/type": "numpy.ndarray"
+                                },
+                                {
+                                    "py/tuple": [
+                                        0
+                                    ]
+                                },
+                                {
+                                    "py/b64": "Yg=="
+                                }
+                            ]
+                        },
+                        {
+                            "py/tuple": [
+                                1,
+                                {
+                                    "py/tuple": [
+                                        17
+                                    ]
+                                },
+                                {
+                                    "py/id": 4
+                                },
+                                false,
+                                {
+                                    "py/b64": "AAAAAGDjVkEAAAAACEVXQQAAAACwpldBAAAAAFgIWEEAAAAAAGpYQQAAAACoy1hBAAAAAFAtWUEAAAAA+I5ZQQAAAAAY3VlBAAAAAKDwWUEAAAAASFJaQQAAAADws1pBAAAAAJgVW0EAAAAAQHdbQQAAAADo2FtBAAAAAJA6XEEAAAAAOJxcQQ=="
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "Unit": "Hz"
+            },
+            {
+                "py/object": "sweep.Sweep",
+                "Name": "DUTY",
+                "Points": {
+                    "py/reduce": [
+                        {
+                            "py/function": "numpy._core.multiarray._reconstruct"
+                        },
+                        {
+                            "py/tuple": [
+                                {
+                                    "py/type": "numpy.ndarray"
+                                },
+                                {
+                                    "py/tuple": [
+                                        0
+                                    ]
+                                },
+                                {
+                                    "py/b64": "Yg=="
+                                }
+                            ]
+                        },
+                        {
+                            "py/tuple": [
+                                1,
+                                {
+                                    "py/tuple": [
+                                        11
+                                    ]
+                                },
+                                {
+                                    "py/id": 4
+                                },
+                                false,
+                                {
+                                    "py/b64": "MzMzMzMz0z/Xo3A9CtfTP3sUrkfhetQ/H4XrUbge1T/D9Shcj8LVP2dmZmZmZtY/C9ejcD0K1z+vR+F6FK7XP1O4HoXrUdg/9yhcj8L12D+bmZmZmZnZPw=="
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "Unit": ""
+            },
+            null
+        ]
+    ]
+}
