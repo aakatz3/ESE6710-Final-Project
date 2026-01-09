@@ -30,7 +30,7 @@ SWEEPS_FILE = p.Path('Sweeps.json')
 # Standard parameters
 with OPERATING_CONDITIONS_FILE.open('r') as f:
     NOMINAL = jsonpickle.decode(f.read())
-with open("Sweeps.json", "r+") as f:
+with SWEEPS_FILE.open('r') as f:
     SWEEP_CONFIGS = jsonpickle.decode(f.read())
 
 
