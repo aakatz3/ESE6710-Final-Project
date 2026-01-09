@@ -1,0 +1,9 @@
+﻿"wire gauge"= 14
+"wire diameter"= 0.005 * 92 ^ ( ( 36 - "wire gauge" ) / 39 ) * 1in
+"wire diameter with insulation"= 0.0682 * 1in
+"insulation thickness"= ( "wire diameter with insulation" - "wire diameter" ) / 2 * 1in
+"bend radius"= "wire diameter with insulation" * 3
+"inner diameter"= 36 * 1mm
+"outer diameter"= 180 * 1mm
+"turns"= 8
+"pitch"= ( "outer diameter" - "inner diameter" ) / "turns" / 2

@@ -1,0 +1,3 @@
+Coils - Acrylic thickness = 0.2065in
+PCB Bases - Thickness = 0.2325
+Coil support spacers - thickness = 0.1235

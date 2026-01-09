@@ -1,0 +1,16 @@
+* 6;Coils_ckt.ckt
+* Project: C:/Users/Andrew A. Katz/Documents/ESE6710/Final Project/Coils.aedt
+* Design: Coils_ckt
+
+*BeginParamDef
+*EndParamDef
+
+
+*begin toplevel circuit
+R7 net_1 0 100
+IVoltmeter8 net_1 0 DC 0 
+.PRINT TRAN PROBE IVoltmeter8(t) V(IVoltmeter8)
+LRX net_1 0 1 Winding
+
+*end toplevel circuit
+.end
