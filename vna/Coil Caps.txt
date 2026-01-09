@@ -1,4 +1,4 @@
-Mag induct (open circuit): 4.2206µH
+﻿Mag induct (open circuit): 4.2206µH
 Leakage + Magnitizing (short circuit): 3.7919µH
 CS_TX_B = 288.54pF
 
@@ -9,8 +9,16 @@ A:1.2+8.2+
 
 Secondary capacitance per branch 267.8
 B:240+24+1.2+0.3
-A:3.3+ 	
-
+A:3.3+
+C1=241
+C2=240
+C3=1R2
+C4=QCCT102Q0R3A1GV001B
+C5= 	
+C6=241
+C7=270
+C8=800B3R3BT500XT
+C9=800B1R2BT500XT
 
 
 
