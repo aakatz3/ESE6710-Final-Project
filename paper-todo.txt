@@ -1,0 +1,13 @@
+Fix figure 1
+reference figure 1 in intro
+
+Split up circuit topology? potentially have design math in seperate subsection
+Coil compensation - topology (series, on both sides of inductor), calculate and implement
+Finish solidworks model
+Talk about physical modules
+Schematic implementation text
+Add schematics, PCBs, BOMs to appendix
+Mention the alternate modules (Si fet, other diodes) - also in conclusion talk about further testing
+RF simulation
+Split experimental verification into pieces, VNA is definately one seperate section
+Make sure results graphs are readable
