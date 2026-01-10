@@ -1,0 +1,58 @@
+* Momentum eesofbbs_64 2025.20 (*) built: Feb 25 2025
+**************************************************
+.LIB TUNEDCOILS1
+
+*bbspice subcircuit with consecutive port numbers.
+
+.SUBCKT bbspice_TUNEDCOILS1_subckt	  port_1  port_2  gnd_0
+
+* PORT_1
+vi_1	port_1	_net_1	0.00000000000000e+00
+vb_1	_net_4	_net_5	0.00000000000000e+00
+R_Z0_1 	_net_1 	_net_2 	5.00000000000000e+01	NOISE=0
+H_b_1	_net_2	gnd_0	vb_1	1.41421356237310e+01
+E_v_1	_net_3	gnd_0	port_1	gnd_0	7.07106781186548e-02
+H_i_1	_net_4	_net_3	vi_1	3.53553390593274e+00
+
+
+G_POLE_port1_port1_p1 	_net_5 	gnd_0 	POLE 	_net_5 	gnd_0  	1.09753049931940e+09 / 1.0 	1.07470895290932e+09 , 0.0
+G_POLE_port1_port1_p2 	_net_5 	gnd_0 	POLE 	_net_5 	gnd_0 	-9.22297626674328e+06 	6.59382816863195e+05 , 0.0 / 1.0 	4.66614929609755e+06 , -5.97735804104285e+06
+G_POLE_port1_port1_p4 	_net_5 	gnd_0 	POLE 	_net_5 	gnd_0 	-1.62103166047988e+07 	2.76300363811235e+06 , 0.0 / 1.0 	8.24218054922783e+06 , -7.90356684333836e+06
+G_POLE_port1_port2_p1 	_net_5 	gnd_0 	POLE 	_net_10 	gnd_0  	8.72306295447761e+06 / 1.0 	1.07470895290932e+09 , 0.0
+G_POLE_port1_port2_p2 	_net_5 	gnd_0 	POLE 	_net_10 	gnd_0 	9.32230220855037e+06 	1.15989751875908e+06 , 0.0 / 1.0 	4.66614929609755e+06 , -5.97735804104285e+06
+G_POLE_port1_port2_p4 	_net_5 	gnd_0 	POLE 	_net_10 	gnd_0 	-1.65732531550852e+07 	2.37501251778592e+06 , 0.0 / 1.0 	8.24218054922783e+06 , -7.90356684333836e+06
+
+* PORT_2
+vi_2	port_2	_net_6	0.00000000000000e+00
+vb_2	_net_9	_net_10	0.00000000000000e+00
+R_Z0_2 	_net_6 	_net_7 	5.00000000000000e+01	NOISE=0
+H_b_2	_net_7	gnd_0	vb_2	1.41421356237310e+01
+E_v_2	_net_8	gnd_0	port_2	gnd_0	7.07106781186548e-02
+H_i_2	_net_9	_net_8	vi_2	3.53553390593274e+00
+
+
+G_POLE_port2_port1_p1 	_net_10 	gnd_0 	POLE 	_net_5 	gnd_0  	8.72306295447761e+06 / 1.0 	1.07470895290932e+09 , 0.0
+G_POLE_port2_port1_p2 	_net_10 	gnd_0 	POLE 	_net_5 	gnd_0 	9.32230220855037e+06 	1.15989751875908e+06 , 0.0 / 1.0 	4.66614929609755e+06 , -5.97735804104285e+06
+G_POLE_port2_port1_p4 	_net_10 	gnd_0 	POLE 	_net_5 	gnd_0 	-1.65732531550852e+07 	2.37501251778592e+06 , 0.0 / 1.0 	8.24218054922783e+06 , -7.90356684333836e+06
+G_POLE_port2_port2_p1 	_net_10 	gnd_0 	POLE 	_net_10 	gnd_0  	1.09943600920484e+09 / 1.0 	1.07470895290932e+09 , 0.0
+G_POLE_port2_port2_p2 	_net_10 	gnd_0 	POLE 	_net_10 	gnd_0 	-9.28292272588792e+06 	1.47698891929151e+06 , 0.0 / 1.0 	4.66614929609755e+06 , -5.97735804104285e+06
+G_POLE_port2_port2_p4 	_net_10 	gnd_0 	POLE 	_net_10 	gnd_0 	-1.67162500189164e+07 	2.13290331442238e+06 , 0.0 / 1.0 	8.24218054922783e+06 , -7.90356684333836e+06
+
+
+.ENDS  bbspice_TUNEDCOILS1_subckt
+***************************************
+
+
+***************************************
+* S-based subckt
+
+ 
+*bbspice subcircuit with external port numbers.
+
+.SUBCKT bbspice_TUNEDCOILS1		1 	2 	0 
+
+x_ 	1 	2 	0 	bbspice_TUNEDCOILS1_subckt
+
+.ENDS  bbspice_TUNEDCOILS1
+***************************************
+.ENDL

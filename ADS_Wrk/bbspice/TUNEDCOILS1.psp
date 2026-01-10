@@ -1,0 +1,63 @@
+* Momentum eesofbbs_64 2025.20 (*) built: Feb 25 2025
+**************************************************
+
+*bbspice subcircuit with consecutive port numbers.
+
+.SUBCKT bbspice_TUNEDCOILS1_subckt port_1 port_2  gnd_0
+
+* PORT_1
+vi_1 port_1 _net_1 0.000000
+vb_1 _net_4 _net_5 0.000000
+R_Z0_1 _net_1 _net_2 5.00000000000000e+01
+H_b_1 _net_2 gnd_0 vb_1 1.41421356237310e+01
+E_v_1 _net_3 gnd_0 port_1 gnd_0 7.07106781186548e-02
+H_i_1 _net_4 _net_3 vi_1 3.53553390593274e+00
+
+
+G_POLE_port1_port1_p1 _net_5 gnd_0 LAPLACE {V(_net_5, gnd_0)} = {1.02123509471872e+00 / (s*9.30484478884191e-10 + 1.0)}
+G_POLE_port1_port1_p2 _net_5 gnd_0 LAPLACE {V(_net_5, gnd_0)} = {-6.43932274277387e-09 * (s + 6.59382816863195e+05)
++ / (s^2*6.98182729363962e-16 + s*6.51564970233823e-09 + 1.0)}
+G_POLE_port1_port1_p4 _net_5 gnd_0 LAPLACE {V(_net_5, gnd_0)} = {-6.39710822251814e-09 * (s + 2.76300363811235e+06)
++ / (s^2*3.94631911175898e-16 + s*6.50525492479719e-09 + 1.0)}
+G_POLE_port1_port2_p1 _net_5 gnd_0 LAPLACE {V(_net_10, gnd_0)} = {8.11667468747109e-03 / (s*9.30484478884191e-10 + 1.0)}
+G_POLE_port1_port2_p2 _net_5 gnd_0 LAPLACE {V(_net_10, gnd_0)} = {6.50867039992139e-09 * (s + 1.15989751875908e+06)
++ / (s^2*6.98182729363962e-16 + s*6.51564970233823e-09 + 1.0)}
+G_POLE_port1_port2_p4 _net_5 gnd_0 LAPLACE {V(_net_10, gnd_0)} = {-6.54033456699326e-09 * (s + 2.37501251778592e+06)
++ / (s^2*3.94631911175898e-16 + s*6.50525492479719e-09 + 1.0)}
+
+* PORT_2
+vi_2 port_2 _net_6 0.000000
+vb_2 _net_9 _net_10 0.000000
+R_Z0_2 _net_6 _net_7 5.00000000000000e+01
+H_b_2 _net_7 gnd_0 vb_2 1.41421356237310e+01
+E_v_2 _net_8 gnd_0 port_2 gnd_0 7.07106781186548e-02
+H_i_2 _net_9 _net_8 vi_2 3.53553390593274e+00
+
+
+G_POLE_port2_port1_p1 _net_10 gnd_0 LAPLACE {V(_net_5, gnd_0)} = {8.11667468747109e-03 / (s*9.30484478884191e-10 + 1.0)}
+G_POLE_port2_port1_p2 _net_10 gnd_0 LAPLACE {V(_net_5, gnd_0)} = {6.50867039992139e-09 * (s + 1.15989751875908e+06)
++ / (s^2*6.98182729363962e-16 + s*6.51564970233823e-09 + 1.0)}
+G_POLE_port2_port1_p4 _net_10 gnd_0 LAPLACE {V(_net_5, gnd_0)} = {-6.54033456699326e-09 * (s + 2.37501251778592e+06)
++ / (s^2*3.94631911175898e-16 + s*6.50525492479719e-09 + 1.0)}
+G_POLE_port2_port2_p1 _net_10 gnd_0 LAPLACE {V(_net_10, gnd_0)} = {1.02300814209148e+00 / (s*9.30484478884191e-10 + 1.0)}
+G_POLE_port2_port2_p2 _net_10 gnd_0 LAPLACE {V(_net_10, gnd_0)} = {-6.48117632523518e-09 * (s + 1.47698891929151e+06)
++ / (s^2*6.98182729363962e-16 + s*6.51564970233823e-09 + 1.0)}
+G_POLE_port2_port2_p4 _net_10 gnd_0 LAPLACE {V(_net_10, gnd_0)} = {-6.59676569265914e-09 * (s + 2.13290331442238e+06)
++ / (s^2*3.94631911175898e-16 + s*6.50525492479719e-09 + 1.0)}
+
+.ENDS bbspice_TUNEDCOILS1_subckt
+***************************************
+
+
+***************************************
+* S-based subckt
+
+*bbspice subcircuit with external port numbers.
+
+.SUBCKT bbspice_TUNEDCOILS1  1  2 
+
+x_  1  2  0
++ bbspice_TUNEDCOILS1_subckt
+
+.ENDS bbspice_TUNEDCOILS1
+***************************************

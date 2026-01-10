@@ -1,0 +1,55 @@
+; Momentum eesofbbs_64 2025.20 (*) built: Feb 25 2025
+#uselib "ckt" , "CCCS"
+#uselib "ckt" , "VCCS"
+#uselib "ckt" , "VCVS"
+#uselib "ckt" , "CCVS"
+#uselib "ckt" , "VCCS_POLE"
+
+
+;***************************************
+
+define "bbspice_TUNEDCOILS1_subckt" (port_1 port_2 gnd_0)
+
+s=j*omega
+
+
+;PORT_1
+R: R_Z0_1	_net_1	_net_2	R=5.00000000000000e+01	Noise=no
+CCVS: H_b_1	_net_4	_net_5	_net_2	gnd_0	G = 1.41421356237310e+01	R1 = 0.0
+VCVS: E_v_1	port_1	gnd_0	_net_3	gnd_0	G = 7.07106781186548e-02	R1 = 1.0e100	R2 = 0.0
+CCVS: H_i_1	port_1	_net_1	_net_4	_net_3	G = 3.53553390593274e+00	 R1 = 0.0
+
+
+VCCS_PZR: G_POLE_port1_port1_p1 	_net_5 	gnd_0 	_net_5 	gnd_0  	Zeros=list(1.09753049931940e+09) Poles=list(1.0,1.07470895290932e+09,0.0)
+VCCS_PZR: G_POLE_port1_port1_p2 	_net_5 	gnd_0 	_net_5 	gnd_0 	 Zeros=list(-9.22297626674328e+06,6.59382816863195e+05,0.0)	 Poles=list(1.0,4.66614929609755e+06,-5.97735804104285e+06)
+VCCS_PZR: G_POLE_port1_port1_p4 	_net_5 	gnd_0 	_net_5 	gnd_0 	 Zeros=list(-1.62103166047988e+07,2.76300363811235e+06,0.0)	 Poles=list(1.0,8.24218054922783e+06,-7.90356684333836e+06)
+VCCS_PZR: G_POLE_port1_port2_p1 	_net_5 	gnd_0 	_net_10 	gnd_0  	Zeros=list(8.72306295447761e+06) Poles=list(1.0,1.07470895290932e+09,0.0)
+VCCS_PZR: G_POLE_port1_port2_p2 	_net_5 	gnd_0 	_net_10 	gnd_0 	 Zeros=list(9.32230220855037e+06,1.15989751875908e+06,0.0)	 Poles=list(1.0,4.66614929609755e+06,-5.97735804104285e+06)
+VCCS_PZR: G_POLE_port1_port2_p4 	_net_5 	gnd_0 	_net_10 	gnd_0 	 Zeros=list(-1.65732531550852e+07,2.37501251778592e+06,0.0)	 Poles=list(1.0,8.24218054922783e+06,-7.90356684333836e+06)
+
+;PORT_2
+R: R_Z0_2	_net_6	_net_7	R=5.00000000000000e+01	Noise=no
+CCVS: H_b_2	_net_9	_net_10	_net_7	gnd_0	G = 1.41421356237310e+01	R1 = 0.0
+VCVS: E_v_2	port_2	gnd_0	_net_8	gnd_0	G = 7.07106781186548e-02	R1 = 1.0e100	R2 = 0.0
+CCVS: H_i_2	port_2	_net_6	_net_9	_net_8	G = 3.53553390593274e+00	 R1 = 0.0
+
+
+VCCS_PZR: G_POLE_port2_port1_p1 	_net_10 	gnd_0 	_net_5 	gnd_0  	Zeros=list(8.72306295447761e+06) Poles=list(1.0,1.07470895290932e+09,0.0)
+VCCS_PZR: G_POLE_port2_port1_p2 	_net_10 	gnd_0 	_net_5 	gnd_0 	 Zeros=list(9.32230220855037e+06,1.15989751875908e+06,0.0)	 Poles=list(1.0,4.66614929609755e+06,-5.97735804104285e+06)
+VCCS_PZR: G_POLE_port2_port1_p4 	_net_10 	gnd_0 	_net_5 	gnd_0 	 Zeros=list(-1.65732531550852e+07,2.37501251778592e+06,0.0)	 Poles=list(1.0,8.24218054922783e+06,-7.90356684333836e+06)
+VCCS_PZR: G_POLE_port2_port2_p1 	_net_10 	gnd_0 	_net_10 	gnd_0  	Zeros=list(1.09943600920484e+09) Poles=list(1.0,1.07470895290932e+09,0.0)
+VCCS_PZR: G_POLE_port2_port2_p2 	_net_10 	gnd_0 	_net_10 	gnd_0 	 Zeros=list(-9.28292272588792e+06,1.47698891929151e+06,0.0)	 Poles=list(1.0,4.66614929609755e+06,-5.97735804104285e+06)
+VCCS_PZR: G_POLE_port2_port2_p4 	_net_10 	gnd_0 	_net_10 	gnd_0 	 Zeros=list(-1.67162500189164e+07,2.13290331442238e+06,0.0)	 Poles=list(1.0,8.24218054922783e+06,-7.90356684333836e+06)
+
+
+end  "bbspice_TUNEDCOILS1_subckt"
+;***************************************
+
+
+;***************************************
+; S-based subckt
+
+define "bbspice_TUNEDCOILS1" ( 1 2	gnd)
+bbspice_TUNEDCOILS1_subckt: X 1 2 gnd
+end  "bbspice_TUNEDCOILS1"
+;***************************************

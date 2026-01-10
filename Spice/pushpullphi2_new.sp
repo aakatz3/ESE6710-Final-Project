@@ -67,6 +67,7 @@
 .OPTIONS measdgt=99
 .OPTIONS numdgt=99
 .OPTIONS gmin=1e-15
+.OPTIONS list
 
 *----------------topology-------------------
 * DC input

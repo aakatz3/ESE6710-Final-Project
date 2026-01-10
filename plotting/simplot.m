@@ -1,7 +1,10 @@
 clear; clc;
 
 scriptDir = fileparts(mfilename("fullpath"));
-fAll = fullfile(scriptDir, "simdata.log.txt");
+fAll = fullfile(scriptDir, "/data/sim/simdata.log.txt");
+epsDir = [scriptDir, '/eps/sim']
+mkdir(epsDir)
+
 
 % -------- global style --------
 S.figW = 3.50;
@@ -68,7 +71,7 @@ ylabel(axA, "Voltage (V)");
 styleAxes(axA, S, xLim);
 padY(axA, [vds1; vds2; vg1; vg2], 0.1);
 tightLegend(axA, {'$v_{ds1}$','$v_{ds2}$','$v_{g1}$','$v_{g2}$'}, S.legendDy); % <-- legend gap
-saveEps(figA, fullfile(scriptDir, "Fig_a_voltages.eps"));
+
 
 %% ===================== FIG (b): Vs =====================
 [figB, axB] = newFig(S);
@@ -76,8 +79,8 @@ plot(axB, t, Vs, "LineWidth", S.lw, "Color", C.Vs);
 ylabel(axB, '$V_s\,(\mathrm{V})$', 'Interpreter','latex');
 styleAxes(axB, S, xLim);
 padY(axB, Vs, 0.1);
-tightLegend(axB, {'$V_s$'}, S.legendDy); % <-- legend gap
-saveEps(figB, fullfile(scriptDir, "Fig_b_Vs.eps"));
+% tightLegend(axB, {'$V_s$'}, S.legendDy); % <-- legend gap
+
 
 %% ===================== FIG (c): Is =====================
 [figC, axC] = newFig(S);
@@ -85,8 +88,8 @@ plot(axC, t, Is, "LineWidth", S.lw, "Color", C.Is);
 ylabel(axC, '$I_s\,(\mathrm{A})$', 'Interpreter','latex');
 styleAxes(axC, S, xLim);
 padY(axC, Is, 0.1);
-tightLegend(axC, {'$I_s$'}, S.legendDy); % <-- legend gap
-saveEps(figC, fullfile(scriptDir, "Fig_c_Is.eps"));
+% tightLegend(axC, {'$I_s$'}, S.legendDy); % <-- legend gap
+
 
 %% ===================== FIG (d): Vr =====================
 [figD, axD] = newFig(S);
@@ -94,8 +97,8 @@ plot(axD, t, Vr, "LineWidth", S.lw, "Color", C.Vr);
 ylabel(axD, '$V_r\,(\mathrm{V})$', 'Interpreter','latex');
 styleAxes(axD, S, xLim);
 padY(axD, Vr, 0.1);
-tightLegend(axD, {'$V_r$'}, S.legendDy); % <-- legend gap
-saveEps(figD, fullfile(scriptDir, "Fig_d_Vr.eps"));
+% tightLegend(axD, {'$V_r$'}, S.legendDy); % <-- legend gap
+
 
 %% ===================== FIG (e): Ir =====================
 S.legendDy = -0.12; 
@@ -105,7 +108,7 @@ xlabel(axE, S.tLabel);
 ylabel(axE, '$I_r\,(\mathrm{A})$', 'Interpreter','latex');
 styleAxes(axE, S, xLim);
 padY(axE, Ir, 0.1);
-tightLegend(axE, {'$I_r$'}, S.legendDy); 
+% tightLegend(axE, {'$I_r$'}, S.legendDy); 
 axPos = axE.Position;
 axPos(2) = axPos(2) + 0.16;   
 axPos(4) = axPos(4) - 0.16;   
@@ -116,7 +119,7 @@ pos = xl.Position;
 pos(2) = pos(2) + S.xLabelYOffset;
 xl.Position = pos;
 
-saveEps(figE, fullfile(scriptDir, "Fig_e_Ir.eps"));
+
 
 %% ===================== ylabel alignment =====================
 allAxes = [axA, axB, axC, axD, axE];
@@ -174,5 +177,16 @@ function padY(ax, y, ratio)
 end
 
 function saveEps(fig, outPath)
-    print(fig, outPath, "-depsc2", "-painters");
+    % print(fig, outPath, "-depsc2", "-painters");
+    exportgraphics(fig.CurrentAxes, outPath)
 end
+
+
+% save all
+pause(3)
+saveEps(figA, fullfile(epsDir, "Fig_a_voltages.eps"));
+saveEps(figB, fullfile(epsDir, "Fig_b_Vs.eps"));
+saveEps(figC, fullfile(epsDir, "Fig_c_Is.eps"));
+saveEps(figD, fullfile(epsDir, "Fig_d_Vr.eps"));
+saveEps(figE, fullfile(epsDir, "Fig_e_Ir.eps"));
+close all

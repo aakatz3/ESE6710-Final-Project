@@ -1,0 +1,119 @@
+* Momentum eesofbbs_64 2025.20 (*) built: Feb 25 2025
+**************************************************
+
+***************************************
+
+*bbspice subcircuit with consecutive port numbers.
+.SUBCKT bbspice_TUNEDCOILS1_subckt	  port_1  port_2  gnd_0
+
+* PORT_1
+vi_1	port_1	_net_1	0.00000000000000e+00
+vb_1	_net_4	_net_5	0.00000000000000e+00
+R_Z0_1 	_net_1 	_net_2 	5.00000000000000e+01	NOISE=0
+H_b_1	_net_2	gnd_0	vb_1	1.41421356237310e+01
+E_v_1	_net_3	gnd_0	port_1	gnd_0	7.07106781186548e-02
+H_i_1	_net_4	_net_3	vi_1	3.53553390593274e+00
+
+
+G_C_1_1 	_net_5 	gnd_0 	_net_11 	gnd_0 	1.09753049931940e+09
+G_C_1_2 	_net_5 	gnd_0 	_net_12 	gnd_0 	-4.61148813337164e+06
+G_C_1_3 	_net_5 	gnd_0 	_net_13 	gnd_0 	-4.91978346114749e+05
+G_C_1_4 	_net_5 	gnd_0 	_net_14 	gnd_0 	-8.10515830239939e+06
+G_C_1_5 	_net_5 	gnd_0 	_net_15 	gnd_0 	-8.94280633168389e+05
+G_C_1_6 	_net_5 	gnd_0 	_net_16 	gnd_0 	8.72306295447761e+06
+G_C_1_7 	_net_5 	gnd_0 	_net_17 	gnd_0 	4.66115110427518e+06
+G_C_1_8 	_net_5 	gnd_0 	_net_18 	gnd_0 	4.35158170046841e+05
+G_C_1_9 	_net_5 	gnd_0 	_net_19 	gnd_0 	-8.28662657754259e+06
+G_C_1_10 	_net_5 	gnd_0 	_net_20 	gnd_0 	-9.79046447361427e+05
+
+* PORT_2
+vi_2	port_2	_net_6	0.00000000000000e+00
+vb_2	_net_9	_net_10	0.00000000000000e+00
+R_Z0_2 	_net_6 	_net_7 	5.00000000000000e+01	NOISE=0
+H_b_2	_net_7	gnd_0	vb_2	1.41421356237310e+01
+E_v_2	_net_8	gnd_0	port_2	gnd_0	7.07106781186548e-02
+H_i_2	_net_9	_net_8	vi_2	3.53553390593274e+00
+
+
+G_C_2_1 	_net_10 	gnd_0 	_net_11 	gnd_0 	8.72306295447761e+06
+G_C_2_2 	_net_10 	gnd_0 	_net_12 	gnd_0 	4.66115110427518e+06
+G_C_2_3 	_net_10 	gnd_0 	_net_13 	gnd_0 	4.35158170046841e+05
+G_C_2_4 	_net_10 	gnd_0 	_net_14 	gnd_0 	-8.28662657754259e+06
+G_C_2_5 	_net_10 	gnd_0 	_net_15 	gnd_0 	-9.79046447361427e+05
+G_C_2_6 	_net_10 	gnd_0 	_net_16 	gnd_0 	1.09943600920484e+09
+G_C_2_7 	_net_10 	gnd_0 	_net_17 	gnd_0 	-4.64146136294396e+06
+G_C_2_8 	_net_10 	gnd_0 	_net_18 	gnd_0 	-3.94132238753650e+05
+G_C_2_9 	_net_10 	gnd_0 	_net_19 	gnd_0 	-8.35812500945822e+06
+G_C_2_10 	_net_10 	gnd_0 	_net_20 	gnd_0 	-1.02824284701888e+06
+
+* STATE_1
+C_1 	_net_11 	gnd_0 	1.00000000000000e-11
+G_A_1_1 	_net_11 	gnd_0 	_net_11 	gnd_0 	1.07470895290932e-02
+G_B_1_1 	_net_11 	gnd_0 	_net_4 	gnd_0 	-1.00000000000000e-11
+
+* STATE_2
+C_2 	_net_12 	gnd_0 	1.00000000000000e-11
+G_A_2_2 	_net_12 	gnd_0 	_net_12 	gnd_0 	4.66614929609755e-05
+G_A_2_3 	_net_12 	gnd_0 	_net_13 	gnd_0 	-3.75568482192322e-04
+G_B_2_1 	_net_12 	gnd_0 	_net_4 	gnd_0 	-2.00000000000000e-11
+
+* STATE_3
+C_3 	_net_13 	gnd_0 	1.00000000000000e-11
+G_A_3_3 	_net_13 	gnd_0 	_net_13 	gnd_0 	4.66614929609755e-05
+G_A_3_2 	_net_13 	gnd_0 	_net_12 	gnd_0 	3.75568482192322e-04
+
+* STATE_4
+C_4 	_net_14 	gnd_0 	1.00000000000000e-11
+G_A_4_4 	_net_14 	gnd_0 	_net_14 	gnd_0 	8.24218054922783e-05
+G_A_4_5 	_net_14 	gnd_0 	_net_15 	gnd_0 	-4.96595750643753e-04
+G_B_4_1 	_net_14 	gnd_0 	_net_4 	gnd_0 	-2.00000000000000e-11
+
+* STATE_5
+C_5 	_net_15 	gnd_0 	1.00000000000000e-11
+G_A_5_5 	_net_15 	gnd_0 	_net_15 	gnd_0 	8.24218054922783e-05
+G_A_5_4 	_net_15 	gnd_0 	_net_14 	gnd_0 	4.96595750643753e-04
+
+* STATE_6
+C_6 	_net_16 	gnd_0 	1.00000000000000e-11
+G_A_6_6 	_net_16 	gnd_0 	_net_16 	gnd_0 	1.07470895290932e-02
+G_B_6_2 	_net_16 	gnd_0 	_net_9 	gnd_0 	-1.00000000000000e-11
+
+* STATE_7
+C_7 	_net_17 	gnd_0 	1.00000000000000e-11
+G_A_7_7 	_net_17 	gnd_0 	_net_17 	gnd_0 	4.66614929609755e-05
+G_A_7_8 	_net_17 	gnd_0 	_net_18 	gnd_0 	-3.75568482192322e-04
+G_B_7_2 	_net_17 	gnd_0 	_net_9 	gnd_0 	-2.00000000000000e-11
+
+* STATE_8
+C_8 	_net_18 	gnd_0 	1.00000000000000e-11
+G_A_8_8 	_net_18 	gnd_0 	_net_18 	gnd_0 	4.66614929609755e-05
+G_A_8_7 	_net_18 	gnd_0 	_net_17 	gnd_0 	3.75568482192322e-04
+
+* STATE_9
+C_9 	_net_19 	gnd_0 	1.00000000000000e-11
+G_A_9_9 	_net_19 	gnd_0 	_net_19 	gnd_0 	8.24218054922783e-05
+G_A_9_10 	_net_19 	gnd_0 	_net_20 	gnd_0 	-4.96595750643753e-04
+G_B_9_2 	_net_19 	gnd_0 	_net_9 	gnd_0 	-2.00000000000000e-11
+
+* STATE_10
+C_10 	_net_20 	gnd_0 	1.00000000000000e-11
+G_A_10_10 	_net_20 	gnd_0 	_net_20 	gnd_0 	8.24218054922783e-05
+G_A_10_9 	_net_20 	gnd_0 	_net_19 	gnd_0 	4.96595750643753e-04
+
+
+.ENDS  bbspice_TUNEDCOILS1_subckt
+***************************************
+
+
+***************************************
+* S-based subckt
+
+ 
+*bbspice subcircuit with external port numbers.
+
+.SUBCKT bbspice_TUNEDCOILS1		1 	2 	0 
+
+x_ 	1 	2 	0 	bbspice_TUNEDCOILS1_subckt
+
+.ENDS  bbspice_TUNEDCOILS1
+***************************************

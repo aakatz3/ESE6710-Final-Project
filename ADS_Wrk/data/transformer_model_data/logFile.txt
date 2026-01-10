@@ -1,0 +1,17 @@
+
+hpeesofsim (*) 620.shp Mar  6 2025, MINT version 5
+    (64-bit windows built: Fri Mar 07, 2025 05:21:57 +0000)
+
+
+***** Simulation started at Fri Jan  9 18:00:47 2026
+      Running on host: "AAKTHINKPADP16"
+      In Directory: "C:\Users\Andrew A. Katz\Documents\ESE6710\ESE6710-Final-Project\ADS_Wrk\data"
+      Process ID: 52244
+
+
+SP SP1[1] <ADS_Wrk_lib:transformer_model:schematic>   freq=(50 kHz->20 MHz)
+
+
+Resource usage:
+  Total stopwatch time     =     0.68 seconds.
+

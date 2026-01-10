@@ -1,0 +1,5 @@
+element[0] = S[1][1]	RMS =   0.8079	MAX =    1.004	(SELECTED)
+element[1] = S[1][2]	RMS =   0.5803	MAX =   0.9880	(SELECTED)
+element[1] = S[2][1]	RMS =   0.5803	MAX =   0.9880	(SELECTED)
+element[2] = S[2][2]	RMS =   0.8076	MAX =    1.004	(SELECTED)
+

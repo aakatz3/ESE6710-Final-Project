@@ -1,0 +1,54 @@
+// Momentum eesofbbs_64 2025.20 (*) built: Feb 25 2025
+//**************************************************
+
+simulator lang=spectre
+
+//bbspice subcircuit with consecutive port numbers.
+subckt bbspice_TUNEDCOILS1_subckt (port_1	port_2	gnd_0)
+
+
+
+//PORT_1
+vi_1	(port_1	_net_1)	vsource type=dc dc=0.00000000000000e+00
+vb_1	(_net_4	_net_5)	vsource type=dc dc=0.00000000000000e+00
+R_Z0_1	(_net_1	_net_2)	resistor r=5.00000000000000e+01	isnoisy=no
+H_b_1	(_net_2	gnd_0)	ccvs probe=vb_1 rm=1.41421356237310e+01
+E_v_1	(_net_3	gnd_0	port_1	gnd_0)	vcvs gain=7.07106781186548e-02
+H_i_1	(_net_4	_net_3)	ccvs probe=vi_1 rm=3.53553390593274e+00
+
+
+G_port1_port1_p1 (_net_5	gnd_0	_net_5	gnd_0) svccs gainfactor=1.09753049931940e+09 poles=[-1.07470895290932e+09	0.0]//Real pole
+G_port1_port1_p2 (_net_5	gnd_0	_net_5	gnd_0) svccs gainfactor=-9.22297626674328e+06 zeros=[-6.59382816863195e+05	0.0] poles=[-4.66614929609755e+06	3.75568482192322e+07	-4.66614929609755e+06	-3.75568482192322e+07]//Complex pole
+G_port1_port1_p4 (_net_5	gnd_0	_net_5	gnd_0) svccs gainfactor=-1.62103166047988e+07 zeros=[-2.76300363811235e+06	0.0] poles=[-8.24218054922783e+06	4.96595750643753e+07	-8.24218054922783e+06	-4.96595750643753e+07]//Complex pole
+G_port1_port2_p1 (_net_5	gnd_0	_net_10	gnd_0) svccs gainfactor=8.72306295447761e+06 poles=[-1.07470895290932e+09	0.0]//Real pole
+G_port1_port2_p2 (_net_5	gnd_0	_net_10	gnd_0) svccs gainfactor=9.32230220855037e+06 zeros=[-1.15989751875908e+06	0.0] poles=[-4.66614929609755e+06	3.75568482192322e+07	-4.66614929609755e+06	-3.75568482192322e+07]//Complex pole
+G_port1_port2_p4 (_net_5	gnd_0	_net_10	gnd_0) svccs gainfactor=-1.65732531550852e+07 zeros=[-2.37501251778592e+06	0.0] poles=[-8.24218054922783e+06	4.96595750643753e+07	-8.24218054922783e+06	-4.96595750643753e+07]//Complex pole
+
+
+//PORT_2
+vi_2	(port_2	_net_6)	vsource type=dc dc=0.00000000000000e+00
+vb_2	(_net_9	_net_10)	vsource type=dc dc=0.00000000000000e+00
+R_Z0_2	(_net_6	_net_7)	resistor r=5.00000000000000e+01	isnoisy=no
+H_b_2	(_net_7	gnd_0)	ccvs probe=vb_2 rm=1.41421356237310e+01
+E_v_2	(_net_8	gnd_0	port_2	gnd_0)	vcvs gain=7.07106781186548e-02
+H_i_2	(_net_9	_net_8)	ccvs probe=vi_2 rm=3.53553390593274e+00
+
+
+G_port2_port1_p1 (_net_10	gnd_0	_net_5	gnd_0) svccs gainfactor=8.72306295447761e+06 poles=[-1.07470895290932e+09	0.0]//Real pole
+G_port2_port1_p2 (_net_10	gnd_0	_net_5	gnd_0) svccs gainfactor=9.32230220855037e+06 zeros=[-1.15989751875908e+06	0.0] poles=[-4.66614929609755e+06	3.75568482192322e+07	-4.66614929609755e+06	-3.75568482192322e+07]//Complex pole
+G_port2_port1_p4 (_net_10	gnd_0	_net_5	gnd_0) svccs gainfactor=-1.65732531550852e+07 zeros=[-2.37501251778592e+06	0.0] poles=[-8.24218054922783e+06	4.96595750643753e+07	-8.24218054922783e+06	-4.96595750643753e+07]//Complex pole
+G_port2_port2_p1 (_net_10	gnd_0	_net_10	gnd_0) svccs gainfactor=1.09943600920484e+09 poles=[-1.07470895290932e+09	0.0]//Real pole
+G_port2_port2_p2 (_net_10	gnd_0	_net_10	gnd_0) svccs gainfactor=-9.28292272588792e+06 zeros=[-1.47698891929151e+06	0.0] poles=[-4.66614929609755e+06	3.75568482192322e+07	-4.66614929609755e+06	-3.75568482192322e+07]//Complex pole
+G_port2_port2_p4 (_net_10	gnd_0	_net_10	gnd_0) svccs gainfactor=-1.67162500189164e+07 zeros=[-2.13290331442238e+06	0.0] poles=[-8.24218054922783e+06	4.96595750643753e+07	-8.24218054922783e+06	-4.96595750643753e+07]//Complex pole
+
+ends bbspice_TUNEDCOILS1_subckt
+//**************************************************
+
+//S-based subckt
+//bbspice subcircuit with external port numbers.
+
+subckt bbspice_TUNEDCOILS1	(1	2	ref)
+x_	(1	2	ref)	bbspice_TUNEDCOILS1_subckt
+ends bbspice_TUNEDCOILS1
+
+//**************************************************
