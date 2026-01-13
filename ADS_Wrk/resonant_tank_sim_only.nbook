@@ -1,0 +1,9 @@
+<!DOCTYPE Notebook>
+<Notebook>
+    <Font Name="MS Shell Dlg 2" Size="8"/>
+    <Header Align="right"></Header>
+    <Footer Align="right"></Footer>
+    <PrintItems>
+        <Item Name="resonant_tank.dds" Page="Page 2 : S_Params_Quad_dB_Smith" Area=""/>
+    </PrintItems>
+</Notebook>

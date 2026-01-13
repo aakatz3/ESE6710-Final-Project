@@ -3,10 +3,10 @@ hpeesofsim (*) 620.shp Mar  6 2025, MINT version 5
     (64-bit windows built: Fri Mar 07, 2025 05:21:57 +0000)
 
 
-***** Simulation started at Fri Jan  9 19:27:47 2026
+***** Simulation started at Mon Jan 12 19:10:01 2026
       Running on host: "AAKTHINKPADP16"
       In Directory: "C:\Users\Andrew A. Katz\Documents\ESE6710\ESE6710-Final-Project\ADS_Wrk\data"
-      Process ID: 6972
+      Process ID: 11720
 
 Warning detected by hpeesofsim in topology check during circuit set up.
     Number of nodes with no DC path to ground (topology corrected): 4
@@ -16,5 +16,5 @@ SP SP1[1] <ADS_Wrk_lib:resonant_tank:schematic>   freq=(1 MHz->10 MHz)
 
 
 Resource usage:
-  Total stopwatch time     =     0.69 seconds.
+  Total stopwatch time     =    71.14 seconds.
 

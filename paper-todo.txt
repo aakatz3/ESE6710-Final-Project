@@ -1,4 +1,5 @@
 Fix figure 1
+Add section/module boxes to Figure 1
 reference figure 1 in intro
 
 Split up circuit topology? potentially have design math in seperate subsection

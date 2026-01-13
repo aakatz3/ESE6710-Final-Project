@@ -1,0 +1,5 @@
+Starting simulator:
+    Executable: C:\Program Files (x86)\AWR\AWRDE\19\analyst\grsim.exe
+    Control File: C:/Users/Andrew A. Katz/Documents/ESE6710/ESE6710-Final-Project/AWR_WRK/TEMP\AWR Sim\3D EM Structure coil$11.xml
+
+NT Argument = 1
