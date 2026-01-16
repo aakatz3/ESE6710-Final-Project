@@ -3,13 +3,13 @@
 	url = https://github.com/aakatz3/ESE-6710-Final-Project-Paper.git
 [submodule "Altium/GaN PPT Inverter"]
 	path = Altium/GaN PPT Inverter
-	url = https://afs-vcs-ue1.365.altium.com/git/EA8D0C0B-FC56-4A30-8360-4E3B944927C5.git
+	url = https://github.com/aakatz3/ESE6710-Final-Project-GaN-PPT-Inverter.git
 [submodule "Paper2"]
 	path = Paper2
 	url = https://git@git.overleaf.com/6943cea240478681bb775896
 [submodule "Altium/Coil Interface Board"]
 	path = Altium/Coil Interface Board
-	url = https://afs-vcs-ue1.365.altium.com/git/7BF7D7C3-856B-4F23-BFD8-6C8A5E9D09CF.git
+	url = https://github.com/aakatz3/aakatz-ESE-6710-Coil-Interface-Board.git
 [submodule "Altium/aakatz ESE6710 capacitance stub PCB"]
 	path = Altium/aakatz ESE6710 capacitance stub PCB
-	url = https://afs-vcs-ue1.365.altium.com/git/F85D3709-3D05-4CCB-B731-56E7BD981CA1.git 
+	url = https://github.com/aakatz3/ESE6710-probe-emulator.git
