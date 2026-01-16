@@ -1,0 +1,39 @@
+
+hpeesofsim (*) 620.shp Mar  6 2025, MINT version 5
+    (64-bit windows built: Fri Mar 07, 2025 05:21:57 +0000)
+
+
+***** Simulation started at Thu Jan 15 18:56:22 2026
+      Running on host: "AAKTHINKPADP16"
+      In Directory: "C:\Users\Andrew A. Katz\Documents\ESE6710\ESE6710-Final-Project\ADS_Wrk\data"
+      Process ID: 43256
+
+Pt DC convergence is used.
+
+.
+
+
+TRAN Tran1[1] <ADS_Wrk_lib:T_network:schematic>   time=(0 s->3 us)
+
+
+HB HBPE1[1] <ADS_Wrk_lib:T_network:schematic>
+    Number of tones:   1.
+    Number of frequencies:   6.
+    Number of time samples:  16.
+    Number of HB equations (problem size): 187.
+    Auto mode: off.
+    Convergence mode: Robust.
+    Linear solver: Krylov (GS_GMRES) iters=1000 loose=50.
+    Preconditioner: DCP.
+    The general solver is used for HB Krylov preconditioning.
+------------------------------------------------------------------------------
+Newton solver:					Linear solver:
+Iter	KCL residual	Damp %	Sol update	Iters	Residual
+------------------------------------------------------------------------------
+0 	12.6491 mA  	100.0             
+1 	570.426 aA  	100.0	723.421 mV  	  1	9.599e-16   
+2 	549.738 aA  	100.0	707.578 aV  	  1	3.127e-16   
+
+Resource usage:
+  Total stopwatch time     =     0.80 seconds.
+

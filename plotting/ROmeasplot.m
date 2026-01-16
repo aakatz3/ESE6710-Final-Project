@@ -4,6 +4,11 @@ csvFile = "measurementsROUT.csv";
 simFile = "simRosweep.log.txt";
 
 scriptDir = fileparts(mfilename('fullpath'));   % script folder
+
+
+outDir = [scriptDir, '/eps/ROmeas'];
+mkdir(outDir)
+
 outDir = scriptDir;
 
 LW = 1.2;

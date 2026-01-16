@@ -3,10 +3,10 @@ hpeesofsim (*) 620.shp Mar  6 2025, MINT version 5
     (64-bit windows built: Fri Mar 07, 2025 05:21:57 +0000)
 
 
-***** Simulation started at Wed Jan  7 11:07:26 2026
+***** Simulation started at Thu Jan 15 02:12:53 2026
       Running on host: "AAKTHINKPADP16"
       In Directory: "C:\Users\Andrew A. Katz\Documents\ESE6710\ESE6710-Final-Project\ADS_Wrk\data"
-      Process ID: 57524
+      Process ID: 57288
 
 Warning detected by hpeesofsim in LinearCollapse '_2_' during analysis.
     LinearCollapse is disabled because there is 'AC' analysis present.
@@ -22,5 +22,5 @@ AC AC1[1] <ADS_Wrk_lib:attenuator_test:schematic>   freq=(1 GHz->10 GHz)
 
 
 Resource usage:
-  Total stopwatch time     =     0.66 seconds.
+  Total stopwatch time     =     0.64 seconds.
 
