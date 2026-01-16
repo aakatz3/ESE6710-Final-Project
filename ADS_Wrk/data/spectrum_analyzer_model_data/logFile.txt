@@ -1,0 +1,45 @@
+
+hpeesofsim (*) 620.shp Mar  6 2025, MINT version 5
+    (64-bit windows built: Fri Mar 07, 2025 05:21:57 +0000)
+
+
+***** Simulation started at Thu Jan 15 21:59:15 2026
+      Running on host: "AAKTHINKPADP16"
+      In Directory: "C:\Users\Andrew A. Katz\Documents\ESE6710\ESE6710-Final-Project\ADS_Wrk\data"
+      Process ID: 44028
+
+
+SP SP1[1] <ADS_Wrk_lib:spectrum_analyzer_model:schematic>   freq=(50 kHz->500 MHz)
+Warning detected by hpeesofsim during SP analysis `SP1'.
+    The DC (0 Hz) value has not been specified in the Touchstone file
+    'C:/Users/Andrew A. Katz/Documents/ESE6710/ESE6710-Final-Project/ADS_Wrk/ZFL-1000LN+_AP170764_SPARAMS_UNIT_1_15V.s2p'.
+
+Warning detected by hpeesofsim during SP analysis `SP1'.
+    Data in the Touchstone file `C:/Users/Andrew A. Katz/Documents/ESE6710/ESE6710-Final-Project/ADS_Wrk/ZFL-1000LN+_AP170764_SPARAMS_UNIT_1_15V.s2p'
+    does not cover the requested value of `freq'.
+    Therefore, the required data was obtained by extrapolation.
+
+Warning detected by hpeesofsim during SP analysis `SP1'.
+    The DC (0 Hz) value has not been specified in the Touchstone file
+    'C:/Users/Andrew A. Katz/Documents/ESE6710/ESE6710-Final-Project/ADS_Wrk/10X_N2889A.S2P'.
+
+Warning detected by hpeesofsim during SP analysis `SP1'.
+    Data in the Touchstone file `C:/Users/Andrew A. Katz/Documents/ESE6710/ESE6710-Final-Project/ADS_Wrk/10X_N2889A.S2P'
+    does not cover the requested value of `freq'.
+    Therefore, the required data was obtained by extrapolation.
+
+
+Warning detected by hpeesofsim during circuit set up.
+    `P_Probe1': Unable to resolve variable(s) or functions(s) in expression ` p=if (_sp_state) then 0.0 elseif (freq==0.0 || _tr_state) then real(deltav*conj(sh1.i)) else 0.5*real(deltav*conj(sh1.i)) endif'
+        deltav
+        sh1.i
+
+Warning detected by hpeesofsim during circuit set up.
+    `P_Probe2': Unable to resolve variable(s) or functions(s) in expression ` p=if (_sp_state) then 0.0 elseif (freq==0.0 || _tr_state) then real(deltav*conj(sh1.i)) else 0.5*real(deltav*conj(sh1.i)) endif'
+        deltav
+        sh1.i
+
+
+Resource usage:
+  Total stopwatch time     =     0.79 seconds.
+
