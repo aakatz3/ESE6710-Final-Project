@@ -1,18 +1,26 @@
 clear; clc;
 
-csvFile = "data/frequency_spectrum/nominal.csv"
+csvFile_MR = "data/frequency_spectrum/nominal_mr_dec31.csv";
+csvFile_VDSAB = "data/frequency_spectrum/V_DA-VDB.csv";
 
 scriptDir = fileparts(mfilename('fullpath'));
-outDir = [scriptDir, '/eps'];
-
-LW = 1.2;
+outDir = [scriptDir, '/eps/spectrum'];
+mkdir(outDir);
+LW = 1;
 
 %% ---------------- Load MEAS data ----------------
-Tmeas = readtable(csvFile);
+Tmeas = readtable(csvFile_MR);
 getcol = @(T,n) getColumnByNames(T,n);
 
-f   = getcol(Tmeas, ["FrequencyInHz"]);
-power = getcol(Tmeas, ["PowerInDBm"]);
+f_MR   = getcol(Tmeas, ["FrequencyInHz"])/1e6;
+power_MR = getcol(Tmeas, ["PowerInDBm"]);% + 72.833;
+
+clear Tmeas
+
+Tmeas = readtable(csvFile_VDSAB);
+f_VDS   = getcol(Tmeas, ["FrequencyInHz"])/1e6;
+power_VDS = getcol(Tmeas, ["PowerInDBm"]);
+% power = power * db2pow(power)
 % Pout_m = getcol(Tmeas, ["P_OUT","Pout","POUT"]);
 % Vds_m  = getcol(Tmeas, ["V_DS_A_max","vdsmax","V_DS"]);
 % Pin_m  = getcol(Tmeas, ["P_IN","Pin","PIN"]);
@@ -54,9 +62,15 @@ setYlimRule = @(ax,y) ylim(ax, [0.8*min(y) 1.2*max(y)]);
 legendLoc = 'northwest';
 
 %% ---------------- Plot & export ----------------
-makeOneFig(f,power, ...
-    '$f\ (\mathrm{Hz})$', '$P_{MR}\ \mathrm{(relative,\ dBm)}$', ...
+makeOneFig(f_MR,power_MR, ...
+    '$f\ (\mathrm{MHz})$', '$P_{MR}\ \mathrm{(dBm,\ relative)}$', ...
     'fig_f_p_mr', LW, figW, figH, applyStyle, setYlimRule, outDir, legendLoc);
+[~,idx] = max(power_MR);
+f_MR(idx)
+
+makeOneFig(f_VDS,power_VDS, ...
+    '$f\ (\mathrm{MHz})$', '$P_{MR}\ \mathrm{(dBm,\ relative)}$', ...
+    'fig_f_p_ds', LW, figW, figH, applyStyle, setYlimRule, outDir, legendLoc);
 
 % makeOneFig(fs_s,Pout_s,f,Pout_m, ...
 %     '$f_s\ (\mathrm{Hz})$', '$P_{\mathrm{out}}\ \mathrm{(W)}$', ...
@@ -112,8 +126,9 @@ function makeOneFig(x, y, xlab, ylab, fname, ...
     %     'FontSize',8, ...
     %     'Box','off', ...
     %     'Location', legendLoc);
-
-    set(fig,'Renderer','painters');
-    print(fig, fullfile(outDir, fname), '-depsc2', '-painters');
+    
+    exportgraphics(ax,fullfile(outDir, [fname, '.eps']))
+    % set(fig,'Renderer','painters');
+    % print(fig, fullfile(outDir, fname), '-depsc2', '-vector');
 end
 
