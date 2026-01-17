@@ -1,5 +1,7 @@
 <!DOCTYPE SaveWorkspaceState>
 <SaveWorkspaceState>
-    <Windows/>
+    <Windows>
+        <Schematic width="2412" geom="1,0,0,1027,286,2412,994,3440,1440" cell="resonant_tank" height="994" y1="255" lib="ADS_Wrk_lib" x1="1026" view="schematic"/>
+    </Windows>
     <MainWindowTab tab="1"/>
 </SaveWorkspaceState>
