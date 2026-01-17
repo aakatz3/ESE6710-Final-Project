@@ -13,3 +13,6 @@
 [submodule "Altium/aakatz ESE6710 capacitance stub PCB"]
 	path = Altium/aakatz ESE6710 capacitance stub PCB
 	url = https://github.com/aakatz3/ESE6710-probe-emulator.git
+[submodule "Altium/Rectifier"]
+	path = Altium/Rectifier
+	url = https://github.com/aakatz3/ESE6710-Final-Project-Rectifier.git
