@@ -31,36 +31,32 @@ figure;
 exportgraphics(ax,[epsDir, '/s11.eps'])
 
 
+
 %% CLEAN THIS
 
-figure
+figure("Position",[100,100,400,450]);
 nexttile
 
-tiledlayout("horizontal")
-nexttile
-plot(ads.Frequencies,abs(x))
-nexttile
-plot(ads.Frequencies,rad2deg(angle(x)))
-nexttile
-tiledlayout("vertical")
-nexttile
-plot(ads.Frequencies,abs(x))
-nexttile
-plot(ads.Frequencies,rad2deg(angle(x)))
-nexttile
-rfplot(ads,1,1)
-rfplot(ads,1,1,"abs")
-
+% tiledlayout("horizontal")
+% nexttile
+% plot(ads.Frequencies,abs(x))
+% nexttile
+% plot(ads.Frequencies,rad2deg(angle(x)))
+% nexttile
+% tiledlayout("vertical")
+% nexttile
+% plot(ads.Frequencies,abs(x))
+% nexttile
+% plot(ads.Frequencies,rad2deg(angle(x)))
+% nexttile
+% rfplot(ads,1,1)
+% rfplot(ads,1,1,"abs")
+% 
 ads_z = zparameters(ads)
 
 ads_z.Parameters(1,1)
 ads_z.Parameters(:,1,1)
-aaaa=ads_z.Parameters
-doc zparameters
-clear x
-clear aaaa
-ads_z11 = rfparam(ads_z,1,1);
-figure
+
 tiledlayout('vertical')
 nexttile
 

@@ -1,4 +1,4 @@
-% clear; clc;
+clear; clc;
 
 scriptDir = fileparts(mfilename("fullpath"));
 fAll = fullfile(scriptDir, "/data/sim/simdata.log.txt");
@@ -24,15 +24,15 @@ S.xLabelYOffset  = -0.3;   % move xlabel
 S.legendDy = -0.26;          % legend position(+) closer to axes, (-) farther away
 
 % -------- colors --------
-c = getPyPlot_cMap('tab10', 10);
-C.vds1 = c(1,:);%[0.3010 0.7450 0.9330];
-C.vds2 = c(2,:);%[0.4660 0.6740 0.1880];
-C.vg1  = c(3,:);%[0.8500 0.3250 0.0980];
-C.vg2  = c(4,:);%[0.9290 0.6940 0.1250];
-C.Vs   = c(5,:);%[0.0000 0.4470 0.7410];
-C.Is   = c(6,:);%[0.8500 0.3250 0.0980];
-C.Vr   = c(7,:);%[0.4940 0.1840 0.5560];
-C.Ir   = c(10,:);%[0.6350 0.0780 0.1840];
+c = parula(8);
+C.vds1 = [0.3010 0.7450 0.9330];
+C.vds2 = [0.4660 0.6740 0.1880];
+C.vg1  = [0.8500 0.3250 0.0980];
+C.vg2  = [0.9290 0.6940 0.1250];
+C.Vs   = [0.0000 0.4470 0.7410];
+C.Is   = [0.8500 0.3250 0.0980];
+C.Vr   = [0.4940 0.1840 0.5560];
+C.Ir   = [0.6350 0.0780 0.1840];
 
 % -------- read log --------
 opts = detectImportOptions(fAll, "FileType","text");

@@ -1,4 +1,4 @@
-clear; clc;
+close all; clear; clc;
 
 csvFile = "measurementsROUT.csv";
 simFile = "simRosweep.log.txt";
@@ -6,10 +6,8 @@ simFile = "simRosweep.log.txt";
 scriptDir = fileparts(mfilename('fullpath'));   % script folder
 
 
-outDir = [scriptDir, '/eps/ROmeas'];
+outDir = [scriptDir, '/eps/Ro'];
 mkdir(outDir)
-
-outDir = scriptDir;
 
 LW = 1.2;
 
@@ -60,10 +58,10 @@ figH = 2.25;
 applyStyle = @(ax) set(ax, ...
     'Box','on', ...
     'LineWidth',0.75, ...
-    'FontName','Times New Roman', ...
+    ...'FontName','Times New Roman', ...
     'FontSize',8.5, ...
     'XLim',[xmin xmax], ...
-    'TickDir','out', ...
+    'TickDir','in', ...
     'TickLength',[0.018 0.018], ...
     'Layer','top', ...
     'TickLabelInterpreter','latex');
@@ -72,21 +70,23 @@ setYlimRule = @(ax,y) ylim(ax, [0.92*min(y) 1.08*max(y)]);
 
 legendLoc = 'northwest';
 
+xlab = 'R_{load} (\Omega)';
+
 %% ---------------- Plot & export ----------------
 makeOneFig(Ro_s,Vout_s,Ro_m,Vout_m, ...
-    '$R_o\ (\Omega)$', '$V_{\mathrm{out}}\ \mathrm{(V)}$', ...
+    xlab, 'V_{out} (V)$', ...
     'fig_Ro_Vout', LW, figW, figH, applyStyle, setYlimRule, outDir, legendLoc);
 
 makeOneFig(Ro_s,Pout_s,Ro_m,Pout_m, ...
-    '$R_o\ (\Omega)$', '$P_{\mathrm{out}}\ \mathrm{(W)}$', ...
+    xlab, 'P_out (W)',...
     'fig_Ro_Pout', LW, figW, figH, applyStyle, setYlimRule, outDir, legendLoc);
 
 makeOneFig(Ro_s,eff_s,Ro_m,eff_m, ...
-    '$R_o\ (\Omega)$', '$\eta\ \mathrm{(\%)}$', ...
+    xlab, '\eta (%)', ...
     'fig_Ro_Eff', LW, figW, figH, applyStyle, setYlimRule, outDir, legendLoc);
 
 makeOneFig(Ro_s,Vds_s,Ro_m,Vds_m, ...
-    '$R_o\ (\Omega)$', '$V_{\mathrm{ds,max}}\ \mathrm{(V)}$', ...
+    xlab, 'V_{ds,max} (V)', ...
     'fig_Ro_Vdsmax', LW, figW, figH, applyStyle, setYlimRule, outDir, legendLoc);
 
 disp("EPS figures exported to the script folder successfully.");
@@ -112,28 +112,29 @@ end
 function makeOneFig(xs, ys, xm, ym, xlab, ylab, fname, ...
                     LW, figW, figH, applyStyle, setYlimRule, outDir, legendLoc)
 
-    fig = figure('Color','w','Units','inches','Position',[1 1 figW figH]);
-    ax = axes(fig);
+    fig = figure('Units','inches','Position',[1 1 figW figH]);
+    ax = axes(fig, 'Box','on');
     hold(ax,'on');
-    grid(ax,'off');
+    grid(ax,'on');
 
     h1 = plot(ax, xs, ys, '-',  'LineWidth', LW);
     h2 = plot(ax, xm, ym, '-',  'LineWidth', LW);
 
-    applyStyle(ax);
+    % applyStyle(ax);
     setYlimRule(ax, [ys(:); ym(:)]);
 
-    xlabel(ax, xlab, 'Interpreter','latex', 'FontSize',9);
-    ylabel(ax, ylab, 'Interpreter','latex', 'FontSize',9);
+    xlabel(ax, xlab);%, 'Interpreter','latex', 'FontSize',9);
+    ylabel(ax, ylab);%, 'Interpreter','latex', 'FontSize',9);
 
     legend(ax, [h1 h2], {'Simulation','Measurement'}, ...
-        'Interpreter','latex', ...
+        ...'Interpreter','latex', ...
         'FontSize',8, ...
         'Box','off', ...
         'Location', legendLoc);
-
-    set(fig,'Renderer','painters');
-    print(fig, fullfile(outDir, fname), '-depsc2', '-painters');
+    
+    
+    % set(fig,'Renderer','painters');
+    exportgraphics(ax,fullfile(outDir, [fname, '.eps']));
 
 end
 

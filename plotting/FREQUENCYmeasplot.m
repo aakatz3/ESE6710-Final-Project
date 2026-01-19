@@ -1,10 +1,11 @@
-clear; clc;
+close all; clear; clc;
 
 csvFile = "measurementsfrequency.csv";
 simFile = "simfresweep.log.txt";
 
 scriptDir = fileparts(mfilename('fullpath'));
-outDir = scriptDir;
+outDir = [scriptDir, '/eps/freq'];
+mkdir(outDir);
 
 LW = 1.2;
 
@@ -12,7 +13,7 @@ LW = 1.2;
 Tmeas = readtable(csvFile);
 getcol = @(T,n) getColumnByNames(T,n);
 
-fs_m   = getcol(Tmeas, ["FREQ"]);
+fs_m   = getcol(Tmeas, ["FREQ"]) / 1e6;
 Vout_m = getcol(Tmeas, ["V_OUT","Vout","VOUT"]);
 Pout_m = getcol(Tmeas, ["P_OUT","Pout","POUT"]);
 Vds_m  = getcol(Tmeas, ["V_DS_A_max","vdsmax","V_DS"]);
@@ -28,7 +29,7 @@ opts.ExtraColumnsRule = "ignore";
 opts.EmptyLineRule = "read";
 Tsim = readtable(simFile, opts);
 
-fs_s   = getcol(Tsim, ["fstest"]);
+fs_s   = getcol(Tsim, ["fstest"]) / 1e6;
 Vout_s = getcol(Tsim, ["vout","Vout"]);
 Pout_s = getcol(Tsim, ["poutavg","Pout"]);
 Vds_s  = getcol(Tsim, ["vds1max","Vdsmax"]);
@@ -68,21 +69,23 @@ setYlimRule = @(ax,y) ylim(ax, [0.8*min(y) 1.2*max(y)]);
 
 legendLoc = 'northwest';
 
+xlab = 'f_s (MHz)';
+
 %% ---------------- Plot & export ----------------
 makeOneFig(fs_s,Vout_s,fs_m,Vout_m, ...
-    '$f_s\ (\mathrm{Hz})$', '$V_{\mathrm{out}}\ \mathrm{(V)}$', ...
+    xlab, 'V_{out} (V)',...
     'fig_fs_Vout', LW, figW, figH, applyStyle, setYlimRule, outDir, legendLoc);
 
 makeOneFig(fs_s,Pout_s,fs_m,Pout_m, ...
-    '$f_s\ (\mathrm{Hz})$', '$P_{\mathrm{out}}\ \mathrm{(W)}$', ...
+    xlab, 'P_{out} (W)', ...
     'fig_fs_Pout', LW, figW, figH, applyStyle, setYlimRule, outDir, legendLoc);
 
 makeOneFig(fs_s,eff_s,fs_m,eff_m, ...
-    '$f_s\ (\mathrm{Hz})$', '$\eta\ \mathrm{(\%)}$', ...
+    xlab, '\eta (%)', ...
     'fig_fs_Eff', LW, figW, figH, applyStyle, setYlimRule, outDir, legendLoc);
 
 makeOneFig(fs_s,Vds_s,fs_m,Vds_m, ...
-    '$f_s\ (\mathrm{Hz})$', '$V_{\mathrm{ds,max}}\ \mathrm{(V)}$', ...
+    xlab,  'V_{ds,max} (V)', ...
     'fig_fs_Vdsmax', LW, figW, figH, applyStyle, setYlimRule, outDir, legendLoc);
 
 disp("EPS figures exported to the script folder successfully.");
@@ -108,27 +111,32 @@ end
 function makeOneFig(xs, ys, xm, ym, xlab, ylab, fname, ...
                     LW, figW, figH, applyStyle, setYlimRule, outDir, legendLoc)
 
-    fig = figure('Color','w','Units','inches','Position',[1 1 figW figH]);
-    ax = axes(fig);
+    fig = figure('Units','inches','Position',[1 1 figW figH]);
+    ax = axes(fig, 'Box','on');
     hold(ax,'on');
-    grid(ax,'off');
+    grid(ax,'on');
+    
+    xmin = min([xm]);
+    xmax = max([xm]);
 
-    h1 = plot(ax, xs, ys, '-', 'LineWidth', LW);
-    h2 = plot(ax, xm, ym, '-', 'LineWidth', LW);
+    xlim(ax,[xmin,xmax]);
 
-    applyStyle(ax);
+    h1 = plot(ax, xs, ys, '-',  'LineWidth', LW);
+    h2 = plot(ax, xm, ym, '-',  'LineWidth', LW);
+
+    % applyStyle(ax);
     setYlimRule(ax, [ys(:); ym(:)]);
 
-    xlabel(ax, xlab, 'Interpreter','latex', 'FontSize',9);
-    ylabel(ax, ylab, 'Interpreter','latex', 'FontSize',9);
+    xlabel(ax, xlab);%, 'Interpreter','latex', 'FontSize',9);
+    ylabel(ax, ylab);%, 'Interpreter','latex', 'FontSize',9);
 
     legend(ax, [h1 h2], {'Simulation','Measurement'}, ...
-        'Interpreter','latex', ...
+        ...'Interpreter','latex', ...
         'FontSize',8, ...
         'Box','off', ...
         'Location', legendLoc);
+    
+    
+    exportgraphics(ax,fullfile(outDir, [fname, '.eps']));
 
-    set(fig,'Renderer','painters');
-    print(fig, fullfile(outDir, fname), '-depsc2', '-painters');
 end
-

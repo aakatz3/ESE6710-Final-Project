@@ -1,10 +1,11 @@
-clear; clc;
+close all; clear; clc;
 
 csvFile = "measurementsduty.csv";
 simFile = "simdutysweep.log.txt";
 
 scriptDir = fileparts(mfilename('fullpath'));   
-outDir = scriptDir;
+outDir = [scriptDir, '/eps/DUTY'];
+mkdir(outDir);
 
 LW = 1.2;
 
@@ -69,19 +70,19 @@ legendLoc = 'northwest';
 
 %% ---------------- Plot & export ----------------
 makeOneFig(D_s,Vout_s,D_m,Vout_m, ...
-    'D ', '$V_{\mathrm{out}}\ \mathrm{(V)}$', ...
+    'D', 'V_{out} (V)', ...
     'fig_duty_Vout', LW, figW, figH, applyStyle, setYlimRule, outDir, legendLoc);
 
 makeOneFig(D_s,Pout_s,D_m,Pout_m, ...
-    'D ', '$P_{\mathrm{out}}\ \mathrm{(W)}$', ...
+    'D ', 'P_{out} (W)', ...
     'fig_duty_Pout', LW, figW, figH, applyStyle, setYlimRule, outDir, legendLoc);
 
 makeOneFig(D_s,eff_s,D_m,eff_m, ...
-    'D ', '$\eta\ \mathrm{(\%)}$', ...
+    'D ', '\eta (%)', ...
     'fig_duty_Eff', LW, figW, figH, applyStyle, setYlimRule, outDir, legendLoc);
 
 makeOneFig(D_s,Vds_s,D_m,Vds_m, ...
-    'D ', '$V_{\mathrm{ds,max}}\ \mathrm{(V)}$', ...
+    'D ', 'V_{ds,max} (V)', ...
     'fig_duty_Vdsmax', LW, figW, figH, applyStyle, setYlimRule, outDir, legendLoc);
 
 disp("EPS figures exported to the script folder successfully.");
@@ -104,30 +105,35 @@ function x = getColumnByNames(T, names)
     x = double(T.(hit));
 end
 
-function makeOneFig(Ds, ys, Dm, ym, xlab, ylab, fname, ...
+function makeOneFig(xs, ys, xm, ym, xlab, ylab, fname, ...
                     LW, figW, figH, applyStyle, setYlimRule, outDir, legendLoc)
 
-    fig = figure('Color','w','Units','inches','Position',[1 1 figW figH]);
-    ax = axes(fig);
+    fig = figure('Units','inches','Position',[1 1 figW figH]);
+    ax = axes(fig, 'Box','on');
     hold(ax,'on');
-    grid(ax,'off');
+    grid(ax,'on');
+    
+    xmin = min([xm; xs]);
+    xmax = max([xm; xs]);
 
-    h1 = plot(ax, Ds, ys, '-',  'LineWidth', LW);
-    h2 = plot(ax, Dm, ym, '-',  'LineWidth', LW);
+    xlim(ax,[xmin,xmax]);
 
-    applyStyle(ax);
+    h1 = plot(ax, xs, ys, '-',  'LineWidth', LW);
+    h2 = plot(ax, xm, ym, '-',  'LineWidth', LW);
+
+    % applyStyle(ax);
     setYlimRule(ax, [ys(:); ym(:)]);
 
-    xlabel(ax, xlab, 'Interpreter','latex', 'FontSize',9);
-    ylabel(ax, ylab, 'Interpreter','latex', 'FontSize',9);
+    xlabel(ax, xlab);%, 'Interpreter','latex', 'FontSize',9);
+    ylabel(ax, ylab);%, 'Interpreter','latex', 'FontSize',9);
 
     legend(ax, [h1 h2], {'Simulation','Measurement'}, ...
-        'Interpreter','latex', ...
+        ...'Interpreter','latex', ...
         'FontSize',8, ...
         'Box','off', ...
         'Location', legendLoc);
-
-    set(fig,'Renderer','painters');
-    print(fig, fullfile(outDir, fname), '-depsc2', '-painters');
+    
+    
+    exportgraphics(ax,fullfile(outDir, [fname, '.eps']));
 
 end

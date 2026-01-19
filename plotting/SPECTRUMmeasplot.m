@@ -110,7 +110,7 @@ function makeOneFig(x, y, xlab, ylab, fname, ...
     fig = figure('Color','w','Units','inches','Position',[1 1 figW figH]);
     ax = axes(fig);
     hold(ax,'on');
-    grid(ax,'off');
+    grid(ax,'on');
 
     h1 = plot(ax, x, y, '-', 'LineWidth', LW);
     % h2 = plot(ax, xm, ym, '-', 'LineWidth', LW);
